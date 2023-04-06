@@ -79,9 +79,9 @@
     <sortable
         :rows="directoryEntries"
         :columns="columns"
-        :sort-prop="initSort.column"
+        :sort-prop="initSort.prop"
         :sort-direction="initSort.dir"
-        @after-sort="$emit('after-sort', { sortColumn: $refs.sortable.sortColumn, sortDir: $refs.sortable.sortDir })"
+        @after-sort="$emit('after-sort', $event)"
         ref="sortable"
     >
 

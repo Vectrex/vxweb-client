@@ -83,8 +83,16 @@ export default {
       initSort: {},
     }
   },
+  created () {
+    let lsValue = window.localStorage.getItem(window.location.origin + "/admin/files/sort");
+    if(lsValue) {
+        this.initSort = JSON.parse(lsValue);
+    }
+  },
   methods: {
-    storeSort() {}
+    storeSort(event) {
+        window.localStorage.setItem(window.location.origin + "/admin/files/sort", JSON.stringify(event));
+    }
   }
 }
 </script>

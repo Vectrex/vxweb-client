@@ -36,7 +36,7 @@
   <sortable
       :rows="paginatedArticles"
       :columns="cols"
-      :sort-prop="initSort.column"
+      :sort-prop="initSort.prop"
       :sort-direction="initSort.dir"
       :offset="(currentPage - 1) * entriesPerPage"
       :count="entriesPerPage"
@@ -120,7 +120,7 @@ export default {
   },
 
   async created () {
-    let lsValue = window.localStorage.getItem(window.location.origin + "/admin/articles__sort__");
+    let lsValue = window.localStorage.getItem(window.location.origin + "/admin/articles/sort");
     if(lsValue) {
       this.initSort = JSON.parse(lsValue);
     }
@@ -144,8 +144,6 @@ export default {
       }
 
     },
-    storeSort () {
-    },
     async publish (row) {
       row.pub = !row.pub;
       let response = await this.$fetch(this.api + 'article/' + row.id + (row.pub ? '/publish' : '/unpublish'), 'PUT');
@@ -153,6 +151,9 @@ export default {
         row.pub = !row.pub;
       }
       this.$emit('notify', response);
+    },
+    storeSort (event) {
+        window.localStorage.setItem(window.location.origin + "/admin/articles/sort", JSON.stringify(event));
     }
   }
 }
