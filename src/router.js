@@ -1,15 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { UsersIcon, NewspaperIcon, DocumentIcon, PhotoIcon } from '@heroicons/vue/24/solid'
 
-const AuthFailed = () => import('@/components/views/AuthFailed.vue')
-const Login = () => import('@/components/views/Login.vue')
-const Profile  = () => import("@/components/views/Profile.vue")
-const Users  = () => import("@/components/views/Users.vue")
-const Files  = () => import("@/components/views/Files.vue")
-const Articles  = () => import("@/components/views/Articles.vue")
-const ArticleEdit  = () => import("@/components/views/ArticleEdit.vue")
-const Pages = () => import("@/components/views/Pages.vue")
-const PageEdit = () => import("@/components/views/PageEdit.vue")
+function lazyLoad (view) {
+    return () => import (`@/components/views/${view}.vue`)
+}
 
 const router = createRouter({
     history: createWebHistory(),
@@ -17,12 +11,12 @@ const router = createRouter({
         {
             name: 'login',
             path: '/',
-            component: Login
+            component: lazyLoad('Login')
         },
         {
             name: 'profile',
             path: '/profile',
-            component: Profile,
+            component: lazyLoad('Profile'),
             meta: {
                 heading: 'Meine Einstellungen'
             }
@@ -30,7 +24,7 @@ const router = createRouter({
         {
             name: 'files',
             path: '/files/:folderId?',
-            component: Files,
+            component: lazyLoad('Files'),
             props: true,
             meta: {
                 label: 'Dateien',
@@ -40,7 +34,7 @@ const router = createRouter({
         {
             name: 'articles',
             path: '/articles',
-            component: Articles,
+            component: lazyLoad('Articles'),
             meta: {
                 label: 'Artikel',
                 icon: NewspaperIcon
@@ -49,13 +43,13 @@ const router = createRouter({
         {
             name: 'articleEdit',
             path: '/article/:id?/:section?/:sectionId?',
-            component: ArticleEdit,
+            component: lazyLoad('ArticleEdit'),
             props: true
         },
         {
             name: 'pages',
             path: '/pages',
-            component: Pages,
+            component: lazyLoad('Pages'),
             meta: {
                 label: 'Seiten',
                 icon: DocumentIcon,
@@ -66,13 +60,13 @@ const router = createRouter({
         {
             name: 'pageEdit',
             path: '/page/:id?',
-            component: PageEdit,
+            component: lazyLoad('PageEdit'),
             props: true
         },
         {
             name: 'users',
             path: '/users',
-            component:  Users,
+            component:  lazyLoad('Users'),
             meta: {
                 label: 'Benutzer',
                 icon: UsersIcon,
@@ -81,7 +75,7 @@ const router = createRouter({
         },
         {
             name: 'authFailed',
-            component: AuthFailed
+            component: lazyLoad('AuthFailed')
         }
     ]
 });
