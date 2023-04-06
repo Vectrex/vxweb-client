@@ -11,6 +11,7 @@
     "vue": "^3.2.47",
     "vue-router": "^4.1.6",
     "vue-slicksort": "^2.0.5",
+
     "@tiptap/pm": "^2.0.2",
     "@tiptap/vue-3": "^2.0.2",
     "@tiptap/extension-document": "^2.0.2",
@@ -22,7 +23,12 @@
     "@tiptap/extension-bullet-list": "^2.0.2",
     "@tiptap/extension-ordered-list": "^2.0.2",
     "@tiptap/extension-list-item": "^2.0.2",
-    "@tiptap/extension-history": "^2.0.2"
+    "@tiptap/extension-history": "^2.0.2",
+
+    "@editorjs/editorjs": "^2.26.5",
+    "@editorjs/header": "2.7.0",
+    "@editorjs/list": "^1.8.0",
+    "@editorjs/paragraph": "^2.9.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
