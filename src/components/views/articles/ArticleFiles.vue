@@ -11,6 +11,7 @@
     :folder-id="selectedFolder"
     @update:folder-id="handleFolderChange"
     @response-received="handleReceivedResponse"
+    @after-sort="storeSort"
     ref="fm"
   >
     <template v-slot:linked="slotProps">
@@ -81,6 +82,12 @@ export default {
       initSort: {}
     }
   },
+  created () {
+    let lsValue = window.localStorage.getItem(window.location.origin + "/admin/article-files/sort");
+    if(lsValue) {
+        this.initSort = JSON.parse(lsValue);
+    }
+  },
   methods: {
     async handleLink (row) {
       let response = await this.$fetch(this.api + 'article/' + this.articleId + '/link-file', 'PUT', {}, JSON.stringify({ fileId: row.id }));
@@ -97,6 +104,9 @@ export default {
     },
     handleFolderChange (folderId) {
       this.$router.push( { name: 'articleEdit', params: { id: this.articleId, section: 'files', sectionId: folderId }});
+    },
+    storeSort (event) {
+      window.localStorage.setItem(window.location.origin + "/admin/article-files/sort", JSON.stringify(event));
     }
   }
 }

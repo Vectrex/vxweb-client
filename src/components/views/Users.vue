@@ -22,7 +22,11 @@
     <sortable
         :rows="users"
         :columns="cols"
+        :sort-prop="initSort.prop"
+        :sort-direction="initSort.dir"
         class="w-full"
+        key-property="id"
+        @after-sort="storeSort"
     >
       <template v-slot:action="slotProps">
         <div class="flex space-x-2 justify-end" v-if="currentUser.username !== slotProps.row.username">
@@ -81,6 +85,7 @@ export default {
         { label: "Gruppe", sortable: true, width: "w-1/6", prop: "alias" },
         { label: "", width: "w-1/12", prop: "action", cssClass: "text-right" }
       ],
+      initSort: {},
       formShown: false,
       editData: {
         id: null
@@ -88,6 +93,10 @@ export default {
     }
   },
   async created () {
+    let lsValue = window.localStorage.getItem(window.location.origin + "/admin/users/sort");
+    if(lsValue) {
+        this.initSort = JSON.parse(lsValue);
+    }
     this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     this.users = (await this.$fetch(this.api + 'users/init')).users || [];
   },
@@ -126,6 +135,9 @@ export default {
           this.$emit('notify', { message: response.message || 'Es ist ein Fehler aufgetreten!', success: false });
         }
       }
+    },
+    storeSort (event) {
+        window.localStorage.setItem(window.location.origin + "/admin/users/sort", JSON.stringify(event));
     }
   }
 }

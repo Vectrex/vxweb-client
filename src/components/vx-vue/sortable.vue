@@ -120,7 +120,7 @@ export default {
 
   methods: {
     clickSort (column) {
-      this.$emit('before-sort');
+      this.$emit('before-sort', { prop: column.prop, dir: this.sortDir });
       if(this.sortColumn === column) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       }
@@ -128,7 +128,7 @@ export default {
         this.sortColumn = column;
         this.sortDir = this.sortDir || 'asc';
       }
-      this.$nextTick( () => this.$emit('after-sort') );
+      this.$nextTick( () => this.$emit('after-sort', { prop: this.sortColumn.prop, dir: this.sortDir }));
     }
   }
 }

@@ -22,9 +22,10 @@
   <sortable
       :rows="pages"
       :columns="cols"
-      :sort-prop="initSort.column"
+      :sort-prop="initSort.prop"
       :sort-direction="initSort.dir"
       key-property="id"
+      @after-sort="storeSort"
   >
     <template v-slot:action="slotProps">
       <div class="flex space-x-2 justify-end">
@@ -65,7 +66,11 @@ export default {
     }
   },
   async created () {
-    this.pages = await this.$fetch(this.api + 'pages');
+      let lsValue = window.localStorage.getItem(window.location.origin + "/admin/pages/sort");
+      if(lsValue) {
+          this.initSort = JSON.parse(lsValue);
+      }
+      this.pages = await this.$fetch(this.api + 'pages');
   },
   methods: {
     async del (id) {
@@ -78,6 +83,9 @@ export default {
           this.$emit('notify', {message: response.message || 'Es ist ein Fehler aufgetreten!', success: false});
         }
       }
+    },
+    storeSort (event) {
+        window.localStorage.setItem(window.location.origin + "/admin/pages/sort", JSON.stringify(event));
     }
   }
 }
