@@ -25,7 +25,7 @@
     </div>
 
     <div class="flex-1 flex flex-col min-h-screen">
-      <div class="h-24 flex flex-1 items-end pb-2 bg-white px-8 shadow" v-if="$route.name !== 'login'">
+      <div class="h-24 flex flex-1 items-end pb-2 bg-white px-8 shadow border-b border-slate-500/10" v-if="$route.name !== 'login'">
         <headerbar />
       </div>
       <div :class="['overflow-hidden', $route.name === 'login' ? 'h-screen' : 'h-[calc(100vh-var(--header-height))]']">

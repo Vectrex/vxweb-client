@@ -1,5 +1,5 @@
 <template>
-  <div class="rounded overflow-hidden shadow ring-1 ring-slate-500 ring-opacity-5">
+  <div class="rounded overflow-hidden shadow ring-1 ring-slate-500 ring-opacity-10">
     <table class="min-w-full divide-y divide-y-slate-900">
       <thead class="bg-slate-700 text-white">
       <tr>
