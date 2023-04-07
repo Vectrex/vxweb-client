@@ -72,6 +72,9 @@
     .link {
         @apply text-vxvue hover:text-vxvue-700 active:text-vxvue-700 hover:underline active:underline
     }
+    [v-cloak] {
+        @apply hidden
+    }
 }
 
 /* define the default vx-vue color set */

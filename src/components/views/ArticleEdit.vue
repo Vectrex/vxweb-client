@@ -18,7 +18,7 @@
       @update:active-index="$router.push({ name: 'articleEdit', params: { id: id, section: tabs.items[$event].section }})"
     />
   </div>
-  <div v-if="activeTab === 'edit'">
+  <div v-if="activeTab === 'form'">
     <article-form
         :id="id"
         @response-received="$emit('notify', $event)"
@@ -51,7 +51,7 @@ export default {
     return {
       tabs: {
         items: [
-          { section: 'edit', name: 'Artikel' },
+          { section: 'form', name: 'Artikel' },
           { section: 'files', name: 'Verlinkte Dateien', badge: null },
           { section: 'sort', name: 'Sortierung und Sichtbarkeit verlinkter Dateien' },
         ]
@@ -65,7 +65,7 @@ export default {
       return items;
     },
     activeTab () {
-      return this.$route.params.section || 'edit';
+      return this.$route.params.section || 'form';
     }
   },
   created () {

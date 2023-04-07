@@ -8,6 +8,7 @@
 <template>
     <div id="editor-js-holder" style="border: solid 1px #f00; width: 100%;"/>
     <button type="button" @click="save">Save</button>
+    <pre>{{ json }}</pre>
 </template>
 
 <script>
@@ -18,6 +19,9 @@ export default {
             value: null,
             editor: null
         };
+    },
+    computed: {
+      json() { return JSON.stringify(this.value) }
     },
     mounted () {
         this.editor = new EditorJS({
