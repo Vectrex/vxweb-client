@@ -32,36 +32,46 @@ const router = createRouter({
             }
         },
         {
-            name: 'articles',
             path: '/articles',
-            component: lazyLoad('Articles'),
             meta: {
                 label: 'Artikel',
-                icon: NewspaperIcon
-            }
+                icon: NewspaperIcon,
+            },
+            children: [
+                {
+                    path: '',
+                    name: 'articles',
+                    component: lazyLoad('Articles'),
+                },
+                {
+                    name: 'articleEdit',
+                    path: 'edit/:id?/:section?/:sectionId?',
+                    component: lazyLoad('ArticleEdit'),
+                    props: true
+                }
+            ]
         },
         {
-            name: 'articleEdit',
-            path: '/article/:id?/:section?/:sectionId?',
-            component: lazyLoad('ArticleEdit'),
-            props: true
-        },
-        {
-            name: 'pages',
             path: '/pages',
-            component: lazyLoad('Pages'),
             meta: {
                 label: 'Seiten',
                 icon: DocumentIcon,
                 heading: 'Seiten',
                 roles: ['superadmin']
-            }
-        },
-        {
-            name: 'pageEdit',
-            path: '/page/:id?',
-            component: lazyLoad('PageEdit'),
-            props: true
+            },
+            children: [
+                {
+                    path: '',
+                    name: 'pages',
+                    component: lazyLoad('Pages'),
+                },
+                {
+                    name: 'pageEdit',
+                    path: 'edit/:id?',
+                    component: lazyLoad('PageEdit'),
+                    props: true
+                },
+            ]
         },
         {
             name: 'users',
@@ -78,9 +88,6 @@ const router = createRouter({
             component: lazyLoad('AuthFailed')
         }
     ]
-});
-
-router.beforeEach (async (to, from) => {
 });
 
 export default router;
