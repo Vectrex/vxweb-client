@@ -27,21 +27,11 @@ export default {
         this.editor = new EditorJS({
             holder: "editor-js-holder",
             autofocus: true,
-            initialBlock: "paragraph",
+            defaultBlock: "paragraph",
             tools: {
-                header: {
-                    class: Header,
-                    shortcut: "CMD+SHIFT+H"
-                },
-                list: {
-                    class: List
-                },
-                paragraph: {
-                    class: Paragraph,
-                    config: {
-                        placeholder: "."
-                    }
-                }
+                header: Header,
+                list: List,
+                paragraph: Paragraph
             },
             onReady () {
                 console.log("ready");
