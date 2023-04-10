@@ -7,13 +7,13 @@
 
 <template>
   <nav>
-    <template v-for="route in linkedRoutes" :key="route.name">
+    <template v-for="route in linkedRoutes" :key="route.path">
       <router-link
           v-if="
             !route.meta.roles ||
             !route.meta.roles.length ||
             userRoles.filter(item => route.meta.roles.includes(item)).length"
-          :to="{ name: route.name }"
+          :to="route.name ? { name: route.name } : { path: route.path }"
           :class="[
               'flex items-center px-2 py-2 text-base font-medium rounded items-center space-x-2 flex-nowrap overflow-hidden',
               $route.name === route.name ? 'bg-vxvue-600 text-white' : 'text-slate-100 hover:bg-vxvue-700'
