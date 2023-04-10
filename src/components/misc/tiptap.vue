@@ -10,7 +10,8 @@
   import Paragraph from '@tiptap/extension-paragraph'
   import HardBreak from '@tiptap/extension-hard-break'
   import History from '@tiptap/extension-history'
-  import { ArrowUturnLeftIcon, ArrowUturnRightIcon, CodeBracketSquareIcon } from '@heroicons/vue/24/solid'
+  import Link from '@tiptap/extension-link'
+  import { ArrowUturnLeftIcon, ArrowUturnRightIcon, CodeBracketSquareIcon, LinkIcon } from '@heroicons/vue/24/solid'
 </script>
 
 <template>
@@ -29,12 +30,15 @@
         <button @click="editor.commands.toggleOrderedList()" :class="buttonClass()">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"><path fill="none" d="M0 0h24v24H0z"/><path d="M8 4h13v2H8V4zM5 3v3h1v1H3V6h1V4H3V3h2zM3 14v-2.5h2V11H3v-1h3v2.5H4v.5h2v1H3zm2 5.5H3v-1h2V18H3v-1h3v4H3v-1h2v-.5zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor"/></svg>
         </button>
+        <button @click="toggleLink" :class="buttonClass('link')">
+            <link-icon class="w-5 h-5" />
+        </button>
       </div>
       <div class="flex space-x-1 px-1">
         <button @click="showSrc = !showSrc" :class="['icon-link', showSrc ? 'bg-slate-400' : '']"><code-bracket-square-icon class="h-5 w-5" /></button>
       </div>
     </div>
-    <editor-content :editor="editor" />
+    <editor-content :editor="editor" class="prose w-full max-w-none"/>
     <textarea class="form-textarea w-full text-sm my-2" @blur="$emit('update:modelValue', $event.target.value)" :value="modelValue" v-if="showSrc" />
   </div>
 </template>
@@ -71,7 +75,10 @@ export default {
         OrderedList,
         ListItem,
         Bold,
-        Italic
+        Italic,
+        Link.configure({
+            openOnClick: false,
+        })
       ],
       content: this.modelValue,
       onUpdate: () => this.$emit('update:modelValue', this.editor.getHTML())
@@ -83,6 +90,18 @@ export default {
   methods: {
     buttonClass (isActive) {
       return 'icon-link' + (isActive && this.editor?.isActive(isActive) ? ' bg-slate-400' : '');
+    },
+    toggleLink () {
+        const previousUrl = this.editor.getAttributes('link').href;
+        if (previousUrl) {
+          this.editor.chain().focus().unsetLink().run();
+        }
+        else {
+            const url = window.prompt('URL', previousUrl)
+            if (url && url.trim()) {
+                this.editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+            }
+        }
     }
   }
 }
