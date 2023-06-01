@@ -1,3 +1,17 @@
+<script setup>
+  import { computed } from "vue";
+
+  const props = defineProps({
+    progress: Number,
+    radius: { type: Number, default: 24 },
+    strokeWidth: { type: Number, default: 8 },
+  })
+  const size = computed(() => props.radius * 2)
+  const normalizedRadius = computed(() => props.radius - props.strokeWidth / 2)
+  const circumference  = computed(() => normalizedRadius * 2 * Math.PI)
+  const strokeDashoffset = computed(() => circumference - props.progress / 100 * circumference)
+</script>
+
 <template>
   <svg :height="size" :width="size" class="circular-progress">
     <circle
@@ -20,30 +34,3 @@
     />
   </svg>
 </template>
-
-<script>
-export default {
-  name: "CircularProgress",
-
-  props: {
-    progress: Number,
-    radius: { type: Number, default: 24 },
-    strokeWidth: { type: Number, default: 8 }
-  },
-
-  computed: {
-    size() {
-      return 2 * this.radius;
-    },
-    normalizedRadius() {
-      return this.radius - this.strokeWidth / 2;
-    },
-    circumference() {
-      return this.normalizedRadius * 2 * Math.PI;
-    },
-    strokeDashoffset() {
-      return this.circumference - this.progress / 100 * this.circumference;
-    }
-  }
-}
-</script>

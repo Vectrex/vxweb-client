@@ -1,9 +1,14 @@
+<script setup>
+  const props = defineProps({ options: Array, modelValue: [String, Number], disabledLabel: String })
+  const emit = defineEmits(['update:modelValue'])
+</script>
+
 <template>
     <select
         v-bind="$attrs"
         :value="modelValue"
         class="form-select"
-        @change="emit($event.target)"
+        @change="emit('update:modelValue', $event.target.value)"
     >
       <option v-if="disabledLabel" disabled value="">{{ disabledLabel }}</option>
       <option
@@ -14,16 +19,3 @@
       </option>
     </select>
 </template>
-
-<script>
-    export default {
-      name: 'form-select',
-      props: { options: Array, modelValue: [String, Number], disabledLabel: String },
-      emits: ['update:modelValue'],
-      methods: {
-        emit (target) {
-          this.$emit('update:modelValue', target.value);
-        }
-      }
-    }
-</script>
