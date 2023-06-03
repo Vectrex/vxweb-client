@@ -3,9 +3,3 @@
     <div id="tools"></div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "Headerbar"
-}
-</script>

@@ -17,4 +17,3 @@ app
     .provide('api', host)
     .mount('#app')
 ;
-app.config.unwrapInjectedRef = true;
