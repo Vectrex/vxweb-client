@@ -3,6 +3,27 @@
   import SubmitButton from "@/components/misc/submit-button.vue";
   import Logo from "@/components/misc/logo.vue";
   import { HomeIcon } from '@heroicons/vue/20/solid';
+  import { customFetch } from "@/util/customFetch";
+  import { ref } from "vue";
+
+  const emit = defineEmits(['authenticate', 'notify'])
+  const form = ref({ username: '', password: '' })
+  const busy = ref(false)
+  const submit = async () => {
+    if (form.value.username.trim() && form.value.password.trim()) {
+      busy.value = true
+      const { data } = await customFetch("login").post(JSON.stringify(form.value)).json()
+      busy.value = false
+      if(data.value.bearerToken) {
+        sessionStorage.setItem('bearerToken', data.value.bearerToken)
+        emit('authenticate', data.value)
+      }
+      else {
+        emit('notify', data.value)
+      }
+    }
+  }
+  const getWindow = () => window
 </script>
 
 <template>
@@ -22,44 +43,15 @@
 
           <div class="flex justify-between items-center">
             <submit-button :busy="busy" @submit="submit">Anmelden</submit-button>
-            <span class="flex space-x-1"><home-icon class="w-5 h-5"/><a :href="siteLink" class="link text-rose-600 hover:text-rose-500">{{ siteLabel }}</a></span>
+            <span class="flex space-x-1">
+              <home-icon class="w-5 h-5"/>
+              <a :href="getWindow().location.protocol + '//' + getWindow().location.host" class="link text-rose-600 hover:text-rose-500">
+                {{ getWindow().location.host }}
+              </a>
+            </span>
           </div>
         </div>
       </div>
     </transition>
   </div>
 </template>
-
-<script>
-export default {
-  name: "LoginView",
-  emits: ['authenticate', 'notify'],
-  inject: ['api'],
-  data () {
-    return {
-      form: {
-        username: '',
-        password: ''
-      },
-      busy: false,
-      siteLink: window.location.protocol + '//:' + window.location.host,
-      siteLabel: window.location.host
-    }
-  },
-  methods: {
-    async submit () {
-      if (this.form.username.trim() && this.form.password.trim()) {
-        this.busy = true;
-        let response = await this.$fetch(this.api + "login", 'POST', {}, JSON.stringify(this.form));
-        this.busy = false;
-        if (response.bearerToken) {
-          this.$emit('authenticate', response);
-        }
-        else {
-          this.$emit('notify', response);
-        }
-      }
-    }
-  }
-}
-</script>
