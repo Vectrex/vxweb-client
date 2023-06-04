@@ -1,8 +1,37 @@
 <script setup>
-  import PasswordInput from "@/components/vx-vue/password-input.vue";
-  import Headline from "@/components/app/Headline.vue";
-  import SubmitButton from "@/components/misc/submit-button.vue";
-  import Divider from "@/components/misc/divider.vue";
+  import PasswordInput from "@/components/vx-vue/password-input.vue"
+  import Headline from "@/components/app/Headline.vue"
+  import SubmitButton from "@/components/misc/submit-button.vue"
+  import Divider from "@/components/misc/divider.vue"
+  import { onMounted, ref } from "vue"
+  import { customFetch } from "@/util/customFetch"
+
+  const emit = defineEmits(['notify'])
+
+  const fields = [
+    { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+    { model: 'email', label: 'E-Mail', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+    { model: 'name', label: 'Name', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
+    { type: PasswordInput, model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
+    { type: PasswordInput, model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
+  ]
+  const form = ref({})
+  const errors = ref({})
+  const busy = ref(false)
+  const notifications = ref([])
+
+  onMounted(async () => {
+    const { data } = await customFetch('profile_data').json()
+    notifications.value = data.value.notifications
+    form.value = data.value.formData || {}
+  })
+  const submit = async () => {
+    busy.value = true
+    const { data } = await customFetch('profile_data').post(JSON.stringify(form.value)).json()
+    busy.value = false
+    errors.value = data.value.errors || {}
+    emit('notify', data.value)
+  }
 </script>
 
 <template>
@@ -12,7 +41,7 @@
 
   <div class="space-y-4 pb-4">
     <div class="space-y-4">
-        <div v-for="field in fields">
+        <div v-for="(field, ndx) in fields" :key="ndx">
           <label :for="field.model + '-' + (field.type || 'input')" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
           <div>
             <input
@@ -39,7 +68,7 @@
         <div class="space-y-4">
           <div class="space-x-2" v-for="notification in notifications">
             <label class="space-x-2">
-              <input name="notification[]" v-bind:value="notification.alias" type="checkbox" class="form-checkbox" v-model="form.notifications" />
+              <input v-bind:value="notification.alias" type="checkbox" class="form-checkbox" v-model="form.notifications" />
               <span>{{ notification.label }}</span>
             </label>
           </div>
@@ -49,50 +78,3 @@
     <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
   </div>
 </template>
-
-<script>
-
-export default {
-  components: {'password-input': PasswordInput },
-  name: 'ProfileView',
-  emits: ['notify'],
-  inject: ['api'],
-  data() {
-    return {
-      form: {},
-      busy: false,
-      response: {},
-      fields: [
-        { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-        { model: 'email', label: 'E-Mail', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-        { model: 'name', label: 'Name', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-        { type: 'password-input', model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
-        { type: 'password-input', model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
-      ],
-      notifications: []
-    }
-  },
-
-  computed: {
-    errors () {
-      return this.response ? (this.response.errors || {}) : {};
-    }
-  },
-
-  async created () {
-    let response = await this.$fetch(this.api + 'profile_data')
-    this.notifications = response.notifications;
-    if (response.formData) {
-      this.form = response.formData;
-    }
-  },
-  methods: {
-    async submit() {
-      this.busy = true;
-      this.response = await this.$fetch(this.api + 'profile_data', 'POST', {}, JSON.stringify(this.form));
-      this.busy = false;
-      this.$emit('notify', this.response);
-    }
-  }
-}
-</script>
