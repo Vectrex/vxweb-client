@@ -1,11 +1,36 @@
 <script setup>
-  import { XMarkIcon } from '@heroicons/vue/24/solid';
-</script>
-<template>
+  import { XMarkIcon } from '@heroicons/vue/24/solid'
+  import { computed, onMounted, ref, watch } from "vue";
 
+  defineOptions({
+    inheritAttrs: false
+  })
+  const props = defineProps({
+    title: String,
+    message: [String, Array],
+    timeout: { type: Number, default: 5000 },
+    active: { type: Boolean, default: false }
+  })
+  const emit = defineEmits(['timeout', 'close'])
+  const activeTimeout = ref(null)
+  const lines = computed(() => typeof props.message === 'string' ? [props.message] : props.message)
+  const startTimeout = () => {
+    window.clearTimeout(activeTimeout.value);
+
+    // timeout 0 disables fadeout
+
+    if (props.active && props.timeout) {
+      activeTimeout.value = window.setTimeout(() => { emit('timeout') }, props.timeout);
+    }
+  }
+
+  watch(() => props.active, startTimeout)
+  onMounted(startTimeout)
+</script>
+
+<template>
   <div aria-live="assertive" class="fixed inset-0 flex px-4 py-6 pointer-events-none sm:p-6 items-start z-50">
     <div class="w-full flex flex-col items-center space-y-4">
-
       <transition name="messagetoast-fade">
         <div v-if="active" class="max-w-sm w-full shadow-lg rounded-md pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden" :class="$attrs['class']">
           <div class="p-4">
@@ -22,7 +47,7 @@
                 </p>
               </div>
               <div class="ml-4 flex-shrink-0 flex">
-                <button @click="$emit('close')" class="bg-black bg-opacity-20 rounded-sm inline-flex text-white hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-200">
+                <button @click="emit('close')" class="bg-black bg-opacity-20 rounded-sm inline-flex text-white hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-200">
                   <span class="sr-only">Close</span>
                   <x-mark-icon class="h-5 w-5" />
                 </button>
@@ -31,58 +56,9 @@
           </div>
         </div>
       </transition>
-
     </div>
   </div>
-
 </template>
-
-<script>
-export default {
-  inheritAttrs: false,
-  name: 'message-toast',
-  emits: ['timeout', 'close'],
-  props: {
-    title: String,
-    message: [String, Array],
-    timeout: { type: Number, default: 5000 },
-    active: { type: Boolean, default: false }
-  },
-  data() {
-    return {
-      activeTimeout: null
-    }
-  },
-  computed: {
-    lines() {
-      return typeof this.message === 'string' ? [this.message] : this.message;
-    }
-  },
-  watch: {
-    active() {
-      this.setTimeout();
-    }
-  },
-
-  mounted() {
-    this.setTimeout();
-  },
-
-  methods: {
-    setTimeout() {
-      window.clearTimeout(this.activeTimeout);
-
-      // timeout 0 disables fadeout
-
-      if (this.active && this.timeout) {
-        this.activeTimeout = window.setTimeout(() => {
-          this.$emit('timeout');
-        }, this.timeout);
-      }
-    }
-  }
-}
-</script>
 
 <style>
   .messagetoast-fade-enter-from,
