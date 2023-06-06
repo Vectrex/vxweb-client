@@ -1,11 +1,65 @@
 <script setup>
-  import Sortable from "@/components/vx-vue/sortable.vue";
-  import Pagination from "@/components/vx-vue/pagination.vue";
-  import FormSwitch from "@/components/vx-vue/form-switch.vue";
-  import FilterForm from "@/components/views/articles/FilterForm.vue";
-  import Alert from "@/components/vx-vue/alert.vue";
-  import Headline from "@/components/app/Headline.vue";
-  import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid';
+  import Sortable from "@/components/vx-vue/sortable.vue"
+  import Pagination from "@/components/vx-vue/pagination.vue"
+  import FormSwitch from "@/components/vx-vue/form-switch.vue"
+  import FilterForm from "@/components/views/articles/FilterForm.vue"
+  import Alert from "@/components/vx-vue/alert.vue"
+  import Headline from "@/components/app/Headline.vue"
+  import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
+  import { ref, computed, onMounted } from "vue"
+  import { customFetch } from "@/util/customFetch"
+
+  const emit = defineEmits(['notify'])
+  const cols = [
+    { label: "Kategorie", sortable: true, prop: "catId" },
+    { label: "Titel", sortable: true, prop: "title" },
+    { label: "Pub", sortable: true, prop: "pub" },
+    { label: "*", sortable: true, prop: "marked" },
+    { label: "Artikeldatum", sortable: true, prop: "date" },
+    { label: "Anzeige von", sortable: true, prop: "from" },
+    { label: "Anzeige bis", sortable: true, prop: "until" },
+    { label: "Sortierziffer", sortable: true, prop: "sort" },
+    { label: "Angelegt/aktualisiert", sortable: true, prop: "updated" },
+    { label: "", prop: "action" }
+  ]
+  const articles = ref([])
+  const categories = ref([])
+  const paginated = ref({ page: 1, entriesPerPage: 20 })
+  const filter = ref({ cat: 0, title: '' })
+  const filteredArticles = computed(() => {
+    const titleFilter = filter.value.title.toLowerCase()
+    return articles.value.filter(item => (!filter.value.cat || filter.value.cat === item.catId) && (!titleFilter || item.title.toLowerCase().indexOf(titleFilter) !== -1))
+  })
+  const confirm = ref(null)
+  const initSort = () => {
+    const ls = window.localStorage.getItem(window.location.origin + "/admin/articles/sort")
+    return ls ? JSON.parse(ls) : {}
+  }
+  const storeSort = e => window.localStorage.setItem(window.location.origin + "/admin/articles/sort", JSON.stringify(e))
+
+  onMounted(async () => {
+    const { data } = await customFetch('articles').json()
+    articles.value = data.value.articles || []
+    categories.value = data.value.categories || []
+    categories.value.forEach(item => item.key = item.id)
+  })
+  const del = async article => {
+    if (await confirm.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`)) {
+      const { data } = await customFetch('article/' + article.id).delete().json()
+      if (data.value.success) {
+        articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
+      }
+      emit('notify', data.value);
+    }
+  }
+  const publish = async (row) => {
+    row.pub = !row.pub
+    const { data } = await customFetch(`article/${row.id}/${(row.pub ? 'publish' : 'unpublish')}`).put().json()
+    if(!data.value.success) {
+      row.pub = !row.pub
+    }
+    emit('notify', data.value)
+  }
 </script>
 
 <template>
@@ -25,21 +79,21 @@
     <filter-form v-model="filter" :options="{ categories: [ { key: 0, label: '(Alle Kategorien)' }, ...categories ] }" />
     <pagination
         class="w-1/4"
+        v-model:page="paginated.page"
         :total="filteredArticles.length"
-        :per-page="pagination.entriesPerPage"
+        :per-page="paginated.entriesPerPage"
         next-text=""
         prev-text=""
-        v-model:page="pagination.page"
         marker-position="below"
     />
   </div>
   <sortable
-      :rows="paginatedArticles"
+      :rows="filteredArticles"
       :columns="cols"
-      :sort-prop="initSort.prop"
-      :sort-direction="initSort.dir"
-      :offset="(currentPage - 1) * entriesPerPage"
-      :count="entriesPerPage"
+      :sort-prop="initSort().prop"
+      :sort-direction="initSort().dir"
+      :offset="(paginated.page - 1) * paginated.entriesPerPage"
+      :count="paginated.entriesPerPage"
       @after-sort="storeSort"
   >
     <template v-slot:catId="slotProps">
@@ -61,100 +115,14 @@
         </button>
       </div>
     </template>
-
   </sortable>
 
   <alert
       ref="confirm"
       header-class="bg-error text-white"
       :buttons="[
-            { label: 'Löschen!', value: true, 'class': 'button alert' },
-            { label: 'Abbrechen', value: false, 'class': 'button cancel' }
-          ]"
+        { label: 'Löschen!', value: true, 'class': 'button alert' },
+        { label: 'Abbrechen', value: false, 'class': 'button cancel' }
+      ]"
   />
 </template>
-
-<script>
-export default {
-  name: "Articles",
-  emits: ['notify'],
-  inject: ['api'],
-  data() {
-    return {
-      articles: [],
-      categories: [],
-      pagination: {
-        page: 1,
-        entriesPerPage: 20
-      },
-      cols: [
-        { label: "Kategorie", sortable: true, prop: "catId" },
-        { label: "Titel", sortable: true, prop: "title" },
-        { label: "Pub", sortable: true, prop: "pub" },
-        { label: "*", sortable: true, prop: "marked" },
-        { label: "Artikeldatum", sortable: true, prop: "date" },
-        { label: "Anzeige von", sortable: true, prop: "from" },
-        { label: "Anzeige bis", sortable: true, prop: "until" },
-        { label: "Sortierziffer", sortable: true, prop: "sort" },
-        { label: "Angelegt/aktualisiert", sortable: true, prop: "updated" },
-        { label: "", prop: "action" }
-      ],
-      initSort: {},
-      filter: {
-        cat: 0,
-        title: ''
-      },
-      entriesPerPage: 20,
-      currentPage: 1
-    }
-  },
-
-  computed: {
-    filteredArticles () {
-      const titleFilter = this.filter.title.toLowerCase();
-      return this.articles.filter(item => (!this.filter.cat || this.filter.cat === item.catId) && (!this.filter.title || item.title.toLowerCase().indexOf(titleFilter) !== -1));
-    },
-    paginatedArticles () {
-      return this.filteredArticles.slice((this.pagination.page - 1) * this.pagination.entriesPerPage, this.pagination.page * this.pagination.entriesPerPage);
-    }
-  },
-
-  async created () {
-    let lsValue = window.localStorage.getItem(window.location.origin + "/admin/articles/sort");
-    if(lsValue) {
-      this.initSort = JSON.parse(lsValue);
-    }
-
-    let response = await this.$fetch(this.api + "articles");
-
-    this.categories = response.categories || [];
-
-    this.categories.forEach(item => item.key = item.id);
-    this.articles = response.articles || [];
-  },
-
-  methods: {
-    async del (article) {
-      if (await this.$refs.confirm.open('Artikel löschen', "'" + article.title + "' wirklich löschen?")) {
-        let response = await this.$fetch(this.api + 'article/' + article.id, 'DELETE');
-        if (response.success) {
-          this.articles.splice(this.articles.findIndex(item => article === item), 1);
-        }
-        this.$emit('notify', response);
-      }
-
-    },
-    async publish (row) {
-      row.pub = !row.pub;
-      let response = await this.$fetch(this.api + 'article/' + row.id + (row.pub ? '/publish' : '/unpublish'), 'PUT');
-      if(!response.success) {
-        row.pub = !row.pub;
-      }
-      this.$emit('notify', response);
-    },
-    storeSort (event) {
-        window.localStorage.setItem(window.location.origin + "/admin/articles/sort", JSON.stringify(event));
-    }
-  }
-}
-</script>
