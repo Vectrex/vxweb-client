@@ -5,7 +5,8 @@
   import UserForm from "@/components/views/users/UserForm.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { ref, onMounted } from "vue"
-  import { customFetch } from "@/util/customFetch"
+  import { customFetch } from "@/composables/customFetch"
+  import { storeSort, getSort } from "@/composables/storeSort"
 
   const emit = defineEmits(['notify'])
 
@@ -58,11 +59,6 @@
       }
     }
   }
-  const initSort = () => {
-    const ls = window.localStorage.getItem(window.location.origin + "/admin/users/sort")
-    return ls ? JSON.parse(ls) : {}
-  }
-  const storeSort = e => window.localStorage.setItem(window.location.origin + "/admin/users/sort", JSON.stringify(e))
 </script>
 
 <template>
@@ -81,8 +77,8 @@
     <sortable
         :rows="users"
         :columns="cols"
-        :sort-prop="initSort().prop"
-        :sort-direction="initSort().dir"
+        :sort-prop="getSort().prop"
+        :sort-direction="getSort().dir"
         class="w-full"
         key-property="id"
         @after-sort="storeSort"

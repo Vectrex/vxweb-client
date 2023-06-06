@@ -4,7 +4,7 @@
   import FormSelect from "@/components/vx-vue/form-select.vue"
   import PasswordInput from "@/components/vx-vue/password-input.vue"
   import { computed, ref, watch } from "vue"
-  import { customFetch } from "@/util/customFetch"
+  import { customFetch } from "@/composables/customFetch"
 
   const props = defineProps({
     id: { type: [String, Number], default: null }

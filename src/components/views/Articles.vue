@@ -7,7 +7,8 @@
   import Headline from "@/components/app/Headline.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { ref, computed, onMounted } from "vue"
-  import { customFetch } from "@/util/customFetch"
+  import { customFetch } from "@/composables/customFetch"
+  import { storeSort, getSort } from "@/composables/storeSort"
 
   const emit = defineEmits(['notify'])
   const cols = [
@@ -31,11 +32,6 @@
     return articles.value.filter(item => (!filter.value.cat || filter.value.cat === item.catId) && (!titleFilter || item.title.toLowerCase().indexOf(titleFilter) !== -1))
   })
   const confirm = ref(null)
-  const initSort = () => {
-    const ls = window.localStorage.getItem(window.location.origin + "/admin/articles/sort")
-    return ls ? JSON.parse(ls) : {}
-  }
-  const storeSort = e => window.localStorage.setItem(window.location.origin + "/admin/articles/sort", JSON.stringify(e))
 
   onMounted(async () => {
     const { data } = await customFetch('articles').json()
@@ -90,8 +86,8 @@
   <sortable
       :rows="filteredArticles"
       :columns="cols"
-      :sort-prop="initSort().prop"
-      :sort-direction="initSort().dir"
+      :sort-prop="getSort().prop"
+      :sort-direction="getSort().dir"
       :offset="(paginated.page - 1) * paginated.entriesPerPage"
       :count="paginated.entriesPerPage"
       @after-sort="storeSort"

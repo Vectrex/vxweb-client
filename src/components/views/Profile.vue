@@ -4,7 +4,7 @@
   import SubmitButton from "@/components/misc/submit-button.vue"
   import Divider from "@/components/misc/divider.vue"
   import { onMounted, ref } from "vue"
-  import { customFetch } from "@/util/customFetch"
+  import { customFetch } from "@/composables/customFetch"
 
   const emit = defineEmits(['notify'])
 
