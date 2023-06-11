@@ -55,8 +55,8 @@ export default {
           dayNames: 'So Mo Di Mi Do Fr Sa'.split(' '),
           startOfWeekIndex: 1,
           monthNames: 'Jänner,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember'.split(','),
-          inputFormat: 'd.m.y',
-          outputFormat: 'd mmm y'
+          inputFormat: 'D.M.YYYY',
+          outputFormat: 'D MMMM YYYY'
     };
     return {
       busy: false,
