@@ -1,5 +1,15 @@
 <script setup>
-  import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid';
+  import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid'
+  import { getCurrentInstance } from "vue"
+
+  const instance = getCurrentInstance()
+  const props = defineProps({ files: Array, folders: Array })
+  const emit = defineEmits(['delete-selection', 'move-selection'])
+  const confirmDelete = async () => {
+    if(await instance.parent.refs.confirm.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?")) {
+      emit('delete-selection')
+    }
+  }
 </script>
 <template>
     <div class="flex items-center space-x-2">
@@ -7,7 +17,7 @@
         class="icon-link flex items-center tooltip"
         :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'"
         type="button"
-        @click="pickFolder"
+        @click="emit('move-selection')"
       >
         <document-minus-icon class="h-5 w-5"/>
         <play-icon class="h-3 w-3" />
@@ -23,24 +33,3 @@
       </button>
     </div>
 </template>
-
-<script>
-    export default {
-        name: 'FilemanagerActions',
-        emits: ['delete-selection', 'move-selection'],
-        props: {
-            files: Array,
-            folders: Array
-        },
-        methods: {
-            async confirmDelete () {
-                if(await this.$parent.$refs.confirm.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?")) {
-                    this.$emit('delete-selection');
-                }
-            },
-            async pickFolder () {
-              this.$emit('move-selection');
-            }
-        }
-    }
-</script>

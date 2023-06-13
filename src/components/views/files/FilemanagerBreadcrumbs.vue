@@ -1,3 +1,42 @@
+<script setup>
+  import { ref, watch } from "vue"
+
+  const props = defineProps({
+    breadcrumbs: Array,
+    folders: Array,
+    currentFolder: [Number, String]
+  })
+  const emit = defineEmits(['breadcrumb-clicked'])
+  const items = ref([])
+  watch (() => props.breadcrumbs, v => {
+    if (
+        v.length >= items.value.length ||
+        items.value.map(item => item.id).join().indexOf(v.map(item => item.id).join()) !== 0
+    ) {
+      items.value = v
+    }
+  })
+  watch (() => props.folders, v => {
+    let current = items.value.findIndex(item => item.id === props.currentFolder)
+
+    if (items.value[current + 1]) {
+      let ndx = v.findIndex(({ id }) => id === items.value[current + 1].id)
+
+      // check for deletion
+
+      if (ndx === -1) {
+        items.value = items.value.slice(0, current + 1)
+      }
+
+      // handle possible rename
+
+      else {
+        items.value[current + 1].name = v[ndx].name
+      }
+    }
+  }, { deep: true })
+</script>
+
 <template>
     <span class="flex items-center">
         <button
@@ -11,59 +50,7 @@
               }
             ]"
             :key="ndx"
-            @click="$emit('breadcrumb-clicked', breadcrumb)">{{ breadcrumb.name }}
+            @click="emit('breadcrumb-clicked', breadcrumb)">{{ breadcrumb.name }}
         </button>
     </span>
 </template>
-
-<script>
-export default {
-  name: 'FilemanagerBreadcrumbs',
-  emits: ['breadcrumb-clicked'],
-  data() {
-    return {
-      items: []
-    }
-  },
-  props: {
-    breadcrumbs: Array,
-    folders: Array,
-    currentFolder: [Number, String]
-  },
-  watch: {
-    breadcrumbs (newValue) {
-      if (
-          newValue.length >= this.items.length ||
-          this.items.map(item => item.id).join().indexOf(newValue.map(item => item.id).join()) !== 0
-      ) {
-        this.items = newValue;
-      }
-    },
-    folders: {
-      deep: true,
-      handler(newValue) {
-
-        // find current folder
-
-        let current = this.items.findIndex(item => item.id === this.currentFolder);
-
-        if (this.items[current + 1]) {
-          let ndx = newValue.findIndex(({id}) => id === this.items[current + 1].id);
-
-          // check for deletion
-
-          if (ndx === -1) {
-            this.items = this.items.slice(0, current + 1);
-          }
-
-          // handle possible rename
-
-          else {
-            this.items[current + 1].name = newValue[ndx].name;
-          }
-        }
-      }
-    }
-  }
-}
-</script>
