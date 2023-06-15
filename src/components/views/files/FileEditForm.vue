@@ -1,12 +1,54 @@
 <script setup>
-  import SubmitButton from "@/components/misc/submit-button.vue";
-  import FormDialog from "@/components/views/shared/FormDialog.vue";
-  import Divider from "@/components/misc/divider.vue";
-  import { formatFilesize } from '@/util/format-filesize';
+  import SubmitButton from "@/components/misc/submit-button.vue"
+  import FormDialog from "@/components/views/shared/FormDialog.vue"
+  import Divider from "@/components/misc/divider.vue"
+  import { formatFilesize } from '@/util/format-filesize'
+  import { customFetch } from "@/composables/customFetch"
+  import { computed, ref, watch } from "vue"
+
+  const props = defineProps({ id: Number })
+  const emit = defineEmits(['cancel', 'response-received'])
+
+  const form = ref({})
+  const fileInfo = ref({})
+  const errors = ref({})
+  const busy = ref(false)
+  const fields = [
+    { model: 'title', label: 'Titel' },
+    { model: 'subtitle', label: 'Untertitel' },
+    { type: 'textarea', model: 'description', label: 'Beschreibung' },
+    { model: 'customsort', label: 'Sortierziffer', attrs: { type: "number" } },
+  ]
+  const sanitizedForm = computed(() => {
+    let sanitized = {}
+    for (const [key, value] of Object.entries(form.value)) {
+      if(value !== null) {
+        sanitized[key] = value
+      }
+    }
+    return sanitized
+  })
+  watch(() => props.id, async v => {
+    const { data } = await customFetch('file/' + v).json()
+    form.value = data.value.form
+    fileInfo.value = data.value.fileInfo
+  }, { immediate: true })
+  const submit = async () => {
+    busy.value = true
+    const { data } = await customFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()
+    busy.value = false
+    errors.value = data.value.errors || {}
+    emit(
+        'response-received',
+        data.value.success ?
+            { success: true, message: data.value.message, payload: data.value.form || null } :
+            { success: false, message: data.value.message }
+    )
+  }
 </script>
 
 <template>
-  <form-dialog @cancel="$emit('cancel')">
+  <form-dialog @cancel="emit('cancel')">
       <template #title>{{ fileInfo.name }}</template>
       <template #content>
           <div class="pt-16 pb-4 space-y-2">
@@ -55,68 +97,3 @@
       </template>
   </form-dialog>
 </template>
-
-<script>
-export default {
-  name: 'FileEditForm',
-  inject: ['api'],
-  emits: ['cancel', 'response-received'],
-  props: {
-    id: Number
-  },
-  data () {
-    return {
-      form: {},
-      fileInfo: {},
-      errors: {},
-      busy: false,
-      fields: [
-        { model: 'title', label: 'Titel' },
-        { model: 'subtitle', label: 'Untertitel' },
-        { type: 'textarea', model: 'description', label: 'Beschreibung' },
-        { model: 'customsort', label: 'Sortierziffer', attrs: { type: "number" } },
-      ]
-    }
-  },
-  computed: {
-    sanitizedForm () {
-      let sanitized = {};
-
-      for (const [key, value] of Object.entries(this.form)) {
-        if(value !== null) {
-          sanitized[key] = value;
-        }
-      }
-
-      return sanitized;
-    }
-  },
-  watch: {
-    id: {
-      async handler(newValue) {
-        const response = await this.$fetch(this.api + 'file/' + newValue);
-        this.form = response.form || {};
-        this.fileInfo = response.fileInfo || {};
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    async submit() {
-      this.busy = true;
-      let response = await this.$fetch(this.api + 'file/' + this.id, 'PUT', {}, JSON.stringify(this.sanitizedForm));
-      this.busy = false;
-
-      if (response.success) {
-        this.errors = {};
-        this.$emit('response-received', { success: true, message: response.message, payload: response.form || null});
-      }
-      else {
-        this.errors = response.errors || {};
-        this.$emit('response-received', { success: false, message: response.message });
-      }
-    }
-  },
-  formatFilesize: formatFilesize
-}
-</script>
