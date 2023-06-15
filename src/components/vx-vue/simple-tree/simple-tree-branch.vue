@@ -1,5 +1,15 @@
 <script setup>
-  import { PlusIcon, MinusIcon } from '@heroicons/vue/24/solid';
+  import { PlusIcon, MinusIcon } from '@heroicons/vue/24/solid'
+  import {onMounted, ref} from "vue"
+
+  const props = defineProps({ branch: { type: Object, default: {} }})
+  const emit = defineEmits(['branch-selected', 'expand'])
+  const expanded = ref(false)
+  onMounted(() => {
+      if (props.branch.current) {
+        emit('expand', true)
+      }
+  })
 </script>
 <template>
   <li :class="[!branch.branches || !branch.branches.length ? 'terminates' : '', $attrs['class']]">
@@ -11,39 +21,16 @@
         </label>
       </template>
       <strong v-if="branch.current">{{ branch.label }}</strong>
-      <a :href="branch.path" @click.prevent="$emit('branch-selected', branch)" v-else>{{ branch.label }}</a>
+      <a :href="branch.path" @click.prevent="emit('branch-selected', branch)" v-else>{{ branch.label }}</a>
     </div>
     <ul v-if="branch.branches && branch.branches.length" v-show="expanded" class="ml-6">
       <simple-tree-branch
           v-for="child in branch.branches"
           :branch="child"
           :key="child.id"
-          @branch-selected="$emit('branch-selected', $event)"
-          @expand="expanded = $event; $emit('expand', $event)"
+          @branch-selected="emit('branch-selected', $event)"
+          @expand="expanded = $event; emit('expand', $event)"
       />
     </ul>
   </li>
 </template>
-
-<script>
-export default {
-  name: 'simple-tree-branch',
-  emits: ['branch-selected', 'expand'],
-  components: { PlusIcon, MinusIcon },
-  data() {
-    return {
-      expanded: false
-    }
-  },
-
-  props: {
-    branch: { type: Object, default: {} }
-  },
-
-  mounted() {
-    if (this.branch.current) {
-      this.$emit('expand', true);
-    }
-  }
-};
-</script>
