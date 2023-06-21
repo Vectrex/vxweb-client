@@ -1,6 +1,31 @@
 <script setup>
-  import { SlickList, SlickItem, DragHandle } from 'vue-slicksort';
-  import { EyeIcon, EyeSlashIcon, LinkIcon, Bars4Icon } from '@heroicons/vue/24/solid';
+  import { SlickList, SlickItem, DragHandle } from 'vue-slicksort'
+  import { EyeIcon, EyeSlashIcon, LinkIcon, Bars4Icon } from '@heroicons/vue/24/solid'
+  import { customFetch } from "@/composables/customFetch"
+  import { ref, onMounted } from "vue"
+
+  const emit = defineEmits(['update-linked', 'goto-folder'])
+  const props = defineProps({ articleId: { type: [Number, String], required: true }})
+  const linkedFiles = ref([])
+  const saveSort = () => {
+    let ids = []
+    linkedFiles.value.forEach(f => ids.push(f.id))
+    customFetch('article/' + props.articleId + '/linked-files').put(JSON.stringify({ fileIds: ids }))
+  }
+  const unlinkSort = async file => {
+    const { data } = await customFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: file.id })).json()
+    if(data.value.success) {
+      linkedFiles.value.splice(linkedFiles.value.findIndex(item => item === file), 1)
+      emit('update-linked')
+    }
+  }
+  const toggleVisibility = async file => {
+    const { data } = await customFetch('article/' + props.articleId + '/toggle-linked-file').put(JSON.stringify({ fileId: file.id })).json()
+    if(data.value.success) {
+      file.hidden = !!data.value.hidden
+    }
+  }
+  onMounted(async () => { linkedFiles.value = (await customFetch('article/' + props.articleId + '/linked-files').json()).data.value })
 </script>
 <template>
   <slick-list v-model:list="linkedFiles" lock-axis="y" @update:list="saveSort" useDragHandle>
@@ -19,45 +44,7 @@
           <component :is="item.hidden ? EyeIcon : EyeSlashIcon" class="h-5 w-5" />
         </button>
       </div>
-      <a class="w-1/2" :href="'#'+ item.folder.path" @click.prevent="this.$emit('goto-folder', item.folder)">{{ item.folder.path }}</a>
+      <a class="w-1/2" :href="'#'+ item.folder.path" @click.prevent="emit('goto-folder', item.folder)">{{ item.folder.path }}</a>
     </slick-item>
   </slick-list>
 </template>
-
-<script>
-export default {
-  name: "LinkedFiles",
-  emits: ['update-linked', 'goto-folder'],
-  components: { EyeIcon, EyeSlashIcon },
-  inject: ['api'],
-  props: { articleId: { type: [Number, String], required: true }},
-  data () {
-    return {
-      linkedFiles: []
-    }
-  },
-  async created () {
-    this.linkedFiles = await this.$fetch(this.api + 'article/' + this.articleId + '/linked-files');
-  },
-  methods: {
-    async saveSort() {
-      let ids = [];
-      this.linkedFiles.forEach(f => ids.push(f.id));
-      this.$fetch(this.api + 'article/' + this.articleId + '/linked-files', 'PUT', {}, JSON.stringify({ fileIds: ids }));
-    },
-    async unlinkSort (file) {
-      let response = await this.$fetch(this.api + 'article/' + this.articleId + '/link-file', 'PUT', {}, JSON.stringify({ fileId: file.id }));
-      if(response.success) {
-        this.linkedFiles.splice(this.linkedFiles.findIndex(item => item === file), 1);
-        this.$emit('update-linked');
-      }
-    },
-    async toggleVisibility (file) {
-      let response = await this.$fetch(this.api + 'article/' + this.articleId + '/toggle-linked-file', 'PUT', {}, JSON.stringify({ fileId: file.id }));
-      if (response.success) {
-        file.hidden = !!response.hidden;
-      }
-    }
-  }
-}
-</script>

@@ -1,3 +1,85 @@
+<script setup>
+import { computed, watch, ref } from "vue"
+
+  const emit = defineEmits(['update:page'])
+  const props = defineProps({
+   page: { type: Number, default: 1 },
+   total: { type: Number, default: 1 },
+   perPage: {
+     type: Number, default: 20, validator(v) {
+       return v >= 1
+     }
+   },
+   showNavButtons: { type: Boolean, default: true },
+   prevText: { type: String, default: 'Previous' },
+   nextText: { type: String, default: 'Next' },
+   showAllPages: { type: Boolean, default: false },
+   markerPosition: {
+     type: String, default: 'above', validator(v) {
+       return ['above', 'below'].indexOf(v) !== -1
+     }
+   }
+  })
+  const maxPage = ref(Math.ceil(props.total / props.perPage))
+  const currentPage = ref(null)
+  const markerPositionClass = computed(() => props.markerPosition === 'above' ? 'border-t-2 pt-4' : 'border-b-2 pb-4')
+  const pagesToShow = computed(() => {
+    let pages = [1]
+    if (props.showAllPages || maxPage.value <= 7) {
+      for (let i = 2; i <= maxPage.value; ++i) {
+        pages.push(i)
+      }
+      return pages
+    }
+    if (currentPage.value >= maxPage.value) {
+      pages.push('dots', currentPage.value - 2, currentPage.value - 1)
+    }
+    else if (currentPage.value - 1 && currentPage.value - 1 > 1) {
+      if (currentPage.value > 1) {
+        pages.push('dots')
+      }
+      pages.push(currentPage.value - 1)
+    }
+    if (currentPage.value > 1) {
+      pages.push(currentPage.value)
+    }
+    if (currentPage.value + 1 < maxPage.value) {
+      pages.push(currentPage.value + 1)
+      if (currentPage.value <= 1) {
+        pages.push(currentPage.value + 2)
+      }
+      if (currentPage.value + 2 < this.maxPage) {
+        pages.push('dots')
+      }
+    }
+    if (currentPage.value < this.maxPage) {
+      pages.push(this.maxPage)
+    }
+    return pages
+  })
+  const prevPage = () => {
+    if(currentPage.value > 1) {
+      emit('update:page', currentPage.value - 1)
+    }
+  }
+  const nextPage = () => {
+    if(currentPage.value < maxPage.value) {
+      emit('update:page', currentPage.value + 1)
+    }
+  }
+  watch(() => props.page, v => currentPage.value = Math.min(Math.max(v, 1), maxPage.value), { immediate: true })
+  watch(() => props.perPage, v => {
+    maxPage.value = Math.ceil(props.total / props.perPage)
+    emit('update:page', 1)
+  })
+  watch(() => props.total, v => {
+    maxPage.value = Math.ceil(props.total / props.perPage)
+    if(currentPage.value > maxPage.value) {
+      emit('update:page', 1)
+    }
+  })
+</script>
+
 <template>
   <nav class="px-4 flex items-center justify-between sm:px-0">
     <div class="-mt-px w-0 flex-1 flex">
@@ -18,7 +100,7 @@
       <component
           v-for="(page, idx) in pagesToShow"
           :is="page !== 'dots' ? 'a' : 'span'"
-          @click.prevent="page !== 'dots' ? pageClick(page) : null"
+          @click.prevent="page !== 'dots' ? emit('update:page', page) : null"
           :key="idx"
           :href="page !== 'dots' ? '#' : null"
           class="px-4 inline-flex items-center text-sm font-medium"
@@ -47,122 +129,3 @@
     </div>
   </nav>
 </template>
-<script>
-
-export default {
-  name: 'pagination',
-  emits: ['update:page'],
-  props: {
-    page: { type: Number, default: 1 },
-    total: { type: Number, default: 1 },
-    perPage: { type: Number, default: 20, validator(v) { return v >= 1 } },
-    showNavButtons: { type: Boolean, default: true },
-    prevText: { type: String, default: 'Previous' },
-    nextText: { type: String, default: 'Next' },
-    showAllPages: { type: Boolean, default: false },
-    markerPosition: { type: String, default: 'above', validator(v) { return ['above', 'below'].indexOf(v) !== -1 }}
-  },
-  data () {
-    return {
-      currentPage: 1,
-      maxPage: 0
-    };
-  },
-  created () {
-    this.countMaxPage();
-    this.currentPage = Math.min(Math.max(this.page, 1), this.maxPage);
-  },
-
-  watch: {
-
-    page (val) {
-      this.currentPage = Math.min(Math.max(val, 1), this.maxPage);
-    },
-
-    perPage () {
-      this.countMaxPage();
-      this.pageClick(1);
-    },
-
-    total () {
-      this.countMaxPage();
-
-      // if current page is out of range set current page to first page
-
-      if(this.currentPage > this.maxPage) {
-        this.pageClick(1);
-      }
-    }
-  },
-  computed: {
-    markerPositionClass () {
-      return this.markerPosition === 'above' ? 'border-t-2 pt-4' : 'border-b-2 pb-4';
-    },
-    pagesToShow () {
-      let pages = [1];
-
-      if (this.showAllPages === true || this.maxPage <= 7) {
-        let i = 2;
-        for (; i <= this.maxPage; ++i) {
-          pages.push(i);
-        }
-        return pages;
-      }
-
-      if (this.currentPage >= this.maxPage) {
-        pages.push('dots');
-        pages.push(this.currentPage - 2);
-        pages.push(this.currentPage - 1);
-      } else if (this.currentPage - 1 && this.currentPage - 1 > 1) {
-        if (this.currentPage - 1 > 2) {
-          pages.push('dots');
-        }
-
-        pages.push(this.currentPage - 1);
-      }
-
-      if (this.currentPage > 1) {
-        pages.push(this.currentPage);
-      }
-
-      if (this.currentPage + 1 < this.maxPage) {
-        pages.push(this.currentPage + 1);
-
-        if (this.currentPage <= 1) {
-          pages.push(this.currentPage + 2);
-        }
-
-        if (this.currentPage + 2 < this.maxPage) {
-          pages.push('dots');
-        }
-      }
-
-      if (this.currentPage < this.maxPage) {
-        pages.push(this.maxPage);
-      }
-
-      return pages;
-    }
-  },
-
-  methods: {
-    pageClick(page) {
-      this.currentPage = page;
-      this.$emit('update:page', page);
-    },
-    prevPage() {
-      if (this.currentPage > 1) {
-        this.pageClick(this.currentPage - 1);
-      }
-    },
-    nextPage() {
-      if (this.currentPage < this.maxPage) {
-        this.pageClick(this.currentPage + 1);
-      }
-    },
-    countMaxPage() {
-      this.maxPage = Math.ceil(this.total / this.perPage);
-    }
-  }
-}
-</script>

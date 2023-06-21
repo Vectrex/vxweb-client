@@ -1,5 +1,5 @@
 <script setup>
-  import Spinner from "@/components/misc/spinner.vue";
+  import Spinner from "@/components/misc/spinner.vue"
   const props = defineProps({ busy: Boolean })
   const emit = defineEmits(['submit'])
 </script>

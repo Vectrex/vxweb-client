@@ -53,7 +53,7 @@
   }
 </script>
 <template>
-  <form-dialog @cancel="$emit('cancel')">
+  <form-dialog @cancel="emit('cancel')">
       <template #title>Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}</template>
       <template #content>
           <div class="px-4 pt-20 pb-4 space-y-4">

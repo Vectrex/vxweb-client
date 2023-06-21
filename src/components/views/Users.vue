@@ -97,13 +97,13 @@
       <div
           class="z-10 fixed right-0 bottom-0 top-24 left-0 bg-black/20 backdrop-blur-sm"
           v-if="formShown"
-          @click.stop="formShown = null"
+          @click.stop="formShown = false"
       />
     </transition>
     <transition name="slide-from-right">
       <user-form
           v-if="formShown"
-          @cancel="formShown = null"
+          @cancel="formShown = false"
           @response-received="handleResponse"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
