@@ -12,6 +12,46 @@
   import History from '@tiptap/extension-history'
   import Link from '@tiptap/extension-link'
   import { ArrowUturnLeftIcon, ArrowUturnRightIcon, CodeBracketSquareIcon, LinkIcon } from '@heroicons/vue/24/solid'
+  import { onBeforeUnmount, ref, watch } from "vue"
+
+  const props = defineProps({ modelValue: String })
+  const emit = defineEmits(['update:modelValue'])
+  const showSrc = ref(false)
+  const editor = new Editor({
+    extensions: [
+      Document,
+      Text,
+      Paragraph,
+      HardBreak,
+      History,
+      BulletList,
+      OrderedList,
+      ListItem,
+      Bold,
+      Italic,
+      Link.configure({
+        openOnClick: false,
+      })
+    ],
+    content: props.modelValue,
+    onUpdate: () => emit('update:modelValue', editor.getHTML())
+  })
+  const buttonClass = (isActive = null) => 'icon-link' + (isActive && editor.isActive(isActive) ? ' bg-slate-400' : '')
+  const toggleLink = () => {
+    const previousUrl = editor.getAttributes('link').href
+    if (previousUrl) {
+      editor.chain().focus().unsetLink().run()
+    }
+    else {
+      const url = window.prompt('URL', previousUrl)
+      if (url && url.trim()) {
+        editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
+      }
+    }
+  }
+
+  watch (() => props.modelValue, v => { if(editor.getHTML() !== v) { editor.commands.setContent(v, false) }})
+  onBeforeUnmount(() => editor.destroy())
 </script>
 
 <template>
@@ -39,70 +79,6 @@
       </div>
     </div>
     <editor-content :editor="editor" class="prose w-full max-w-none"/>
-    <textarea class="form-textarea w-full text-sm my-2" @blur="$emit('update:modelValue', $event.target.value)" :value="modelValue" v-if="showSrc" />
+    <textarea class="form-textarea w-full text-sm my-2" @blur="emit('update:modelValue', $event.target.value)" :value="modelValue" v-if="showSrc" />
   </div>
 </template>
-
-<script>
-export default {
-  name: 'tiptap',
-  props: {
-    modelValue: String
-  },
-  emits: ['update:modelValue'],
-  data() {
-    return {
-      editor: null,
-      showSrc: false
-    }
-  },
-  watch: {
-    modelValue (newValue) {
-      if (this.editor.getHTML() !== newValue) {
-        this.editor.commands.setContent (newValue, false);
-      }
-    }
-  },
-  mounted () {
-    this.editor = new Editor({
-      extensions: [
-        Document,
-        Text,
-        Paragraph,
-        HardBreak,
-        History,
-        BulletList,
-        OrderedList,
-        ListItem,
-        Bold,
-        Italic,
-        Link.configure({
-            openOnClick: false,
-        })
-      ],
-      content: this.modelValue,
-      onUpdate: () => this.$emit('update:modelValue', this.editor.getHTML())
-    })
-  },
-  beforeUnmount() {
-    this.editor.destroy()
-  },
-  methods: {
-    buttonClass (isActive) {
-      return 'icon-link' + (isActive && this.editor?.isActive(isActive) ? ' bg-slate-400' : '');
-    },
-    toggleLink () {
-        const previousUrl = this.editor.getAttributes('link').href;
-        if (previousUrl) {
-          this.editor.chain().focus().unsetLink().run();
-        }
-        else {
-            const url = window.prompt('URL', previousUrl)
-            if (url && url.trim()) {
-                this.editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
-            }
-        }
-    }
-  }
-}
-</script>
