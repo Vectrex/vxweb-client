@@ -6,6 +6,7 @@
   import FilemanagerAdd from "@/components/views/files/FilemanagerAdd.vue"
   import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue"
   import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue"
+  import FolderTree from "@/components/views/files/FolderTree.vue"
   import Alert from "@/components/vx-vue/alert.vue"
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
   import { urlQueryCreate } from '@/util/url-query'
@@ -37,9 +38,9 @@
   const pickedId = ref(null)
   const upload = ref({ files: [], progressing: false, cancelToken: {} })
   const progress = ref({ total: null, loaded: null, file: null })
+
   const confirm = ref(null)
   const alert = ref(null)
-
   const multiCheckbox = ref(null)
   const folderTree = ref(null)
 
