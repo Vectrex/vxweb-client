@@ -37,6 +37,8 @@
   const pickedId = ref(null)
   const upload = ref({ files: [], progressing: false, cancelToken: {} })
   const progress = ref({ total: null, loaded: null, file: null })
+  const confirm = ref(null)
+  const alert = ref(null)
 
   const multiCheckbox = ref(null)
   const folderTree = ref(null)
@@ -230,7 +232,7 @@
   watch(checkedFiles, v => setMultiCheckbox(checkedFolders.value.length + v.length))
   watch(checkedFolders, v => setMultiCheckbox(checkedFiles.value.length + v.length))
 
-  defineExpose([delFile, delFolder, editFile, editFolder, moveFile])
+  defineExpose({ delFile, delFolder, editFile, editFolder, moveFile })
 </script>
 
 <template>
@@ -258,17 +260,12 @@
             <plus-icon class="w-5 h-5" />
           </button>
           <transition name="appear">
-            <div
-                v-show="showAddActivities"
-                class="absolute left-0 z-10 mt-2 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                role="menu"
-                aria-orientation="vertical"
-            >
-              <filemanager-add
-                  @upload="uploadInputFiles"
-                  @create-folder="createFolder"
-              />
-            </div>
+            <filemanager-add
+                v-if="showAddActivities"
+                @upload="uploadInputFiles"
+                @create-folder="createFolder"
+                @close="showAddActivities = false"
+            />
           </transition>
         </div>
         <filemanager-actions

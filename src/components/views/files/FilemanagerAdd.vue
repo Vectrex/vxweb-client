@@ -1,11 +1,13 @@
 <script setup>
   import { Focus as vFocus } from "@/directives/focus"
   import { DocumentArrowUpIcon, FolderPlusIcon } from '@heroicons/vue/24/solid'
+  import { onClickOutside } from "@vueuse/core"
   import { ref } from "vue"
 
   const props = defineProps({ multiple: { type: Boolean, default: true }})
-  const emit = defineEmits(['upload', 'create-folder'])
+  const emit = defineEmits(['upload', 'create-folder', 'close'])
   const showAddFolderInput = ref(false)
+  const container = ref(null)
   const fileChanged = e => {
     const files = e.target.files || e.dataTransfer.files
     if (files) {
@@ -19,9 +21,16 @@
     }
     showAddFolderInput.value = false
   }
+  onClickOutside(container, () => emit('close'))
 </script>
 
 <template>
+  <div
+      class="absolute left-0 z-10 mt-2 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      role="menu"
+      aria-orientation="vertical"
+      ref="container"
+  >
     <input
       v-if="showAddFolderInput"
       v-focus
@@ -48,4 +57,5 @@
       <span>Datei hochladen</span>
     </label>
     <input type="file" id="file_upload" class="hidden" :multiple="multiple" @change="fileChanged" />
+  </div>
 </template>
