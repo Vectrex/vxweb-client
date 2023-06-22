@@ -9,7 +9,7 @@
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
   <div class="flex w-full space-x-4 justify-start">
-    <page-form :init-data="form" class="w-full" @response-received="handleFormResponse($event)"/>
+    <page-form :init-data="form" class="w-full" @response-received="handleFormResponse($event)" :id="id" />
     <div class="w-1/3 flex-shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
       <revision-table
           :revisions="revisions" class="w-full h-full overflow-y-auto"

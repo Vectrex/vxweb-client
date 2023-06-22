@@ -2,7 +2,6 @@ import './index.css'
 import { createApp } from 'vue'
 import router from './router'
 import fetch from '@/plugins/fetch'
-import promisedXhr from '@/plugins/promisedXhr'
 import App from './App.vue'
 import { plugin as SlickSort } from 'vue-slicksort'
 
@@ -12,7 +11,6 @@ const app = createApp(App);
 app
     .use(router)
     .use(fetch, { router: router, authFailureRoute: { name: 'authFailed' } })
-    .use(promisedXhr)
     .use(SlickSort)
     .provide('api', host)
     .mount('#app')

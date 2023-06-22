@@ -1,5 +1,4 @@
 const getSort = (uniqueId = '') => {
-    console.log(window.location)
     const ls = window.localStorage.getItem(`${window.location.href}/${uniqueId}-sort`)
     return ls ? JSON.parse(ls) : {}
 }

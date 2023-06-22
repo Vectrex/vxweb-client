@@ -8,7 +8,7 @@
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { ref, computed, onMounted } from "vue"
   import { customFetch } from "@/composables/customFetch"
-  import { storeSort, getSort } from "@/composables/storeSort"
+  import { storeSort, getSort } from "@/util/storeSort"
 
   const emit = defineEmits(['notify'])
   const cols = [

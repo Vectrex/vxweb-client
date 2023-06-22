@@ -3,7 +3,7 @@
   import Alert from "@/components/vx-vue/alert.vue"
   import Headline from "@/components/app/Headline.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
-  import { storeSort, getSort } from "@/composables/storeSort"
+  import { storeSort, getSort } from "@/util/storeSort"
   import { customFetch } from "@/composables/customFetch"
   import { ref, onMounted } from "vue"
 
