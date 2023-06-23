@@ -26,7 +26,7 @@
 
   onMounted(async () => {
     const { data } = await customFetch('users/init').json()
-    users.value = data.value.users || []
+    users.value = data.value?.users || []
   })
   const edit = id => {
     formShown.value = true
@@ -47,7 +47,7 @@
   const del = async id => {
     if (await confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
       const { data } = await customFetch('users/' + id).delete().json()
-      if (data.value.id) {
+      if (data.value?.id) {
         let ndx = users.value.findIndex(row => row.id === data.value.id)
         if (ndx !== -1) {
           users.value.splice(ndx, 1)

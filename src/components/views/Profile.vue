@@ -22,14 +22,14 @@
 
   onMounted(async () => {
     const { data } = await customFetch('profile_data').json()
-    notifications.value = data.value.notifications
-    form.value = data.value.formData || {}
+    notifications.value = data.value?.notifications || []
+    form.value = data.value?.formData || {}
   })
   const submit = async () => {
     busy.value = true
     const { data } = await customFetch('profile_data').post(JSON.stringify(form.value)).json()
     busy.value = false
-    errors.value = data.value.errors || {}
+    errors.value = data.value?.errors || {}
     emit('notify', data.value)
   }
 </script>

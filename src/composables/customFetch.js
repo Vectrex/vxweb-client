@@ -19,6 +19,7 @@ export const customFetch = createFetch({
         },
         onFetchError (ctx) {
             router.replace({ name: 'authFailed' });
+            ctx.data = {};
             return ctx;
         }
     },

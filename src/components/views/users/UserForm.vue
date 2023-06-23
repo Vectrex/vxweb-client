@@ -33,8 +33,8 @@
   })
   watch(() => props.id, async newValue => {
     const { data } = await customFetch('user/' + (newValue || '')).json()
-    options.value = data.value.options || {}
-    form.value = data.value.form || {}
+    options.value = data.value?.options || {}
+    form.value = data.value?.form || {}
   }, { immediate: true })
   const submit = async () => {
     busy.value = true
