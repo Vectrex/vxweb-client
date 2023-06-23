@@ -1,10 +1,46 @@
 <script setup>
-  import MessageToast from "@/components/vx-vue/message-toast.vue";
-  import MainMenu from "@/components/app/MainMenu.vue";
-  import AccountInfo from "@/components/app/AccountInfo.vue";
-  import Headerbar from "@/components/app/Headerbar.vue";
-  import Logo from "@/components/misc/logo.vue";
-  import { Bars3Icon } from '@heroicons/vue/24/solid';
+  import MessageToast from "@/components/vx-vue/message-toast.vue"
+  import MainMenu from "@/components/app/MainMenu.vue"
+  import AccountInfo from "@/components/app/AccountInfo.vue"
+  import Headerbar from "@/components/app/Headerbar.vue"
+  import Logo from "@/components/misc/logo.vue"
+  import { Bars3Icon } from '@heroicons/vue/24/solid'
+  import { computed, ref } from "vue"
+  import router from "@/router"
+
+  const sideBarExpanded = ref(true)
+  const user = ref({})
+  const toast = ref({})
+  const isNotLoginView = computed(() => router.currentRoute.value.name !== undefined && router.currentRoute.value.name !== 'login')
+  const authenticate = e => {
+    if (!e) {
+      sessionStorage.removeItem("currentUser")
+      sessionStorage.removeItem("bearerToken")
+      user.value = {}
+      router.push({ name: 'login' })
+    }
+    else {
+      sessionStorage.setItem("currentUser", JSON.stringify(e.user))
+      router.push({ name: 'profile' })
+      user.value = e.user
+    }
+
+  }
+  const notify = data => {
+    toast.value = {
+      active: true,
+      message: data.message || (data.success ? 'Success!' : 'Failure!'),
+      css: data.success ? 'bg-green-700 text-white' : 'bg-red-700 text-white'
+    }
+  }
+  const currentUser = sessionStorage.getItem("currentUser")
+  if (currentUser) {
+    user.value = JSON.parse(currentUser)
+  }
+  else {
+    user.value = {}
+    router.push({ name: 'login' })
+  }
 </script>
 <template>
   <div class="flex w-full">
@@ -50,54 +86,3 @@
       @timeout="toast.active = false"
   />
 </template>
-
-<script>
-export default {
-  name: 'App',
-  data() {
-    return {
-      sideBarExpanded: true,
-      user: {},
-      toast: {},
-    }
-  },
-  computed: {
-    isNotLoginView () {
-        return this.$route.name !== undefined && this.$route.name !== 'login';
-    }
-  },
-  created () {
-    let currentUser = sessionStorage.getItem("currentUser");
-    if (currentUser) {
-      this.user = JSON.parse(currentUser);
-    }
-    else {
-      this.user = {};
-      this.$router.push({ name: 'login' });
-    }
-  },
-  methods: {
-    authenticate (event) {
-      if (!event) {
-        sessionStorage.removeItem("currentUser");
-        sessionStorage.removeItem("bearerToken");
-        this.user = {};
-        this.$router.push({ name: 'login' });
-      }
-      else {
-        sessionStorage.setItem("currentUser", JSON.stringify(event.user));
-        this.$router.push({ name: 'profile' });
-        this.user = event.user;
-      }
-    },
-    notify (data) {
-      this.toast = {
-        active: true,
-        message: data.message || (data.success ? 'Success!' : 'Failure!'),
-        css: data.success ? 'bg-green-700 text-white' : 'bg-red-700 text-white'
-      }
-    }
-  }
-
-}
-</script>

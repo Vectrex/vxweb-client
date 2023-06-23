@@ -1,9 +1,10 @@
 <script>
 export default {
   name: "AuthFailedView",
-  created () {
+  emits: ['notify'],
+  async created () {
     this.$emit('notify', { success: false, message: 'Authentifizierung nicht mehr gültig.' });
-    this.$router.replace({ name: 'login' });
+    await this.$router.replace({ name: 'login' });
   }
 }
 </script>

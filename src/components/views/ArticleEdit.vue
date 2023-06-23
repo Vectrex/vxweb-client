@@ -5,12 +5,11 @@
   import ArticleFiles from "@/components/views/articles/ArticleFiles.vue"
   import LinkedFiles from "@/components/views/articles/LinkedFiles.vue"
   import { customFetch } from "@/composables/customFetch"
-  import { useRouter } from "vue-router"
+  import router from "@/router"
   import { computed, onMounted, ref } from "vue"
 
-  const props = defineProps(['id', 'sectionId'])
+  const props = defineProps({ id: [String, Number], sectionId: [String, Number], section: [String, Number] })
   const emit = defineEmits(['notify'])
-  const router = useRouter()
   const tabsItems = ref({ items: [
       { section: 'edit', name: 'Artikel' },
       { section: 'files', name: 'Verlinkte Dateien', badge: null },
