@@ -25,10 +25,13 @@
   const inputProps = computed(() => { let attrs = Object.assign({}, useAttrs()); delete attrs['class']; return attrs })
   const calendarProps = computed(() => props.hasInput ? { 'class': ['absolute', expanded.value ? 'block' : 'hidden'] } : {})
   const days = computed(() => {
-    const dates = [], y = sheetDate.value.getFullYear(), m = sheetDate.value.getMonth()
-    const nextMonth = new Date(y, m + 1, 0);
-    const precedingDays = (new Date(y, m, 0)).getDay() + 1 - props.startOfWeekIndex
-    const trailingDays = (6 + props.startOfWeekIndex - nextMonth.getDay()) % 7
+    const
+      dates = [],
+      y = sheetDate.value.getFullYear(),
+      m = sheetDate.value.getMonth(),
+      nextMonth = new Date(y, m + 1, 0),
+      precedingDays = (new Date(y, m, 0)).getDay() + 1 - props.startOfWeekIndex,
+      trailingDays = (6 + props.startOfWeekIndex - nextMonth.getDay()) % 7
     for (let i = -precedingDays, j = nextMonth.getDate() + trailingDays; i < j; ++i) {
       dates.push(new Date(y, m, i + 1))
     }
@@ -91,7 +94,6 @@
     />
 
     <div class="bg-white z-10 shadow-md" v-bind="calendarProps" ref="calendar" :class="[alignHoriz, alignVert]">
-
       <div class="flex flex-row items-center bg-vxvue-700 text-white py-2 px-3">
         <button type="button" @click.stop="previousMonth" class="flex-shrink-0 hover:text-vxvue-50 text-vxvue-100">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

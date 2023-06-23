@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <div class="fixed inset-0 bg-black bg-opacity-50 z-20 backdrop-blur-sm" aria-hidden="true" v-if="props.show" />
+  <div class="fixed inset-0 bg-white/50 z-20 backdrop-blur-sm" aria-hidden="true" v-if="props.show" />
   <transition name="appear">
     <div class="fixed inset-0 z-30 my-8" v-if="props.show">
       <div class="flex items-end justify-center items-center">
