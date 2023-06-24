@@ -1,6 +1,29 @@
 <script setup>
-  import SubmitButton from "@/components/misc/submit-button.vue";
-  import Tiptap from "@/components/misc/tiptap.vue";
+  import SubmitButton from "@/components/misc/submit-button.vue"
+  import Tiptap from "@/components/misc/tiptap.vue"
+  import { customFetch } from "@/composables/customFetch"
+  import { ref, watch } from "vue"
+
+  const emit = defineEmits(['response-received'])
+  const props = defineProps({ initData: Object, id: [String, Number] })
+  const form = ref({})
+  const errors = ref({})
+  const options = ref({})
+  const busy = ref(false)
+  const elements = [
+      { type: 'text', model: 'title', label: 'Titel', required: true },
+      { type: Tiptap, model: 'markup', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' } },
+      { type: 'textarea', model: 'description', label: 'Beschreibung' },
+      { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' },
+    ]
+  const submit = async () => {
+    busy.value = true
+    const response = (await customFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(form.value)).json()).data.value || {}
+    busy.value = false
+    errors.value = response.errors || {}
+    emit('response-received', response)
+  }
+  watch(() => props.initData, v => form.value = v || {}, { immediate: true })
 </script>
 
 <template>
@@ -14,7 +37,7 @@
            :value="form.alias"
            @input="form.alias = $event.target.value.toUpperCase()"
            class="form-input w-full"
-           :disabled="$route.params.id" maxlength="64"
+           :disabled="id" maxlength="64"
       >
       <p v-if="errors.alias" class="text-sm text-error">{{ errors.alias }}</p>
     </div>
@@ -47,52 +70,3 @@
     <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
   </div>
 </template>
-
-<script>
-export default {
-  name: "PageForm",
-  components: { tiptap: Tiptap },
-  inject: ['api'],
-  emits: ['response-received'],
-  props: { initData: Object },
-  data () {
-    return {
-      form: {},
-      errors: {},
-      options: {},
-      elements: [
-        { type: 'text', model: 'title', label: 'Titel', required: true },
-        { type: 'tiptap', model: 'markup', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' } },
-        { type: 'textarea', model: 'description', label: 'Beschreibung' },
-        { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' },
-      ],
-      busy: false
-    }
-  },
-  watch: {
-    initData: {
-      handler (newValue) {
-        if (newValue) {
-          this.form = Object.assign({}, newValue);
-        }
-        else {
-          this.form = {};
-        }
-      },
-      immediate: true
-    }
-  },
-  methods: {
-    async submit () {
-      const pageId = this.$route.params.id;
-
-      this.busy = true;
-      let response = await this.$fetch(this.api + 'page/' + (pageId || ''), pageId ? 'PUT' : 'POST', {}, JSON.stringify(this.form));
-      this.busy = false;
-
-      this.errors = response.errors || {};
-      this.$emit('response-received', response);
-    }
-  }
-}
-</script>

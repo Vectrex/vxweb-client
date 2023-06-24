@@ -1,10 +1,33 @@
 <script setup>
-  import FormSelect from "@/components/vx-vue/form-select.vue";
+  import FormSelect from "@/components/vx-vue/form-select.vue"
+  import {computed, ref, watch} from "vue"
+
+  const props = defineProps({
+    items: { type: Array, default: [] },
+    activeIndex: { type: Number, default: 0 }
+  })
+  const emit = defineEmits(['update:active-index'])
+
+  const activeTab = ref(props.items[props.activeIndex] || {})
+  const selectOptions = computed(() => {
+    let options = []
+    props.items.forEach((item, ndx) => { if(!item.disabled) {options.push( { label: item.name, key: ndx })}})
+    return options
+  })
+  watch(() => props.activeIndex, newVal => {
+    activeTab.value = props.items[newVal] || {}
+  })
+  const itemOnClick = item => {
+    if (!item.disabled) {
+      activeTab.value = item
+      emit('update:active-index', props.items.indexOf(item))
+    }
+  }
 </script>
 
 <template>
   <div class="sm:hidden">
-    <form-select :options="selectOptions" :model-value="activeIndex" @update:model-value="$emit('update:activeIndex', $event)" class="w-full" />
+    <form-select :options="selectOptions" :model-value="activeIndex" @update:model-value="emit('update:activeIndex', $event)" class="w-full" />
   </div>
   <div class="hidden sm:block">
     <div class="border-b border-gray-200">
@@ -39,52 +62,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'tabs',
-  components: {FormSelect},
-  emits: ['update:active-index'],
-  props: {
-    items: {
-      type: Array,
-      default: () => ([])
-    },
-    activeIndex: {
-      type: Number,
-      default: 0
-    }
-  },
-
-  data() {
-    return {
-      activeTab: {}
-    };
-  },
-
-  computed: {
-    selectOptions () {
-      let options = [];
-      this.items.forEach((item, ndx) => { if(!item.disabled) {options.push( { label: item.name, key: ndx })}});
-      return options;
-    }
-  },
-
-  created() {
-    this.activeTab = this.items[this.activeIndex] || {};
-  },
-  watch: {
-    activeIndex(newVal) {
-      this.activeTab = this.items[newVal] || {};
-    },
-  },
-  methods: {
-    itemOnClick(item) {
-      if (!item.disabled) {
-        this.activeTab = item;
-        this.$emit('update:active-index', this.items.indexOf(item));
-      }
-    }
-  }
-}
-</script>

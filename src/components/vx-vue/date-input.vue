@@ -1,12 +1,28 @@
 <script setup>
-  import DateFunctions from '@/util/date-functions';
+  import { parseDate } from "@/util/parseDate"
+  import { formatDate } from "@vueuse/core";
+  import { computed, ref, useAttrs, watch } from "vue"
+
+  const emit = defineEmits(['update:modelValue', 'toggle-datepicker'])
+  const props = defineProps({
+        outputFormat: { type: String, default: 'YYYY-MM-DD' },
+        inputFormat: { type: String, default: 'YYYY-MM-DD' },
+        showButton: { type: Boolean, default: true },
+        locale: { type: String, default: 'default' },
+        modelValue: Date
+      }
+  )
+  const inputString = ref('')
+  const dateString = computed(() => props.modelValue ? formatDate(props.modelValue, props.outputFormat) : '')
+  const inputAttrs = computed(() => { let attrs = Object.assign({}, useAttrs()); delete attrs['class']; return attrs })
+  watch(() => props.modelValue, v => inputString.value = v ? formatDate(v, props.outputFormat) : '')
 </script>
 <template>
   <div class="relative inline-block" :class="$attrs['class']">
     <div v-if="dateString">
       <div class="block w-full form-input bg-vxvue-50 flex items-center" :class="{ 'pr-10': showButton }">
         <span class="text-vxvue-700">{{ dateString }}</span>
-        <button @click="handleClear" type="button" class="flex-shrink-0 ml-2 h-4 w-4 rounded-full inline-flex items-center justify-center text-vxvue hover:bg-vxvue-100 hover:text-vue-700 focus:outline-none focus:bg-vxvue-700 focus:text-white">
+        <button @click="$emit('update:modelValue', null)" type="button" class="flex-shrink-0 ml-2 h-4 w-4 rounded-full inline-flex items-center justify-center text-vxvue hover:bg-vxvue-100 hover:text-vue-700 focus:outline-none focus:bg-vxvue-700 focus:text-white">
           <svg class="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8"><path stroke-linecap="round" stroke-width="1.5" d="M1 1l6 6m0-6L1 7" /></svg>
         </button>
       </div>
@@ -16,7 +32,7 @@
        class="block w-full form-input focus:border-vxvue"
        :class="{ 'pr-10': showButton }"
        v-model="inputString"
-       @blur="handleBlur"
+       @blur="$emit('update:modelValue', parseDate(inputString, props.inputFormat) || null)"
        @input.prevent
        v-bind="inputAttrs"
     >
@@ -32,66 +48,3 @@
     </button>
   </div>
 </template>
-
-<script>
-export default {
-  emits: ['update:modelValue', 'toggle-datepicker'],
-  name: 'date-input',
-  data() {
-    return {
-      inputString: ''
-    }
-  },
-  inheritAttrs: false,
-  props: {
-    monthNames: {
-      type: Array,
-      default: () => "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(" ")
-    },
-    dayNames: {
-      type: Array,
-      default: () => "Sun Mon Tue Wed Thu Fri Sat".split(" ")
-    },
-    outputFormat: {
-      type: String,
-      default: "y-mm-dd"
-    },
-    inputFormat: {
-      type: String,
-      default: 'y-m-d'
-    },
-    showButton: {
-      type: Boolean,
-      default: true
-    },
-    modelValue: Date
-  },
-
-  watch: {
-    modelValue(value) {
-      this.inputString = value ? DateFunctions.formatDate(value, this.outputFormat, { dayNames: this.dayNames, monthNames: this.monthNames }) : '';
-    }
-  },
-
-  computed: {
-    dateString() {
-      return this.modelValue ? DateFunctions.formatDate(this.modelValue, this.outputFormat, { dayNames: this.dayNames, monthNames: this.monthNames }) : '';
-    },
-    inputAttrs() {
-      let attrs = Object.assign({}, this.$attrs);
-      delete attrs['class'];
-      return attrs;
-    }
-  },
-
-  methods: {
-    handleBlur() {
-      let date = DateFunctions.parseDate(this.inputString, this.inputFormat);
-      this.$emit('update:modelValue', date || null);
-    },
-    handleClear() {
-      this.$emit('update:modelValue', null);
-    }
-  }
-}
-</script>

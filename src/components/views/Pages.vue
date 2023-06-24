@@ -1,8 +1,39 @@
 <script setup>
-  import Sortable from "@/components/vx-vue/sortable.vue";
-  import Alert from "@/components/vx-vue/alert.vue";
-  import Headline from "@/components/app/Headline.vue";
-  import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid';
+  import Sortable from "@/components/vx-vue/sortable.vue"
+  import Alert from "@/components/vx-vue/alert.vue"
+  import Headline from "@/components/app/Headline.vue"
+  import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
+  import { storeSort, getSort } from "@/util/storeSort"
+  import { customFetch } from "@/composables/customFetch"
+  import { ref, onMounted } from "vue"
+
+  const emit = defineEmits(['notify'])
+  const cols = [
+    { label: "Alias/Titel", sortable: true, prop: "alias" },
+    { label: "Datei", sortable: true, prop: "template" },
+    { label: "Inhalt", prop: "contents" },
+    { label: "letzte Änderung", sortable: true, prop: "updated" },
+    { label: "#Rev", sortable: true, prop: "revisionCount" },
+    { label: "", prop: "action" }
+  ]
+  const pages = ref([])
+  const confirm = ref(null)
+
+  onMounted(async () => {
+    const { data } = await customFetch('pages').json()
+    pages.value = data.value
+  })
+  const del = async id => {
+    if(await confirm.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
+      const { data } = await customFetch('page/' + id).delete().json()
+      if (data.value?.success) {
+        pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
+        emit('notify', { message: 'Seite wurde erfolgreich gelöscht.', success: true })
+      } else {
+        emit('notify', { message: data.value.message || 'Es ist ein Fehler aufgetreten!', success: false })
+      }
+    }
+  }
 </script>
 
 <template>
@@ -22,8 +53,8 @@
   <sortable
       :rows="pages"
       :columns="cols"
-      :sort-prop="initSort.prop"
-      :sort-direction="initSort.dir"
+      :sort-prop="getSort().prop"
+      :sort-direction="getSort().dir"
       key-property="id"
       @after-sort="storeSort"
   >
@@ -46,47 +77,3 @@
     />
   </teleport>
 </template>
-
-<script>
-export default {
-  name: "Pages",
-  inject: ['api'],
-  data () {
-    return {
-      pages: [],
-      cols: [
-        { label: "Alias/Titel", sortable: true, prop: "alias" },
-        { label: "Datei", sortable: true, prop: "template" },
-        { label: "Inhalt", prop: "contents" },
-        { label: "letzte Änderung", sortable: true, prop: "updated" },
-        { label: "#Rev", sortable: true, prop: "revisionCount" },
-        { label: "", prop: "action" }
-      ],
-      initSort: {}
-    }
-  },
-  async created () {
-      let lsValue = window.localStorage.getItem(window.location.origin + "/admin/pages/sort");
-      if(lsValue) {
-          this.initSort = JSON.parse(lsValue);
-      }
-      this.pages = await this.$fetch(this.api + 'pages');
-  },
-  methods: {
-    async del (id) {
-      if(await this.$refs.confirm.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
-        let response = await this.$fetch(this.api + 'page/' + id, 'DELETE');
-        if (response.success) {
-          this.pages.splice(this.pages.findIndex(item => id === item.id), 1);
-          this.$emit('notify', {message: 'Seite wurde erfolgreich gelöscht.', success: true});
-        } else {
-          this.$emit('notify', {message: response.message || 'Es ist ein Fehler aufgetreten!', success: false});
-        }
-      }
-    },
-    storeSort (event) {
-        window.localStorage.setItem(window.location.origin + "/admin/pages/sort", JSON.stringify(event));
-    }
-  }
-}
-</script>

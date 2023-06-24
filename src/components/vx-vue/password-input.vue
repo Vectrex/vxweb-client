@@ -1,12 +1,23 @@
 <script setup>
   import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
+  import { useAttrs, computed, ref } from "vue";
+
+  const props = defineProps(['modelValue'])
+  const emit = defineEmits(['update:modelValue'])
+  const show = ref(false)
+
+  const inputAttrs = computed(() => {
+    let attrs = Object.assign({}, useAttrs())
+    delete attrs['class']
+    return attrs
+  })
 </script>
 <template>
   <div class="relative inline-block" :class="$attrs['class']">
     <input
         :value="modelValue"
         :type="show ? 'text': 'password'"
-        @input="$emit('update:modelValue', $event.target.value)"
+        @input="emit('update:modelValue', $event.target.value)"
         v-bind="inputAttrs"
         class="form-input w-full pr-10 block focus:border-brand"
     >
@@ -16,22 +27,3 @@
     </button>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'password-input',
-  inheritAttrs: false,
-  computed: {
-    inputAttrs() {
-      let attrs = Object.assign({}, this.$attrs);
-      delete attrs['class'];
-      return attrs;
-    }
-  },
-  props: ['modelValue'],
-  emits: ['update:modelValue'],
-  data () { return {
-    show: false
-  }}
-}
-</script>

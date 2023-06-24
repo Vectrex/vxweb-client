@@ -1,3 +1,18 @@
+<script setup>
+  import { computed, useAttrs } from "vue"
+
+  const props = defineProps(['modelValue'])
+  const emit = defineEmits(['update:modelValue'])
+
+  const outerClass = computed (() => props.modelValue ? "bg-vxvue" : "bg-slate-200")
+  const innerClass = computed (() => props.modelValue ? "translate-x-5" : "translate-x-0")
+  const inputAttrs = computed(() => {
+    let attrs = Object.assign({}, useAttrs())
+    delete attrs['class']
+    return attrs
+  })
+</script>
+
 <template>
   <label :class="$attrs['class']">
     <span
@@ -11,29 +26,8 @@
           :class="innerClass"
           class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
       ></span>
-      <input class="hidden" value="1" type="checkbox" @change="$emit('update:modelValue', $event.target.checked)" v-bind="inputAttrs" :checked="modelValue" />
+      <input class="hidden" value="1" type="checkbox" @change="emit('update:modelValue', $event.target.checked)" v-bind="inputAttrs" :checked="modelValue" />
     </span>
   </label>
   <slot></slot>
 </template>
-<script>
-  export default {
-    name: 'form-switch',
-    inheritAttrs: false,
-    props: ['modelValue'],
-    emits: ['update:modelValue'],
-    computed: {
-      outerClass () {
-        return this.modelValue ? "bg-vxvue" : "bg-slate-200";
-      },
-      innerClass () {
-        return this.modelValue ? "translate-x-5" : "translate-x-0";
-      },
-      inputAttrs() {
-        let attrs = Object.assign({}, this.$attrs);
-        delete attrs['class'];
-        return attrs;
-      }
-    }
-  }
-</script>

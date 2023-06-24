@@ -1,18 +1,243 @@
 <script setup>
-  import Sortable from "@/components/vx-vue/sortable.vue";
-  import FileEditForm from "@/components/views/files/FileEditForm.vue";
-  import FolderEditForm from "@/components/views/files/FolderEditForm.vue";
-  import FilemanagerActions from "@/components/views/files/FilemanagerActions.vue";
-  import FilemanagerAdd from "@/components/views/files/FilemanagerAdd.vue";
-  import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue";
-  import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue";
-  import FolderTree from "@/components/views/files/FolderTree.vue";
-  import Alert from "@/components/vx-vue/alert.vue";
-  import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid';
-  import { urlQueryCreate } from '@/util/url-query';
-  import { formatFilesize } from "@/util/format-filesize";
-  import { Focus } from "@/directives/focus";
+  import Sortable from "@/components/vx-vue/sortable.vue"
+  import FileEditForm from "@/components/views/files/FileEditForm.vue"
+  import FolderEditForm from "@/components/views/files/FolderEditForm.vue"
+  import FilemanagerActions from "@/components/views/files/FilemanagerActions.vue"
+  import FilemanagerAdd from "@/components/views/files/FilemanagerAdd.vue"
+  import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue"
+  import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue"
+  import FolderTree from "@/components/views/files/FolderTree.vue"
+  import Alert from "@/components/vx-vue/alert.vue"
+  import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
+  import { urlQueryCreate } from '@/util/url-query'
+  import { formatFilesize } from "@/util/format-filesize"
+  import { Focus as vFocus } from "@/directives/focus"
+  import { customFetch } from "@/composables/customFetch"
+  import { promisedXhr } from "@/util/promisedXhr"
+  import router from "@/router"
+  import {ref, onMounted, watch, computed, nextTick} from "vue"
+
+  const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id'])
+  const props = defineProps({
+      columns: {type: Array, required: true},
+      folderId: {type: [Number, String], default: ''},
+      initSort: Object,
+      requestParameters: {type: Object, default: {}}
+  })
+  const isMounted = ref(false)
+  const limits = ref({})
+  const currentFolderId = ref(null)
+  const parentId = ref(null)
+  const files = ref([])
+  const folders = ref([])
+  const breadcrumbs = ref([])
+  const toRename = ref(null)
+  const showAddActivities = ref(false)
+  const indicateDrag = ref(false)
+  const formShown = ref( null)
+  const pickedId = ref(null)
+  const upload = ref({ files: [], progressing: false, cancelToken: {} })
+  const progress = ref({ total: null, loaded: null, file: null })
+
+  const confirm = ref(null)
+  const alert = ref(null)
+  const multiCheckbox = ref(null)
+  const folderTree = ref(null)
+
+  const directoryEntries = computed(() => {
+    folders.value.forEach(item => { item.isFolder = true; item.key = 'd' + item.id })
+    files.value.forEach(item => item.key = item.id)
+    return [...folders.value, ...files.value]
+  })
+  const checkedFiles = computed(() => files.value.filter(({ checked }) => checked))
+  const checkedFolders = computed(() => folders.value.filter(({ checked }) => checked))
+  const readFolder = async () => {
+    const response = (await customFetch(urlQueryCreate('folder/' + (props.folderId || '-') + '/read', props.requestParameters)).json()).data.value || {}
+    if (response.success) {
+      parentId.value = response.parendId
+      files.value = response.files || []
+      folders.value = response.folders || []
+      currentFolderId.value = response.currentFolder?.key || null
+      breadcrumbs.value = response.breadcrumbs || breadcrumbs.value
+      limits.value = response.limits || limits.value
+    }
+  }
+  const setMultiCheckbox = itemCount => {
+    if (multiCheckbox.value) {
+      if (itemCount) {
+        multiCheckbox.value.checked = false
+      }
+      multiCheckbox.value.indeterminate = itemCount && itemCount !== files.value.length + folders.value.length
+    }
+  }
+  const delSelection = async () => {
+    const response = (await customFetch(urlQueryCreate('filesfolders/delete', {
+      files: checkedFiles.value.map(({id}) => id).join(","),
+      folders: checkedFolders.valu.map(({id}) => id).join(","),
+      ...props.requestParameters
+    })).delete().json()).data.value || {}
+
+    if (response.success) {
+      files.value = response.files || []
+      folders.value = response.folders || []
+    } else if (response.error) {
+      files.value = response.files || files.value
+      folders.value = response.folders || folders.value
+    }
+    emit('response-received', {...response, _method: 'delSelection' })
+  }
+  const moveSelection = () => {
+    formShown.value = 'folderTree'
+    nextTick(
+        async () => {
+          const folder = await folderTree.value.open(urlQueryCreate('folders/tree', props.requestParameters), currentFolderId.value)
+          formShown.value = null
+          if (folder !== false) {
+            const response = (await customFetch(urlQueryCreate('filesfolders/moveto/' + folder.id , props.requestParameters)).put(JSON.stringify({
+              files: checkedFiles.value.map(({ id }) => id),
+              folders: checkedFolders.value.map(({ id }) => id)
+            })).json()).data.value || {}
+
+            if (response.success) {
+              files.value = response.files || []
+              folders.value = response.folders || []
+            } else if (response.error) {
+              files.value = response.files || files.value
+              folders.value = response.folders || folders.value
+            }
+            emit('response-received', {...response, _method: 'moveSelection' })
+          }
+        }
+    )
+  }
+  const editFile = row => { formShown.value = 'editFile'; pickedId.value = row.id }
+  const editFolder = row => { formShown.value = 'editFolder'; pickedId.value = row.id }
+  const delFile = async row => {
+    if (await confirm.value.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
+      const response = (await customFetch(urlQueryCreate('file/' + row.id, props.requestParameters)).delete().json()).data.value || {}
+      if (response.success) {
+        files.value.splice(files.value.findIndex(item => row === item), 1)
+      }
+      emit('response-received', {...response, _method: 'delFile' })
+    }
+  }
+  const rename = async (e, type) => {
+    let name = e.target.value.trim()
+    if (name && toRename.value) {
+      const response = (await customFetch(urlQueryCreate(type + '/' + toRename.value.id + '/rename', props.requestParameters)).put(JSON.stringify({ name: name })).json()).data.value || {}
+      if (response.success) {
+        toRename.value.name = response.name || name
+        toRename.value = null
+      }
+    }
+  }
+  const delFolder = async row => {
+    if (await confirm.value.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?")) {
+      const response = (await customFetch(urlQueryCreate('folder/' + row.id, props.requestParameters)).delete().json()).data.value || {}
+      if (response.success) {
+        folders.value.splice(folders.value.findIndex(item => row === item), 1)
+      }
+      emit('response-received', {...response, _method: 'delFolder' })
+    }
+  }
+  const createFolder = async name => {
+    showAddActivities.value = false
+    const response = (await customFetch(urlQueryCreate('folder', props.requestParameters)).post(JSON.stringify({ name: name, parent: currentFolderId.value })).json()).data.value || {}
+    if (response.folder) {
+      folders.value.push(response.folder)
+    }
+    emit('response-received', {...response, _method: 'createFolder' })
+  }
+  const moveFile = row => {
+    formShown.value = 'folderTree'
+    nextTick(
+        async () => {
+          let folder = await folderTree.value.open(urlQueryCreate('folders/tree', props.requestParameters), currentFolderId.value)
+          formShown.value = null
+          if (folder !== false) {
+            const response = (await customFetch(urlQueryCreate('file/' + row.id + '/move', props.requestParameters)).put(JSON.stringify({ folderId: folder.id })).json()).data.value || {}
+            if (response.success) {
+              files.value.splice(files.value.findIndex(item => row === item), 1)
+            }
+            emit('response-received', {...response, _method: 'moveFile' })
+          }
+        }
+    )
+  }
+  const handleUploads = async () => {
+    let file = null, response = null
+    while ((file = upload.value.files.shift()) !== undefined) {
+      if (limits.value.maxUploadSize && limits.value.maxUploadSize < file.size) {
+        await alert.value.open('Datei zu groß', "'" + file.name + "' übersteigt die maximale Uploadgröße.")
+        continue
+      }
+      progress.value.file = file.name
+      try {
+        response = await promisedXhr(
+            urlQueryCreate("file?folder=" + currentFolderId.value, props.requestParameters),
+            'POST',
+            {
+              'Content-type': file.type || 'application/octet-stream',
+              'X-File-Name': file.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
+              'X-File-Size': file.size,
+              'X-File-Type': file.type
+            },
+            file,
+            null,
+            e => {
+              progress.value.total = e.total
+              progress.value.loaded = e.loaded
+            },
+            upload.value.cancelToken
+        )
+        if (response.status >= 400) {
+          await router.replace({ name: 'login' })
+        }
+        else if(response.files) {
+          files.value = response.files
+        }
+      } catch (err) {
+        upload.value.files = []
+        upload.value.progressing = false
+        return
+      }
+      if (!response.success) {
+        emit('response-received', {...response, _method: 'uploadFiles' })
+        upload.value.files = []
+        upload.value.progressing = false
+        return
+      }
+    }
+    upload.value.progressing = false
+    if (response) {
+      emit('response-received', { success: true, message: response.message || 'File upload successful', _method: 'uploadFiles' })
+    }
+  }
+  const uploadDraggedFiles = e  => { indicateDrag.value = false; uploadInputFiles(e.dataTransfer.files || []) }
+  const uploadInputFiles = files => {
+    showAddActivities.value = false
+    upload.value.files.push(...files)
+    if (!upload.value.progressing) {
+      upload.value.progressing = true
+      progress.value.loaded = 0
+      handleUploads()
+    }
+  }
+  const cancelUpload = () => {
+    if (upload.value.cancelToken.cancel) {
+      upload.value.cancelToken.cancel()
+      upload.value.cancelToken = {}
+    }
+  }
+
+  onMounted(() => isMounted.value = true)
+  watch(() => props.folderId,  v => { readFolder(v); currentFolderId.value = v }, { immediate: true })
+  watch(checkedFiles, v => setMultiCheckbox(checkedFolders.value.length + v.length))
+  watch(checkedFolders, v => setMultiCheckbox(checkedFiles.value.length + v.length))
+
+  defineExpose({ delFile, delFolder, editFile, editFolder, moveFile })
 </script>
+
 <template>
   <div
       v-cloak
@@ -38,17 +263,12 @@
             <plus-icon class="w-5 h-5" />
           </button>
           <transition name="appear">
-            <div
-                v-show="showAddActivities"
-                class="absolute left-0 z-10 mt-2 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                role="menu"
-                aria-orientation="vertical"
-            >
-              <filemanager-add
-                  @upload="uploadInputFiles"
-                  @create-folder="createFolder"
-              />
-            </div>
+            <filemanager-add
+                v-if="showAddActivities"
+                @upload="uploadInputFiles"
+                @create-folder="createFolder"
+                @close="showAddActivities = false"
+            />
           </transition>
         </div>
         <filemanager-actions
@@ -163,7 +383,7 @@
   <teleport to="body">
     <transition name="fade">
       <div
-        class="z-10 fixed right-0 bottom-0 top-24 left-0 bg-black/20 backdrop-blur-sm"
+        class="z-10 fixed right-0 bottom-0 top-24 left-0 bg-white/75 backdrop-blur-sm"
         v-if="formShown"
         @click.stop="formShown = null"
       />
@@ -217,287 +437,3 @@
   <filemanager-search @folder-picked="$emit('update:folder-id', $event.id)" :is-mounted="isMounted" />
 
 </template>
-
-<script>
-export default {
-  name: 'Filemanager',
-  inject: ['api'],
-  emits: ['response-received', 'after-sort', 'update:folder-id'],
-  expose: ['delFile', 'delFolder', 'editFile', 'editFolder', 'moveFile'],
-  props: {
-    columns: { type: Array, required: true },
-    folderId: { type: [Number, String], default: '' },
-    initSort: Object,
-    requestParameters: { type: Object, default: {} }
-  },
-
-  data() {
-    return {
-      isMounted: false,
-      limits: {},
-      currentFolderId: null,
-      parentId: null,
-      files: [],
-      folders: [],
-      breadcrumbs: [],
-      toRename: null,
-      showAddActivities: false,
-      indicateDrag: false,
-      formShown: null,
-      pickedId: null,
-      upload: { files: [], progressing: false, cancelToken: {} },
-      progress: { total: null, loaded: null, file: null }
-    }
-  },
-
-  computed: {
-    directoryEntries () {
-      let folders = this.folders;
-      let files = this.files;
-      folders.forEach(item => {
-        item.isFolder = true;
-        item.key = 'd' + item.id
-      });
-      files.forEach(item => item.key = item.id);
-      return [...folders, ...files];
-    },
-    checkedFiles () {
-      return this.files.filter(({ checked }) => checked);
-    },
-    checkedFolders () {
-      return this.folders.filter(({ checked }) => checked);
-    }
-  },
-
-  watch: {
-    folderId: {
-      handler (newValue) {
-        this.readFolder(newValue);
-        this.currentFolderId = newValue;
-      },
-      immediate: true
-    },
-    checkedFiles (newValue) {
-      this.setMultiCheckbox(this.checkedFolders.length + newValue.length);
-    },
-    checkedFolders (newValue) {
-      this.setMultiCheckbox(this.checkedFiles.length + newValue.length);
-    }
-  },
-  mounted() {
-    document.body.addEventListener('click', this.handleBodyClick);
-    this.isMounted = true;
-  },
-  beforeUnmount() {
-    document.body.removeEventListener('click', this.handleBodyClick);
-  },
-
-  methods: {
-    setMultiCheckbox (itemCount) {
-      if (this.$refs.multiCheckbox) {
-        if (!itemCount) {
-          this.$refs.multiCheckbox.checked = false;
-        }
-        this.$refs.multiCheckbox.indeterminate = itemCount && itemCount !== this.files.length + this.folders.length;
-      }
-    },
-    handleBodyClick () {
-      this.showAddActivities = false;
-    },
-    async readFolder (folderId) {
-      let response = await this.$fetch(urlQueryCreate(this.api + 'folder/' + (folderId || '-') + '/read', this.requestParameters));
-
-      if (response.success) {
-        this.parentId = response.parendId;
-        this.files = response.files || [];
-        this.folders = response.folders || [];
-        this.currentFolderId = response.currentFolder?.key || null;
-        this.breadcrumbs = response.breadcrumbs || this.breadcrumbs;
-        this.limits = response.limits || this.limits;
-      }
-    },
-    async delSelection () {
-      let response = await this.$fetch(urlQueryCreate(this.api + "filesfolders/delete", {
-        files: this.checkedFiles.map(({id}) => id).join(","),
-        folders: this.checkedFolders.map(({id}) => id).join(","),
-        ...this.requestParameters
-      }), 'DELETE');
-      if (response.success) {
-        this.files = response.files || [];
-        this.folders = response.folders || [];
-      } else if (response.error) {
-        this.files = response.files || this.files;
-        this.folders = response.folders || this.folders;
-      }
-      this.$emit('response-received', {...response, _method: 'delSelection' });
-    },
-    moveSelection() {
-      this.formShown = 'folderTree';
-      this.$nextTick(
-        async () => {
-          let folder = await this.$refs['folderTree'].open(urlQueryCreate(this.api + 'folders/tree', this.requestParameters), this.currentFolderId);
-          this.formShown = null;
-
-          if (folder !== false) {
-            let response = await this.$fetch(urlQueryCreate(this.api + 'filesfolders/moveto/' + folder.id , this.requestParameters), 'PUT', {}, JSON.stringify({
-              files: this.checkedFiles.map(({id}) => id),
-              folders: this.checkedFolders.map(({id}) => id)
-            }));
-
-            if (response.success) {
-              this.files = response.files || [];
-              this.folders = response.folders || [];
-            } else if (response.error) {
-              this.files = response.files || this.files;
-              this.folders = response.folders || this.folders;
-            }
-            this.$emit('response-received', {...response, _method: 'moveSelection' });
-          }
-        }
-      );
-    },
-    editFile(row) {
-      this.formShown = 'editFile';
-      this.pickedId = row.id;
-    },
-    editFolder(row) {
-      this.formShown = 'editFolder';
-      this.pickedId = row.id;
-    },
-    async delFile(row) {
-      if (await this.$refs.confirm.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
-        let response = await this.$fetch(urlQueryCreate(this.api + 'file/' + row.id, this.requestParameters), 'DELETE');
-        if (response.success) {
-          this.files.splice(this.files.findIndex(item => row === item), 1);
-        }
-        this.$emit('response-received', {...response, _method: 'delFile' });
-      }
-    },
-    async rename(event, type) {
-      let name = event.target.value.trim();
-      if (name && this.toRename) {
-        let response = await this.$fetch(urlQueryCreate(this.api + type + '/' + this.toRename.id + '/rename', this.requestParameters), 'PUT', {}, JSON.stringify({
-          name: name
-        }));
-        if (response.success) {
-          this.toRename.name = response.name || name;
-          this.toRename = null;
-        }
-      }
-    },
-    async delFolder(row) {
-      if (await this.$refs.confirm.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?", {cancelLabel: "Abbrechen"})) {
-        let response = await this.$fetch(urlQueryCreate(this.api + 'folder/' + row.id, this.requestParameters), 'DELETE');
-        if (response.success) {
-          this.folders.splice(this.folders.findIndex(item => row === item), 1);
-        }
-        this.$emit('response-received', {...response, _method: 'delFolder' });
-      }
-    },
-    async createFolder(name) {
-      this.showAddActivities = false;
-      let response = await this.$fetch(urlQueryCreate(this.api + 'folder', this.requestParameters), 'POST', {}, JSON.stringify({
-        name: name,
-        parent: this.currentFolderId
-      }));
-      if (response.folder) {
-        this.folders.push(response.folder);
-      }
-      this.$emit('response-received', {...response, _method: 'createFolder' });
-    },
-    moveFile(row) {
-      this.formShown = 'folderTree';
-      this.$nextTick(
-          async () => {
-            let folder = await this.$refs.folderTree.open(urlQueryCreate(this.api + 'folders/tree', this.requestParameters), this.currentFolderId);
-            this.formShown = null;
-
-            if (folder !== false) {
-              let response = await this.$fetch(urlQueryCreate(this.api + 'file/' + row.id + '/move', this.requestParameters), 'PUT', {}, JSON.stringify({
-                folderId: folder.id
-              }));
-              if (response.success) {
-                this.files.splice(this.files.findIndex(item => row === item), 1);
-              }
-              this.$emit('response-received', {...response, _method: 'moveFile' });
-            }
-          }
-      );
-    },
-    uploadDraggedFiles(event) {
-      this.indicateDrag = false;
-      this.uploadInputFiles(event.dataTransfer.files || []);
-    },
-    uploadInputFiles(files) {
-      this.showAddActivities = false;
-      this.upload.files.push(...files);
-      if (!this.upload.progressing) {
-        this.upload.progressing = true;
-        this.progress.loaded = 0;
-        this.handleUploads();
-      }
-    },
-    async handleUploads() {
-      let file = null, response = null;
-      while ((file = this.upload.files.shift()) !== undefined) {
-        if (this.limits.maxUploadSize && this.limits.maxUploadSize < file.size) {
-          await this.$refs.alert.open('Datei zu groß', "'" + file.name + "' übersteigt die maximale Uploadgröße.");
-          continue;
-        }
-        this.progress.file = file.name;
-        try {
-          response = await this.$promisedXhr(
-              urlQueryCreate(this.api + "file?folder=" + this.currentFolderId, this.requestParameters),
-              'POST',
-              {
-                'Content-type': file.type || 'application/octet-stream',
-                'X-File-Name': file.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
-                'X-File-Size': file.size,
-                'X-File-Type': file.type
-              },
-              file,
-              null,
-              e => {
-                this.progress.total = e.total;
-                this.progress.loaded = e.loaded;
-              },
-              this.upload.cancelToken
-          );
-          if (response.status >= 400) {
-              this.$router.replace({ name: 'login' });
-          }
-          else {
-            this.files = response.files || this.files;
-          }
-        } catch (err) {
-          this.upload.files = [];
-          this.upload.progressing = false;
-          return;
-        }
-
-        if (!response.success) {
-          this.$emit('response-received', {...response, _method: 'uploadFiles' });
-          this.upload.files = [];
-          this.upload.progressing = false;
-          return;
-        }
-      }
-      this.upload.progressing = false;
-      if (response) {
-        this.$emit('response-received', { success: true, message: response.message || 'File upload successful', _method: 'uploadFiles' });
-      }
-    },
-    cancelUpload() {
-      if (this.upload.cancelToken.cancel) {
-        this.upload.cancelToken.cancel();
-        this.upload.cancelToken = {};
-      }
-    },
-    formatFilesize: formatFilesize
-  },
-
-  directives: {
-    focus: Focus
-  }
-}
-</script>

@@ -1,7 +1,70 @@
 <script setup>
-  import Headline from "@/components/app/Headline.vue";
-  import PageForm from "@/components/views/pages/PageForm.vue";
-  import RevisionTable from "@/components/views/pages/RevisionTable.vue";
+  import Headline from "@/components/app/Headline.vue"
+  import PageForm from "@/components/views/pages/PageForm.vue"
+  import RevisionTable from "@/components/views/pages/RevisionTable.vue"
+  import { customFetch } from "@/composables/customFetch"
+  import router from "@/router"
+  import { onMounted, ref } from "vue"
+
+  const props = defineProps({ id: [Number, String]})
+  const emit = defineEmits(['notify'])
+  const form = ref({})
+  const revisions = ref([])
+
+  const handleResponse = response => {
+    if (response.current) {
+      form.value = response.current
+    }
+    if (response.revisions) {
+      revisions.value = response.revisions.map(item => {
+        item.firstCreated = new Date(item.firstCreated)
+        return item
+      })
+    }
+  }
+  const handleFormResponse = response => {
+    if (response.revisions) {
+      revisions.value = response.revisions.map(item => {
+        item.firstCreated = new Date(item.firstCreated)
+        return item
+      })
+    }
+    if (response.id && !props.id) {
+      router.replace({ name: 'pageEdit', params: { id: response.id }})
+    }
+    emit('notify', response)
+  }
+  const activateRevision = async revision => {
+    const response = (await customFetch('revision/' + revision.id + '/activate').put().json()).data.value || {}
+    if (response.success) {
+      let active = revisions.value.find(item => item.active === true)
+      if (active) {
+        active.active = false
+      }
+      active = revisions.value.find(item => item === revision)
+      if (active) {
+        active.active = true
+      }
+      handleResponse(response)
+    }
+    emit('notify', response)
+  }
+  const deleteRevision = async revision => {
+    const response = (await customFetch('revision/' + revision.id).delete().json()).data.value || {}
+    if (response.success) {
+      handleResponse(response)
+    }
+    emit('notify', response)
+  }
+  const loadRevision = async revision => {
+    const response = (await customFetch('revision/' + revision.id).json()).data.value || {}
+    if (response.success) {
+      handleResponse(response)
+    }
+  }
+  onMounted(async () => {
+    if(props.id) { handleResponse((await customFetch('page/' + props.id).json()).data.value || {}) }
+  })
 </script>
 
 <template>
@@ -9,7 +72,7 @@
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
   <div class="flex w-full space-x-4 justify-start">
-    <page-form :init-data="form" class="w-full" @response-received="handleFormResponse($event)"/>
+    <page-form :init-data="form" class="w-full" @response-received="handleFormResponse" :id="id" />
     <div class="w-1/3 flex-shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
       <revision-table
           :revisions="revisions" class="w-full h-full overflow-y-auto"
@@ -20,76 +83,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "PageEdit",
-  props: ['id'],
-  inject: ['api'],
-  emits: ['notify'],
-  data () {
-    return {
-      form: {},
-      revisions: []
-    }
-  },
-  async created () {
-    if (this.id) {
-      this.handleResponse(await this.$fetch(this.api + 'page/' + this.id));
-    }
-  },
-  methods: {
-    handleFormResponse(response) {
-      if (response.revisions) {
-        this.revisions = response.revisions.map(item => {
-          item.firstCreated = new Date(item.firstCreated);
-          return item;
-        });
-      }
-      if (response.id && !this.id) {
-        this.$router.replace({name: 'pageEdit', params: {id: response.id}});
-      }
-      this.$emit('notify', response);
-    },
-    async activateRevision(revision) {
-      const response = await this.$fetch(this.api + 'revision/' + revision.id + '/activate', 'PUT');
-      if (response.success) {
-        let active = this.revisions.find(item => item.active === true);
-        if (active) {
-          active.active = false;
-        }
-        active = this.revisions.find(item => item === revision);
-        if (active) {
-          active.active = true;
-        }
-        this.handleResponse(response);
-      }
-      this.$emit('notify', response);
-    },
-    async deleteRevision(revision) {
-      const response = await this.$fetch(this.api + 'revision/' + revision.id, 'DELETE');
-      if (response.success) {
-        this.handleResponse(response);
-      }
-      this.$emit('notify', response);
-    },
-    async loadRevision(revision) {
-      const response = await this.$fetch(this.api + 'revision/' + revision.id);
-      if (response.success) {
-        this.handleResponse(response);
-      }
-    },
-    handleResponse(response) {
-      if (response.current) {
-        this.form = response.current;
-      }
-      if (response.revisions) {
-        this.revisions = response.revisions.map(item => {
-          item.firstCreated = new Date(item.firstCreated);
-          return item;
-        });
-      }
-    }
-  }
-}
-</script>

@@ -1,8 +1,9 @@
 <script setup>
-  import { useRouter } from 'vue-router';
-  const router = useRouter();
-  const linkedRoutes = router.options.routes.filter(route => route.meta?.label);
-  const userRoles = JSON.parse(sessionStorage.getItem('currentUser'))?.roles || [];
+  import router from "@/router"
+
+  const props = defineProps({ expanded: Boolean })
+  const linkedRoutes = router.options.routes.filter(route => route.meta?.label)
+  const userRoles = JSON.parse(sessionStorage.getItem('currentUser'))?.roles || []
 </script>
 
 <template>
@@ -25,12 +26,3 @@
     </template>
   </nav>
 </template>
-
-<script>
-export default {
-  name: "MainMenu",
-  props: {
-    expanded: Boolean
-  }
-}
-</script>

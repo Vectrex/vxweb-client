@@ -1,3 +1,48 @@
+<script setup>
+  import { ref, computed, nextTick } from "vue";
+
+  const props = defineProps({
+    buttons: {
+      type: [Object, Array],
+      default: { label: 'Ok', value: 'ok' },
+      validator: p => (Array.isArray(p) && p.filter(v => v['label'] !== 'undefined' && v['value'] !== 'undefined').length === p.length) || (p.label !== undefined && p.value !== undefined)
+    },
+    headerClass: {
+      type: String,
+      default: "text-vxvue-alt-900 bg-vxvue-alt-400"
+    },
+    buttonClass: {
+      type: String,
+      default: "button"
+    }
+  })
+
+  const title = ref('')
+  const message = ref('')
+  const show = ref(false)
+  const resolve = ref(null)
+  const reject = ref(null)
+  const buttonArray = computed (() => Array.isArray(props.buttons) ? props.buttons : [props.buttons])
+  const buttons = ref(null)
+
+  const open = (t, m) => {
+    title.value = t;
+    message.value = m;
+    show.value = true;
+    nextTick(() => buttons.value.firstElementChild.focus());
+    return new Promise((res, rej) => {
+      resolve.value = res;
+      reject.value = rej;
+    });
+  }
+  const handleClick = (value) => {
+    show.value = false;
+    resolve.value(value);
+  }
+
+  defineExpose({ open })
+</script>
+
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 z-50 backdrop-blur-sm" aria-hidden="true" v-if="show" />
   <transition name="appear">
@@ -29,55 +74,3 @@
     </div>
   </transition>
 </template>
-
-<script>
-export default {
-  name: 'alert',
-  props: {
-    buttons: {
-      type: [Object, Array],
-      default: { label: 'Ok', value: 'ok' },
-      validator: p => (Array.isArray(p) && p.filter(v => v['label'] !== 'undefined' && v['value'] !== 'undefined').length === p.length) || (p.label !== undefined && p.value !== undefined)
-    },
-    headerClass: {
-      type: String,
-      default: "text-vxvue-alt-900 bg-vxvue-alt-400"
-    },
-    buttonClass: {
-      type: String,
-      default: "button"
-    }
-  },
-
-  data () { return {
-    title: "",
-    message: "",
-    show: false,
-    resolve: null,
-    reject: null
-  }},
-
-  computed: {
-    buttonArray () {
-      return Array.isArray(this.buttons) ? this.buttons : [this.buttons];
-    }
-  },
-
-  methods: {
-    open (title, message) {
-      this.title = title;
-      this.message = message;
-      this.show = true;
-      this.$nextTick(() => this.$refs.buttons.firstElementChild.focus());
-      return new Promise((resolve, reject) => {
-        this.resolve = resolve;
-        this.reject = reject;
-      });
-    },
-    handleClick (value) {
-      this.show = false;
-      this.resolve(value);
-    }
-  }
-}
-</script>

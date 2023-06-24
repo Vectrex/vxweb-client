@@ -23,7 +23,8 @@
     "@tiptap/extension-ordered-list": "^2.0.3",
     "@tiptap/extension-list-item": "^2.0.3",
     "@tiptap/extension-history": "^2.0.3",
-    "@tiptap/extension-link": "^2.0.3"
+    "@tiptap/extension-link": "^2.0.3",
+    "@vueuse/core": "^10.1.2"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",

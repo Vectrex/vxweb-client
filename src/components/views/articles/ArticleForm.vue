@@ -1,10 +1,68 @@
 <script setup>
-  import DatePicker from "@/components/vx-vue/datepicker.vue";
-  import FormSelect from "@/components/vx-vue/form-select.vue";
-  import FormSwitch from "@/components/vx-vue/form-switch.vue";
-  import Tiptap from "@/components/misc/tiptap.vue";
-  import SubmitButton from "@/components/misc/submit-button.vue";
-  import DateFunctions from "@/util/date-functions";
+  import DatePicker from "@/components/vx-vue/datepicker.vue"
+  import FormSelect from "@/components/vx-vue/form-select.vue"
+  import FormSwitch from "@/components/vx-vue/form-switch.vue"
+  import Tiptap from "@/components/misc/tiptap.vue"
+  import SubmitButton from "@/components/misc/submit-button.vue"
+  import { customFetch } from "@/composables/customFetch"
+  import { useDateFormat } from "@vueuse/core"
+  import { onMounted, ref } from "vue"
+  import router from "@/router"
+
+
+  const emit = defineEmits(['response-received'])
+  const props = defineProps({ id: [Number, String]})
+  const datepickerAttrs = {
+    placeholder: 'dd.mm.yyyy',
+    'class': "w-96 w-full",
+    dayNames: 'So Mo Di Mi Do Fr Sa'.split(' '),
+    startOfWeekIndex: 1,
+    inputFormat: 'D.M.YYYY',
+    outputFormat: 'D MMMM YYYY'
+  }
+  const elements = [
+    { type: DatePicker, model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
+    { type: DatePicker, model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
+    { type: DatePicker, model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
+    { type: FormSwitch, model: 'customflags', label: 'Markiert', attrs: { 'class': 'ml-2' } },
+    { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { 'class': 'w-full', disabledLabel: '(Kategorie wählen)' } },
+    { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
+    { type: 'text', model: 'subline', label: 'Unterüberschrift' },
+    { type: 'textarea', model: 'teaser', label: 'Anrisstext' },
+    { type: Tiptap, model: 'content', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' } },
+  ]
+  const busy = ref(false)
+  const options = ref({ articlecategoriesid: [] })
+  const form = ref({})
+  const errors = ref({})
+  onMounted(async ()  => {
+    options.value.articlecategoriesid = (await customFetch('article/categories').json()).data.value || []
+    if (props.id) {
+      form.value = (await customFetch('article/' + props.id).json()).data.value || {}
+
+      elements.forEach(item => {
+        if(item.type === DatePicker && form.value[item.model]) {
+          form.value[item.model] = new Date(form.value[item.model])
+        }
+      })
+    }
+  })
+  const submit = async () => {
+      let f = {}
+      for (const [key, value] of Object.entries(form.value)) {
+        f[key] = value instanceof Date ? useDateFormat(value,'YYYY-MM-DD').value : value
+      }
+      busy.value = true
+      const response = (await customFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(f)).json()).data.value
+      busy.value = false
+
+      errors.value = response.errors || {}
+      emit('response-received', { success: response.success, message: response.message })
+
+      if (!props.id) {
+        router.replace({ name: 'articleEdit', params: { id: response.id }})
+      }
+  }
 </script>
 
 <template>
@@ -40,83 +98,3 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: "ArticleForm",
-  components: { datepicker: DatePicker, formSelect: FormSelect, formSwitch: FormSwitch, tiptap: Tiptap },
-  inject: ['api'],
-  emits: ['response-received'],
-  props: ['id'],
-  data() {
-    let datepickerAttrs = {
-      placeholder: 'dd.mm.yyyy',
-          'class': "w-96 w-full",
-          dayNames: 'So Mo Di Mi Do Fr Sa'.split(' '),
-          startOfWeekIndex: 1,
-          monthNames: 'Jänner,Februar,März,April,Mai,Juni,Juli,August,September,Oktober,November,Dezember'.split(','),
-          inputFormat: 'd.m.y',
-          outputFormat: 'd mmm y'
-    };
-    return {
-      busy: false,
-      options: {
-        articlecategoriesid: []
-      },
-      form: {},
-      errors: {},
-      elements: [
-        { type: 'datepicker', model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
-        { type: 'datepicker', model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
-        { type: 'datepicker', model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
-        { type: 'form-switch', model: 'customflags', label: 'Markiert', attrs: { 'class': 'ml-2' } },
-        { type: 'form-select', model: 'articlecategoriesid', label: 'Kategorie', required: true, options: this.categories, attrs: { 'class': 'w-full' } },
-        { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
-        { type: 'text', model: 'subline', label: 'Unterüberschrift' },
-        { type: 'textarea', model: 'teaser', label: 'Anrisstext' },
-        { type: 'tiptap', model: 'content', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' } },
-      ]
-    }
-  },
-  async created () {
-    this.options.articlecategoriesid = await this.$fetch(this.api +'article/categories');
-
-    if (this.id) {
-      let form = (await this.$fetch(this.api + 'article/' + this.id));
-      this.elements.forEach(item => {
-        if(item.type === 'datepicker' && form[item.model]) {
-          form[item.model] = new Date(form[item.model]);
-        }
-      });
-      this.form = form;
-      this.form.id = this.id;
-    }
-  },
-  methods: {
-    async submit () {
-
-      let form = {};
-      Object.keys(this.form).forEach(key => {
-        if (this.form[key] instanceof Date) {
-          form[key] = DateFunctions.formatDate(this.form[key],'y-mm-dd');
-        }
-        else {
-          form[key] = this.form[key];
-        }
-      });
-
-      this.busy = true;
-      let response = await this.$fetch(this.api + 'article/' + (this.form.id || ''), this.form.id ? 'PUT' : 'POST', {}, JSON.stringify(form));
-      this.busy = false;
-
-      this.errors = response.errors || {};
-      this.$emit('response-received', { success: response.success, message: response.message });
-
-      if (!this.form.id) {
-        this.form.id = response.id;
-        this.$router.replace({ name: 'articleEdit', params: { id: response.id }});
-      }
-    }
-  }
-}
-</script>

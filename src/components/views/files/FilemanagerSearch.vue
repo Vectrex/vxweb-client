@@ -1,9 +1,49 @@
 <script setup>
-  import Spinner from "@/components/misc/spinner.vue";
-  import Modal from "@/components/vx-vue/modal.vue";
-  import { Focus } from "@/directives/focus";
-  import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/vue/24/solid";
-  import { urlQueryCreate } from "@/util/url-query";
+  import Spinner from "@/components/misc/spinner.vue"
+  import Modal from "@/components/vx-vue/modal.vue"
+  import { Focus as vFocus } from "@/directives/focus"
+  import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/vue/24/solid"
+  import { urlQueryCreate } from "@/util/url-query"
+  import { customFetch } from "@/composables/customFetch"
+  import { ref } from "vue"
+
+  const props = defineProps({
+    isMounted: {type: Boolean, default: false},
+    placeholder: {type: String, default: 'Datei/Verzeichnis suchen...'},
+    minLength: {type: Number, default: 3}
+  })
+  const emit = defineEmits(['folder-picked'])
+  const modelValue = ref("")
+  const files = ref([])
+  const folders = ref([])
+  const busy = ref(false)
+  const showDialog = ref(false)
+
+  const handleInput = async (e) => {
+      modelValue.value = e.target.value
+      let term = modelValue.value.trim()
+      if (term.length >= props.minLength) {
+        busy.value = true
+        const response = (await customFetch(urlQueryCreate("files/search", { search: term })).json()).data.value || {}
+        files.value = response.files || []
+        folders.value = response.folders || []
+        busy.value = false
+      }
+      else {
+        files.value = []
+        folders.value = []
+      }
+    }
+  const handleEsc = ()  => {
+    modelValue.value = ""
+    files.value = []
+    folders.value = []
+    showDialog.value = false
+  }
+  const pickFolder = id => {
+    emit('folder-picked', id);
+    handleEsc()
+  }
 </script>
 
 <template>
@@ -61,59 +101,3 @@
     </template>
   </modal>
 </template>
-
-<script>
-import {Focus} from "@/directives/focus";
-
-export default {
-  name: 'FilemanagerSearch',
-  inject: ['api'],
-  emits: ['folder-picked'],
-  data() {
-    return {
-      modelValue: "",
-      files: [],
-      folders: [],
-      busy: false,
-      showDialog: false
-    }
-  },
-
-  props: {
-    isMounted: { type: Boolean, default: false },
-    placeholder: { type: String, default: 'Datei/Verzeichnis suchen...' },
-    minLength: { type: Number, default: 3 }
-  },
-
-  methods: {
-    async handleInput (event) {
-      this.modelValue = event.target.value;
-      let term = this.modelValue.trim();
-      if (term.length >= this.minLength) {
-        this.busy = true;
-        let response = await this.$fetch(urlQueryCreate(this.api + "files/search", { search: term }));
-        this.files = response.files || [];
-        this.folders = response.folders || [];
-        this.busy = false;
-      }
-      else {
-        this.files = [];
-        this.folders = [];
-      }
-    },
-    handleEsc () {
-      this.modelValue = "";
-      this.files = [];
-      this.folders = [];
-      this.showDialog = false;
-    },
-    pickFolder (id) {
-      this.$emit('folder-picked', id);
-      this.handleEsc();
-    }
-  },
-  directives: {
-    focus: Focus
-  }
-}
-</script>

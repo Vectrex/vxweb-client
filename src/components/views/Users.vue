@@ -1,9 +1,64 @@
 <script setup>
-  import Sortable from "@/components/vx-vue/sortable.vue";
-  import Alert from "@/components/vx-vue/alert.vue";
-  import Headline from "@/components/app/Headline.vue";
-  import UserForm from "@/components/views/users/UserForm.vue";
-  import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid';
+  import Sortable from "@/components/vx-vue/sortable.vue"
+  import Alert from "@/components/vx-vue/alert.vue"
+  import Headline from "@/components/app/Headline.vue"
+  import UserForm from "@/components/views/users/UserForm.vue"
+  import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
+  import { ref, onMounted } from "vue"
+  import { customFetch } from "@/composables/customFetch"
+  import { storeSort, getSort } from "@/util/storeSort"
+
+  const emit = defineEmits(['notify'])
+
+  const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))
+  const cols = [
+    { label: "Username", sortable: true, width: "w-1/4", prop: "username" },
+    { label: "Name", sortable: true, width: "w-1/6", prop: "name" },
+    { label: "Email", prop: "email" },
+    { label: "Gruppe", sortable: true, width: "w-1/6", prop: "alias" },
+    { label: "", width: "w-1/12", prop: "action", cssClass: "text-right" }
+  ]
+
+  const users = ref([])
+  const formShown = ref(false)
+  const editData = ref({ id: null })
+  const confirm = ref(null)
+
+  onMounted(async () => {
+    const { data } = await customFetch('users/init').json()
+    users.value = data.value?.users || []
+  })
+  const edit = id => {
+    formShown.value = true
+    editData.value.id = id
+  }
+  const handleResponse = (e) => {
+    if (e.payload?.id) {
+      let ndx = users.value.findIndex(item => item.id === e.payload.id)
+      if (ndx !== -1) {
+        users.value[ndx] = e.payload
+      }
+      else {
+        users.value.push(e.payload)
+      }
+    }
+    emit('notify', e)
+  }
+  const del = async id => {
+    if (await confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
+      const { data } = await customFetch('users/' + id).delete().json()
+      if (data.value?.id) {
+        let ndx = users.value.findIndex(row => row.id === data.value.id)
+        if (ndx !== -1) {
+          users.value.splice(ndx, 1)
+          emit('notify', { message: 'Benutzer wurde erfolgreich gelöscht.', success: true })
+        }
+      }
+      else {
+        emit('notify', { message: data.value.message || 'Es ist ein Fehler aufgetreten!', success: false })
+      }
+    }
+  }
 </script>
 
 <template>
@@ -12,7 +67,7 @@
       <button
         class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
         type="button"
-        @click="add"
+        @click="edit(null)"
       >
         <plus-icon class="w-5 h-5" />
       </button>
@@ -22,8 +77,8 @@
     <sortable
         :rows="users"
         :columns="cols"
-        :sort-prop="initSort.prop"
-        :sort-direction="initSort.dir"
+        :sort-prop="getSort().prop"
+        :sort-direction="getSort().dir"
         class="w-full"
         key-property="id"
         @after-sort="storeSort"
@@ -40,15 +95,15 @@
   <teleport to="body">
     <transition name="fade">
       <div
-          class="z-10 fixed right-0 bottom-0 top-24 left-0 bg-black/20 backdrop-blur-sm"
+          class="z-10 fixed right-0 bottom-0 top-24 left-0 bg-white/75 backdrop-blur-sm"
           v-if="formShown"
-          @click.stop="formShown = null"
+          @click.stop="formShown = false"
       />
     </transition>
     <transition name="slide-from-right">
       <user-form
           v-if="formShown"
-          @cancel="formShown = null"
+          @cancel="formShown = false"
           @response-received="handleResponse"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
@@ -68,77 +123,3 @@
     />
   </teleport>
 </template>
-
-<script>
-export default {
-  name: "Users",
-  emits: ['notify'],
-  inject: ['api'],
-  data () {
-    return {
-      users: [],
-      currentUser: {},
-      cols: [
-        { label: "Username", sortable: true, width: "w-1/4", prop: "username" },
-        { label: "Name", sortable: true, width: "w-1/6", prop: "name" },
-        { label: "Email", prop: "email" },
-        { label: "Gruppe", sortable: true, width: "w-1/6", prop: "alias" },
-        { label: "", width: "w-1/12", prop: "action", cssClass: "text-right" }
-      ],
-      initSort: {},
-      formShown: false,
-      editData: {
-        id: null
-      }
-    }
-  },
-  async created () {
-    let lsValue = window.localStorage.getItem(window.location.origin + "/admin/users/sort");
-    if(lsValue) {
-        this.initSort = JSON.parse(lsValue);
-    }
-    this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-    this.users = (await this.$fetch(this.api + 'users/init')).users || [];
-  },
-  methods: {
-    edit (id) {
-      this.editData.id = id;
-      this.formShown = true;
-    },
-    add () {
-      this.editData.id = null;
-      this.formShown = true;
-    },
-    handleResponse (event) {
-      if (event.payload?.id) {
-        let ndx = this.users.findIndex(item => item.id === event.payload.id);
-        if (ndx !== -1) {
-          this.users[ndx] = event.payload;
-        }
-        else {
-          this.users.push(event.payload);
-        }
-      }
-      this.$emit('notify', event);
-    },
-    async del (id) {
-      if (await this.$refs.confirm.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
-        let response = await this.$fetch(this.api + 'users/' + id, 'DELETE');
-        if (response.id) {
-          let ndx = this.users.findIndex(row => row.id === response.id);
-          if (ndx !== -1) {
-            this.users.splice(ndx, 1);
-            this.$emit('notify', { message: 'Benutzer wurde erfolgreich gelöscht.', success: true });
-          }
-        }
-        else {
-          this.$emit('notify', { message: response.message || 'Es ist ein Fehler aufgetreten!', success: false });
-        }
-      }
-    },
-    storeSort (event) {
-        window.localStorage.setItem(window.location.origin + "/admin/users/sort", JSON.stringify(event));
-    }
-  }
-}
-</script>
