@@ -26,7 +26,7 @@
   const del = async id => {
     if(await confirm.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
       const { data } = await customFetch('page/' + id).delete().json()
-      if (data.value.success) {
+      if (data.value?.success) {
         pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
         emit('notify', { message: 'Seite wurde erfolgreich gelöscht.', success: true })
       } else {

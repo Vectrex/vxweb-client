@@ -35,7 +35,7 @@
   ]
   const fm = ref(null)
   const handleLink = async row => {
-    const response = (await customFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: row.id })).json()).data.value
+    const response = (await customFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: row.id })).json()).data.value || {}
     if(response.success) {
       row.linked = response.status === 'linked'
       emit('update-linked')

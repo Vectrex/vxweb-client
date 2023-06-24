@@ -36,9 +36,9 @@
   const form = ref({})
   const errors = ref({})
   onMounted(async ()  => {
-    options.value.articlecategoriesid = (await customFetch('article/categories').json()).data.value
+    options.value.articlecategoriesid = (await customFetch('article/categories').json()).data.value || []
     if (props.id) {
-      form.value = (await customFetch('article/' + props.id).json()).data.value
+      form.value = (await customFetch('article/' + props.id).json()).data.value || {}
 
       elements.forEach(item => {
         if(item.type === DatePicker && form.value[item.model]) {
@@ -53,14 +53,14 @@
         f[key] = value instanceof Date ? useDateFormat(value,'YYYY-MM-DD').value : value
       }
       busy.value = true
-      const { data } = await customFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(f)).json()
+      const response = (await customFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(f)).json()).data.value
       busy.value = false
 
-      errors.value = data.value.errors || {}
-      emit('response-received', { success: data.value.success, message: data.value.message })
+      errors.value = response.errors || {}
+      emit('response-received', { success: response.success, message: response.message })
 
       if (!props.id) {
-        router.replace({ name: 'articleEdit', params: { id: data.value.id }})
+        router.replace({ name: 'articleEdit', params: { id: response.id }})
       }
   }
 </script>

@@ -9,7 +9,7 @@
   let resolve = null
   const open = async (route, currentFolder) => {
     const { data } = await customFetch(urlQueryCreate(route, { folder: currentFolder })).json()
-    root.value = data.value
+    root.value = data.value || {}
     return new Promise(res => { resolve = res })
   }
   defineExpose({ open })

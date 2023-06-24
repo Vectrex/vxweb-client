@@ -29,20 +29,20 @@
     return sanitized
   })
   watch(() => props.id, async v => {
-    const { data } = await customFetch('file/' + v).json()
-    form.value = data.value.form
-    fileInfo.value = data.value.fileInfo
+    const response = (await customFetch('file/' + v).json()).data.value || {}
+    form.value = response.form || {}
+    fileInfo.value = response.fileInfo || {}
   }, { immediate: true })
   const submit = async () => {
     busy.value = true
-    const { data } = await customFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()
+    const response = (await customFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
     busy.value = false
-    errors.value = data.value.errors || {}
+    errors.value = response.errors || {}
     emit(
         'response-received',
-        data.value.success ?
-            { success: true, message: data.value.message, payload: data.value.form || null } :
-            { success: false, message: data.value.message }
+        response.success ?
+            { success: true, message: response.message, payload: response.form || null } :
+            { success: false, message: response.message }
     )
   }
 </script>

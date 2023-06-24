@@ -52,7 +52,7 @@
   const checkedFiles = computed(() => files.value.filter(({ checked }) => checked))
   const checkedFolders = computed(() => folders.value.filter(({ checked }) => checked))
   const readFolder = async () => {
-    const response = (await customFetch(urlQueryCreate('folder/' + (props.folderId || '-') + '/read', props.requestParameters)).json()).data.value
+    const response = (await customFetch(urlQueryCreate('folder/' + (props.folderId || '-') + '/read', props.requestParameters)).json()).data.value || {}
     if (response.success) {
       parentId.value = response.parendId
       files.value = response.files || []
@@ -75,7 +75,8 @@
       files: checkedFiles.value.map(({id}) => id).join(","),
       folders: checkedFolders.valu.map(({id}) => id).join(","),
       ...props.requestParameters
-    })).delete().json()).data.value
+    })).delete().json()).data.value || {}
+
     if (response.success) {
       files.value = response.files || []
       folders.value = response.folders || []
@@ -95,7 +96,7 @@
             const response = (await customFetch(urlQueryCreate('filesfolders/moveto/' + folder.id , props.requestParameters)).put(JSON.stringify({
               files: checkedFiles.value.map(({ id }) => id),
               folders: checkedFolders.value.map(({ id }) => id)
-            })).json()).data.value
+            })).json()).data.value || {}
 
             if (response.success) {
               files.value = response.files || []
@@ -113,7 +114,7 @@
   const editFolder = row => { formShown.value = 'editFolder'; pickedId.value = row.id }
   const delFile = async row => {
     if (await confirm.value.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
-      const response = (await customFetch(urlQueryCreate('file/' + row.id, props.requestParameters)).delete().json()).data.value
+      const response = (await customFetch(urlQueryCreate('file/' + row.id, props.requestParameters)).delete().json()).data.value || {}
       if (response.success) {
         files.value.splice(files.value.findIndex(item => row === item), 1)
       }
@@ -123,15 +124,16 @@
   const rename = async (e, type) => {
     let name = e.target.value.trim()
     if (name && toRename.value) {
-      const response = (await customFetch(urlQueryCreate(type + '/' + toRename.value.id + '/rename', props.requestParameters)).put(JSON.stringify({ name: name })).json()).data.value
+      const response = (await customFetch(urlQueryCreate(type + '/' + toRename.value.id + '/rename', props.requestParameters)).put(JSON.stringify({ name: name })).json()).data.value || {}
       if (response.success) {
+        toRename.value.name = response.name || name
         toRename.value = null
       }
     }
   }
   const delFolder = async row => {
     if (await confirm.value.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?")) {
-      const response = (await customFetch(urlQueryCreate('folder/' + row.id, props.requestParameters)).delete().json()).data.value
+      const response = (await customFetch(urlQueryCreate('folder/' + row.id, props.requestParameters)).delete().json()).data.value || {}
       if (response.success) {
         folders.value.splice(folders.value.findIndex(item => row === item), 1)
       }
@@ -140,7 +142,7 @@
   }
   const createFolder = async name => {
     showAddActivities.value = false
-    const response = (await customFetch(urlQueryCreate('folder', props.requestParameters)).post(JSON.stringify({ name: name, parent: currentFolderId.value })).json()).data.value
+    const response = (await customFetch(urlQueryCreate('folder', props.requestParameters)).post(JSON.stringify({ name: name, parent: currentFolderId.value })).json()).data.value || {}
     if (response.folder) {
       folders.value.push(response.folder)
     }
@@ -153,7 +155,7 @@
           let folder = await folderTree.value.open(urlQueryCreate('folders/tree', props.requestParameters), currentFolderId.value)
           formShown.value = null
           if (folder !== false) {
-            const response = (await customFetch(urlQueryCreate('file/' + row.id + '/move', props.requestParameters)).put(JSON.stringify({ folderId: folder.id })).json()).data.value
+            const response = (await customFetch(urlQueryCreate('file/' + row.id + '/move', props.requestParameters)).put(JSON.stringify({ folderId: folder.id })).json()).data.value || {}
             if (response.success) {
               files.value.splice(files.value.findIndex(item => row === item), 1)
             }

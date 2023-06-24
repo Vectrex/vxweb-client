@@ -35,7 +35,7 @@
     emit('notify', response)
   }
   const activateRevision = async revision => {
-    const response = (await customFetch('revision/' + revision.id + '/activate').put().json()).data.value
+    const response = (await customFetch('revision/' + revision.id + '/activate').put().json()).data.value || {}
     if (response.success) {
       let active = revisions.value.find(item => item.active === true)
       if (active) {
@@ -50,20 +50,20 @@
     emit('notify', response)
   }
   const deleteRevision = async revision => {
-    const response = (await customFetch('revision/' + revision.id).delete().json()).data.value
+    const response = (await customFetch('revision/' + revision.id).delete().json()).data.value || {}
     if (response.success) {
       handleResponse(response)
     }
     emit('notify', response)
   }
   const loadRevision = async revision => {
-    const response = (await customFetch('revision/' + revision.id).json()).data.value
+    const response = (await customFetch('revision/' + revision.id).json()).data.value || {}
     if (response.success) {
       handleResponse(response)
     }
   }
   onMounted(async () => {
-    if(props.id) { handleResponse((await customFetch('page/' + props.id).json()).data.value) }
+    if(props.id) { handleResponse((await customFetch('page/' + props.id).json()).data.value || {}) }
   })
 </script>
 

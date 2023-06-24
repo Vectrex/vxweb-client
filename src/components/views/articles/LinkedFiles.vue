@@ -14,14 +14,14 @@
   }
   const unlinkSort = async file => {
     const { data } = await customFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: file.id })).json()
-    if(data.value.success) {
+    if(data.value?.success) {
       linkedFiles.value.splice(linkedFiles.value.findIndex(item => item === file), 1)
       emit('update-linked')
     }
   }
   const toggleVisibility = async file => {
     const { data } = await customFetch('article/' + props.articleId + '/toggle-linked-file').put(JSON.stringify({ fileId: file.id })).json()
-    if(data.value.success) {
+    if(data.value?.success) {
       file.hidden = !!data.value.hidden
     }
   }

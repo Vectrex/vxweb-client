@@ -32,23 +32,23 @@
     return sanitized
   })
   watch(() => props.id, async newValue => {
-    const { data } = await customFetch('user/' + (newValue || '')).json()
-    options.value = data.value?.options || {}
-    form.value = data.value?.form || {}
+    const response = (await customFetch('user/' + (newValue || '')).json()).data.value || {}
+    options.value = response.options || {}
+    form.value = response.form || {}
   }, { immediate: true })
   const submit = async () => {
     busy.value = true
-    const { data } = await customFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()
+    const response = (await customFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()).data.value
     busy.value = false
 
-    if (data.value.success) {
+    if (response.success) {
       errors.value = {}
-      form.value = data.value.form
-      emit('response-received', { success: true, message: data.value.message, payload: Object.assign({}, data.value.form) || null })
+      form.value = response.form
+      emit('response-received', { success: true, message: response.message, payload: Object.assign({}, response.form) || null })
     }
     else {
-      errors.value = data.value.errors || {}
-      emit('response-received', { success: false, message: data.value.message })
+      errors.value = response.errors || {}
+      emit('response-received', { success: false, message: response.message })
     }
   }
 </script>

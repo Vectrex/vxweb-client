@@ -24,9 +24,9 @@
       let term = modelValue.value.trim()
       if (term.length >= props.minLength) {
         busy.value = true
-        const { data } = await customFetch(urlQueryCreate("files/search", { search: term })).json()
-        files.value = data.value.files || []
-        folders.value = data.value.folders || []
+        const response = (await customFetch(urlQueryCreate("files/search", { search: term })).json()).data.value || {}
+        files.value = response.files || []
+        folders.value = response.folders || []
         busy.value = false
       }
       else {

@@ -26,7 +26,7 @@
   const getLinkedFiles = async () => {
     if (props.id) {
       const { data } = await customFetch('article/' + props.id + '/linked-files').json()
-      tabsItems.value.items[1].badge = data.value.length || 0
+      tabsItems.value.items[1].badge = data.value?.length || 0
     }
   }
   onMounted(getLinkedFiles)

@@ -35,14 +35,14 @@
 
   onMounted(async () => {
     const { data } = await customFetch('articles').json()
-    articles.value = data.value.articles || []
-    categories.value = data.value.categories || []
+    articles.value = data.value?.articles || []
+    categories.value = data.value?.categories || []
     categories.value.forEach(item => item.key = item.id)
   })
   const del = async article => {
     if (await confirm.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`)) {
       const { data } = await customFetch('article/' + article.id).delete().json()
-      if (data.value.success) {
+      if (data.value?.success) {
         articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
       }
       emit('notify', data.value);
@@ -51,7 +51,7 @@
   const publish = async (row) => {
     row.pub = !row.pub
     const { data } = await customFetch(`article/${row.id}/${(row.pub ? 'publish' : 'unpublish')}`).put().json()
-    if(!data.value.success) {
+    if(!data.value?.success) {
       row.pub = !row.pub
     }
     emit('notify', data.value)

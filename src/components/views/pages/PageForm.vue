@@ -18,10 +18,10 @@
     ]
   const submit = async () => {
     busy.value = true
-    const { data } = await customFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(form.value)).json()
+    const response = (await customFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(form.value)).json()).data.value || {}
     busy.value = false
-    errors.value = data.value.errors || {}
-    emit('response-received', data.value)
+    errors.value = response.errors || {}
+    emit('response-received', response)
   }
   watch(() => props.initData, v => form.value = v || {}, { immediate: true })
 </script>
