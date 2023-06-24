@@ -1,7 +1,7 @@
 <script setup>
-  import { useRouter } from 'vue-router';
+  import router from "@/router"
+
   const props = defineProps({ expanded: Boolean })
-  const router = useRouter()
   const linkedRoutes = router.options.routes.filter(route => route.meta?.label)
   const userRoles = JSON.parse(sessionStorage.getItem('currentUser'))?.roles || []
 </script>
