@@ -1,40 +1,43 @@
-function parseDate(dateString, format) {
+import { ref, toValue } from "vue"
+export function parseDate(dateString, format) {
+    const date = ref(false);
+    const fmt = toValue(format);
 
-    let matches, escapedFormat = format.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), posMap = [];
+    let matches, escapedFormat = fmt.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), posMap = [];
 
     // check for single day, month and year expression
 
-    if((matches = format.match(/\bd\b/gi)) && 1 === matches.length) {
+    if((matches = fmt.match(/\bd\b/gi)) && 1 === matches.length) {
         escapedFormat = escapedFormat.replace('d', '(\\d{1,2})');
     }
-    else if((matches = format.match(/\bdd\b/gi)) && 1 === matches.length) {
+    else if((matches = fmt.match(/\bdd\b/gi)) && 1 === matches.length) {
         escapedFormat = escapedFormat.replace('dd', '(\\d{2})');
     }
     else {
-        return false;
+        return { date }
     }
-    posMap.push( { srcPos: format.toLowerCase().indexOf('d'), destPos: 2 });
+    posMap.push( { srcPos: fmt.toLowerCase().indexOf('d'), destPos: 2 });
 
-    if((matches = format.match(/\bm\b/gi)) && 1 === matches.length) {
+    if((matches = fmt.match(/\bm\b/gi)) && 1 === matches.length) {
         escapedFormat = escapedFormat.replace('m', '(\\d{1,2})');
     }
-    else if((matches = format.match(/\bmm\b/gi)) && 1 === matches.length) {
+    else if((matches = fmt.match(/\bmm\b/gi)) && 1 === matches.length) {
         escapedFormat = escapedFormat.replace('mm', '(\\d{2})');
     }
     else {
-        return false;
+        return { date }
     }
-    posMap.push( { srcPos: format.toLowerCase().indexOf('m'), destPos: 1 });
+    posMap.push( { srcPos: fmt.toLowerCase().indexOf('m'), destPos: 1 });
 
-    if((matches = format.match(/\byyyy\b/gi)) && 1 === matches.length) {
+    if((matches = fmt.match(/\byyyy\b/gi)) && 1 === matches.length) {
         escapedFormat = escapedFormat.replace('yyyy', '(\\d{4})');
     }
     else {
-        return false;
+        return { date }
     }
-    posMap.push( { srcPos: format.toLowerCase().indexOf('y'), destPos: 0 });
-    if(!(matches = dateString.match(escapedFormat))) {
-        return false;
+    posMap.push( { srcPos: fmt.toLowerCase().indexOf('y'), destPos: 0 });
+    if(!(matches = toValue(dateString).match(escapedFormat))) {
+        return { date }
     }
 
     // remove first match
@@ -55,10 +58,9 @@ function parseDate(dateString, format) {
     result = Date.parse(result.join('-'));
 
     if(!result) {
-        return false;
+        return { date }
     }
     result = new Date(result);
-    return new Date(result.getFullYear(), result.getMonth(), result.getDate(), 0, 0, 0);
+    date.value = new Date(result.getFullYear(), result.getMonth(), result.getDate(), 0, 0, 0);
+    return { date };
 }
-
-export { parseDate }
