@@ -1,5 +1,6 @@
-import { ref, toValue } from "vue"
+import { ref, toValue } from "vue";
 export function parseDate(dateString, format) {
+
     const date = ref(false);
     const fmt = toValue(format);
 
@@ -57,10 +58,9 @@ export function parseDate(dateString, format) {
 
     result = Date.parse(result.join('-'));
 
-    if(!result) {
-        return { date }
+    if(result) {
+        result = new Date(result);
+        date.value = new Date(result.getFullYear(), result.getMonth(), result.getDate(), 0, 0, 0);
     }
-    result = new Date(result);
-    date.value = new Date(result.getFullYear(), result.getMonth(), result.getDate(), 0, 0, 0);
     return { date };
 }

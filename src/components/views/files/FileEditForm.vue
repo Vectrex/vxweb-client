@@ -2,7 +2,7 @@
   import SubmitButton from "@/components/misc/submit-button.vue"
   import FormDialog from "@/components/views/shared/FormDialog.vue"
   import Divider from "@/components/misc/divider.vue"
-  import { formatFilesize } from '@/util/format-filesize'
+  import { formatFilesize } from '@/composables/formatFilesize'
   import { customFetch } from "@/composables/customFetch"
   import { computed, ref, watch } from "vue"
 
@@ -59,7 +59,7 @@
                       <span class="w-1/3 inline-block">Typ</span><span class="w-2/3 inline-block">{{ fileInfo.mimetype }}</span>
                       <span class="w-1/3 inline-block">Link</span><span class="w-2/3 inline-block"><a class="link" :href="fileInfo.url" target="_blank">{{ fileInfo.name }}</a></span>
                       <template v-if="fileInfo.cache">
-                          <span class="w-1/3 inline-block">Cache</span><span class="w-2/3 inline-block">{{ fileInfo.cache.count }} Dateien, {{ formatFilesize(fileInfo.cache.totalSize) }}</span>
+                          <span class="w-1/3 inline-block">Cache</span><span class="w-2/3 inline-block">{{ fileInfo.cache.count }} Dateien, {{ formatFilesize(fileInfo.cache.totalSize).formatted.value }}</span>
                       </template>
                   </div>
               </div>

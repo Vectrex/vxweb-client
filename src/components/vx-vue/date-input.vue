@@ -1,6 +1,6 @@
 <script setup>
-  import { parseDate } from "@/util/parseDate"
-  import { formatDate } from "@vueuse/core";
+  import { parseDate } from "@/composables/parseDate"
+  import { formatDate } from "@vueuse/core"
   import { computed, ref, useAttrs, watch } from "vue"
 
   const emit = defineEmits(['update:modelValue', 'toggle-datepicker'])
@@ -32,7 +32,7 @@
        class="block w-full form-input focus:border-vxvue"
        :class="{ 'pr-10': showButton }"
        v-model="inputString"
-       @blur="emit('update:modelValue', parseDate(inputString, props.inputFormat) || null)"
+       @blur="emit('update:modelValue', parseDate(inputString, props.inputFormat).date || null)"
        @input.prevent
        v-bind="inputAttrs"
     >

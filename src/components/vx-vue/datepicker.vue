@@ -4,7 +4,7 @@
   import { onClickOutside } from "@vueuse/core"
 
   const props = defineProps({
-    modelValue: Date,
+    modelValue: [Date, Boolean],
     validFrom: Date,
     validUntil: Date,
     dayNames: { type: Array, default: (() => "S M T W T F S".split(" ")) },

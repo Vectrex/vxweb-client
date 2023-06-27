@@ -10,7 +10,7 @@
   import Alert from "@/components/vx-vue/alert.vue"
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
   import { urlQueryCreate } from '@/util/url-query'
-  import { formatFilesize } from "@/util/format-filesize"
+  import { formatFilesize } from "@/composables/formatFilesize"
   import { Focus as vFocus } from "@/directives/focus"
   import { customFetch } from "@/composables/customFetch"
   import { promisedXhr } from "@/util/promisedXhr"
@@ -365,7 +365,7 @@
       </template>
 
       <template v-slot:size="slotProps">
-        <template v-if="!slotProps.row.isFolder">{{ formatFilesize(slotProps.row.size, ',') }}</template>
+        <template v-if="!slotProps.row.isFolder">{{ formatFilesize(slotProps.row.size, ',').formatted.value }}</template>
       </template>
 
       <template v-slot:type="slotProps">
