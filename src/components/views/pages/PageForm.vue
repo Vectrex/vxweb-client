@@ -13,9 +13,8 @@
   const tiptap = ref(null)
   const elements = [
       { type: 'text', model: 'title', label: 'Titel', required: true },
-      { type: Tiptap, model: 'markup', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' }, ref: 'tiptap' },
       { type: 'textarea', model: 'description', label: 'Beschreibung' },
-      { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' },
+      { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' }
     ]
   const submit = async () => {
     busy.value = true
@@ -60,14 +59,14 @@
           v-model="form[element.model]"
           class="form-textarea w-full"
       />
-      <component
-          v-else
-          :is="element.type"
-          :id="element.model"
-          :options="options[element.model] || []"
-          :ref="element.ref || null"
-          v-model="form[element.model]"
-          v-bind="element.attrs"
+    </div>
+    <div class="flex items-center flex-wrap">
+      <label for="markup" :class="['required', { 'text-error': errors.markup }]">Inhalt</label>
+      <tiptap
+          v-model="form.markup"
+          ref="tiptap"
+          id="markup"
+          class="w-full"
           @open-file-manager="emit('openFileManager')"
       />
     </div>

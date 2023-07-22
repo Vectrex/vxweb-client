@@ -67,7 +67,7 @@
       handleResponse(response)
     }
   }
-  const insertPickedFile = obj => { editForm.value.tiptap[0].injectImage(obj); showFm.value = false }
+  const insertPickedFile = obj => { editForm.value.tiptap.injectImage(obj); showFm.value = false }
 
   onMounted(async () => {
     if(props.id) { handleResponse((await customFetch('page/' + props.id).json()).data.value || {}) }
@@ -78,7 +78,7 @@
   <teleport to="#tools">
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
-  <div class="flex w-full space-x-4 justify-start">
+  <div class="flex w-full space-x-4 justify-start pb-4">
     <page-form :init-data="form" class="w-full" @response-received="handleFormResponse" :id="id" ref="editForm" @open-file-manager="showFm = true" />
     <div class="w-1/3 flex-shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
       <revision-table
