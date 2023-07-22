@@ -55,7 +55,7 @@
       }
     }
   }
-  const injectImage = fileObj => { editor.commands.setImage({ src: fileObj.fullPath }) }
+  const injectImage = fileObj => { editor.commands.setImage({ src: fileObj.url }) }
 
   watch (() => props.modelValue, v => { if(editor.getHTML() !== v) { editor.commands.setContent(v, false) }})
   onBeforeUnmount(() => editor.destroy())
