@@ -21,7 +21,7 @@
         v-bind="inputAttrs"
         class="form-input w-full pr-10 block focus:border-brand"
     >
-    <button type="button" @click.stop="show = !show" class="absolute right-0 pr-3 flex items-center inset-y-0 text-brand-700 hover:text-brand">
+    <button @click.stop="show = !show" class="absolute right-0 pr-3 flex items-center inset-y-0 text-brand-700 hover:text-brand">
       <eye-slash-icon class="h-5 w-5" v-if="show" />
       <eye-icon class="h-5 w-5" v-else />
     </button>

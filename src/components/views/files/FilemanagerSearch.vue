@@ -17,7 +17,7 @@
   const files = ref([])
   const folders = ref([])
   const busy = ref(false)
-  const showDialog = ref(false)
+  const showSearch = ref(false)
 
   const handleInput = async (e) => {
       modelValue.value = e.target.value
@@ -38,7 +38,7 @@
     modelValue.value = ""
     files.value = []
     folders.value = []
-    showDialog.value = false
+    showSearch.value = false
   }
   const pickFolder = id => {
     emit('folder-picked', id);
@@ -48,10 +48,10 @@
 
 <template>
   <teleport to="#search-input" v-if="isMounted">
-    <button type="button" class="icon-link flex items-center" @click="showDialog = !showDialog"><magnifying-glass-icon class="h-5 w-5" /> Suchen...</button>
+    <button class="icon-link flex items-center" @click="showSearch = !showSearch"><magnifying-glass-icon class="h-5 w-5" /> Suchen...</button>
   </teleport>
 
-  <modal :show="showDialog">
+  <modal :show="showSearch">
     <template #title>
       <div class="fixed flex w-full justify-between items-center bg-vxvue-500 h-16 px-4">
         <div class="flex items-center space-x-2 w-full">

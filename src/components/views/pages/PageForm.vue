@@ -4,15 +4,16 @@
   import { customFetch } from "@/composables/customFetch"
   import { ref, watch } from "vue"
 
-  const emit = defineEmits(['response-received'])
+  const emit = defineEmits(['responseReceived', 'openFileManager'])
   const props = defineProps({ initData: Object, id: [String, Number] })
   const form = ref({})
   const errors = ref({})
   const options = ref({})
   const busy = ref(false)
+  const tiptap = ref(null)
   const elements = [
       { type: 'text', model: 'title', label: 'Titel', required: true },
-      { type: Tiptap, model: 'markup', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' } },
+      { type: Tiptap, model: 'markup', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' }, ref: 'tiptap' },
       { type: 'textarea', model: 'description', label: 'Beschreibung' },
       { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' },
     ]
@@ -24,6 +25,7 @@
     emit('response-received', response)
   }
   watch(() => props.initData, v => form.value = v || {}, { immediate: true })
+  defineExpose({ tiptap })
 </script>
 
 <template>
@@ -63,8 +65,10 @@
           :is="element.type"
           :id="element.model"
           :options="options[element.model] || []"
+          :ref="element.ref || null"
           v-model="form[element.model]"
           v-bind="element.attrs"
+          @open-file-manager="emit('openFileManager')"
       />
     </div>
     <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>

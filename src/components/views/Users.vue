@@ -66,7 +66,6 @@
     <headline><span>Benutzer</span>
       <button
         class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
-        type="button"
         @click="edit(null)"
       >
         <plus-icon class="w-5 h-5" />

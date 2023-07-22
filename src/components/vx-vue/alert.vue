@@ -65,7 +65,7 @@
                 </p>
               </div>
               <div class="mt-5 sm:mt-6 flex justify-center space-x-2" ref="buttons">
-                <button type="button" :class="[buttonClass, button['class']]" @click.prevent="handleClick(button.value)" v-for="button in buttonArray">{{ button.label }}</button>
+                <button :class="[buttonClass, button['class']]" @click.prevent="handleClick(button.value)" v-for="button in buttonArray">{{ button.label }}</button>
               </div>
             </div>
           </div>

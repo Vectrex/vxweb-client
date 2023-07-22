@@ -16,7 +16,6 @@
       <button
         class="icon-link flex items-center tooltip"
         :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'"
-        type="button"
         @click="emit('move-selection')"
       >
         <document-minus-icon class="h-5 w-5"/>
@@ -26,7 +25,6 @@
       <button
         class="icon-link tooltip"
         :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner löschen'"
-        type="button"
         @click="confirmDelete"
       >
         <trash-icon class="h-5 w-5" />

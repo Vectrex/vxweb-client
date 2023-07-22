@@ -42,7 +42,6 @@
       <span>{{ $route.meta?.heading }}</span>
       <button
           class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
-          type="button"
           @click="$router.push({ name: 'pageEdit' })"
       >
         <plus-icon class="w-5 h-5" />

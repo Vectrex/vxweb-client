@@ -15,14 +15,15 @@
   import { customFetch } from "@/composables/customFetch"
   import { promisedXhr } from "@/util/promisedXhr"
   import router from "@/router"
-  import {ref, onMounted, watch, computed, nextTick} from "vue"
+  import {ref, onMounted, watch, computed, nextTick } from "vue"
 
   const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id'])
   const props = defineProps({
       columns: {type: Array, required: true},
       folderId: {type: [Number, String], default: ''},
       initSort: Object,
-      requestParameters: {type: Object, default: {}}
+      requestParameters: {type: Object, default: {}},
+      isModal: Boolean
   })
   const isMounted = ref(false)
   const limits = ref({})
@@ -252,12 +253,11 @@
             :breadcrumbs="breadcrumbs"
             :current-folder="currentFolderId"
             :folders="folders"
-            @breadcrumb-clicked="$emit('update:folder-id', $event.id)"
+            @breadcrumb-clicked="emit('update:folder-id', $event.id)"
         />
         <div class="relative">
           <button
               class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
-              type="button"
               href="#" @click.stop="showAddActivities = !showAddActivities"
           >
             <plus-icon class="w-5 h-5" />
@@ -282,7 +282,7 @@
 
       <div class="bg-slate-200 px-8 py-4 w-1/4 flex justify-center rounded-l rounded-r">
         <div class="flex space-x-2 items-center" v-if="upload.progressing">
-          <button class="icon-link" data-tooltip="Abbrechen" type="button" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
+          <button class="icon-link" data-tooltip="Abbrechen" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
           <div class="flex flex-col items-center space-y-2">
             <div class="text-sm">{{ progress.file }}</div>
             <div class="w-64 bg-slate-200 rounded-full h-2">
@@ -301,7 +301,7 @@
         :columns="columns"
         :sort-prop="initSort.prop"
         :sort-direction="initSort.dir"
-        @after-sort="$emit('after-sort', $event)"
+        @after-sort="emit('after-sort', $event)"
         ref="sortable"
     >
 
@@ -330,7 +330,7 @@
                 @blur="toRename = null"
             >
             <template v-else>
-              <a :href="'#' + slotProps.row.id" @click.prevent="$emit('update:folder-id', slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
+              <a :href="'#' + slotProps.row.id" @click.prevent="emit('update:folder-id', slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
               <button
                   class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
                   data-tooltip="Umbenennen"
@@ -394,7 +394,7 @@
         :id="pickedId"
         v-if="formShown === 'editFolder'"
         @cancel="formShown = null"
-        @response-received="$emit('response-received', $event)"
+        @response-received="emit('response-received', $event)"
         class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
       />
     </transition>
@@ -404,7 +404,7 @@
         :id="pickedId"
         v-if="formShown === 'editFile'"
         @cancel="formShown = null"
-        @response-received="$emit('response-received', $event)"
+        @response-received="emit('response-received', $event)"
         class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
       />
     </transition>
@@ -434,6 +434,5 @@
     />
   </teleport>
 
-  <filemanager-search @folder-picked="$emit('update:folder-id', $event.id)" :is-mounted="isMounted" />
-
+  <filemanager-search @folder-picked="emit('update:folder-id', $event.id)" :is-mounted="isMounted" v-if="!isModal" />
 </template>

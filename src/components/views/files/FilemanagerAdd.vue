@@ -42,7 +42,6 @@
     />
     <button
         v-else
-        type="button"
         @click.stop="showAddFolderInput = true"
         class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex space-x-1 items-center"
     >

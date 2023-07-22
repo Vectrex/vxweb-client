@@ -6,7 +6,7 @@
 
 <template>
   <div class="flex space-x-2 items-center">
-    <button class="button success" type="button" @click="emit('submit')" :disabled="busy"><slot /></button>
+    <button class="button success" @click="emit('submit')" :disabled="busy"><slot /></button>
     <spinner v-if="busy" class="!text-green-700" />
   </div>
 </template>

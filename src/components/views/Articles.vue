@@ -63,7 +63,6 @@
     <headline><span>Artikel</span>
       <button
           class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
-          type="button"
           @click="$router.push({ name: 'articleEdit' })"
       >
         <plus-icon class="w-5 h-5" />
@@ -106,7 +105,7 @@
         <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link tooltip" data-tooltip="Bearbeiten">
           <pencil-square-icon class="h-5 w-5" />
         </router-link>
-        <button class="icon-link tooltip" data-tooltip="Löschen" type="button" @click="del(slotProps.row)">
+        <button class="icon-link tooltip" data-tooltip="Löschen" @click="del(slotProps.row)">
           <trash-icon class="h-5 w-5" />
         </button>
       </div>

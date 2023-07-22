@@ -11,11 +11,12 @@
   import HardBreak from '@tiptap/extension-hard-break'
   import History from '@tiptap/extension-history'
   import Link from '@tiptap/extension-link'
-  import { ArrowUturnLeftIcon, ArrowUturnRightIcon, CodeBracketSquareIcon, LinkIcon } from '@heroicons/vue/24/solid'
+  import Image from '@tiptap/extension-image'
+  import { ArrowUturnLeftIcon, ArrowUturnRightIcon, CodeBracketSquareIcon, LinkIcon, PhotoIcon } from '@heroicons/vue/24/solid'
   import { onBeforeUnmount, ref, watch } from "vue"
 
   const props = defineProps({ modelValue: String })
-  const emit = defineEmits(['update:modelValue'])
+  const emit = defineEmits(['update:modelValue', 'openFileManager'])
   const showSrc = ref(false)
   const editor = new Editor({
     extensions: [
@@ -31,6 +32,11 @@
       Italic,
       Link.configure({
         openOnClick: false,
+      }),
+      Image.configure({
+        HTMLAttributes: {
+          class: 'object-cover'
+        }
       })
     ],
     content: props.modelValue,
@@ -49,9 +55,11 @@
       }
     }
   }
+  const injectImage = fileObj => { editor.commands.setImage({ src: fileObj.fullPath }) }
 
   watch (() => props.modelValue, v => { if(editor.getHTML() !== v) { editor.commands.setContent(v, false) }})
   onBeforeUnmount(() => editor.destroy())
+  defineExpose({ injectImage })
 </script>
 
 <template>
@@ -72,6 +80,9 @@
         </button>
         <button @click="toggleLink" :class="buttonClass('link')">
             <link-icon class="w-5 h-5" />
+        </button>
+        <button @click="emit('openFileManager')" :class="buttonClass('image')">
+          <photo-icon class="w-5 h-5" />
         </button>
       </div>
       <div class="flex space-x-1 px-1">
