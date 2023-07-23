@@ -29,7 +29,7 @@
     { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
     { type: 'text', model: 'subline', label: 'Unterüberschrift' },
     { type: 'textarea', model: 'teaser', label: 'Anrisstext' },
-    { type: Tiptap, model: 'content', label: 'Inhalt', required: true, attrs: { 'class': 'w-full' } },
+    { type: Tiptap, model: 'content', label: 'Inhalt', required: true, attrs: { 'class': 'w-full', fileManagerDisable: true } }
   ]
   const busy = ref(false)
   const options = ref({ articlecategoriesid: [] })

@@ -15,7 +15,7 @@
   import { ArrowUturnLeftIcon, ArrowUturnRightIcon, CodeBracketSquareIcon, LinkIcon, PhotoIcon } from '@heroicons/vue/24/solid'
   import { onBeforeUnmount, ref, watch } from "vue"
 
-  const props = defineProps({ modelValue: String })
+  const props = defineProps({ modelValue: String, fileManagerDisable: Boolean })
   const emit = defineEmits(['update:modelValue', 'openFileManager'])
   const showSrc = ref(false)
   const editor = new Editor({
@@ -81,7 +81,7 @@
         <button @click="toggleLink" :class="buttonClass('link')">
             <link-icon class="w-5 h-5" />
         </button>
-        <button @click="emit('openFileManager')" :class="buttonClass('image')">
+        <button @click="emit('openFileManager')" :class="buttonClass('image')" v-if="!fileManagerDisable">
           <photo-icon class="w-5 h-5" />
         </button>
       </div>

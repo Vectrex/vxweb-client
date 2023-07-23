@@ -1,6 +1,6 @@
 <script setup>
   import Filemanager from "@/components/views/files/Filemanager.vue"
-  import { TrashIcon, ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/solid'
+  import { ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/solid'
   import { getSort, storeSort } from "@/util/storeSort"
   import { ref } from "vue"
 
@@ -42,10 +42,7 @@
   >
     <template v-slot:action="slotProps">
       <div class="flex items-center space-x-1 justify-end">
-      <template v-if="!slotProps.row.isFolder">
-          <button class="icon-link" @click="fm.delFile(slotProps.row)">
-            <trash-icon class="h-5 w-5" />
-          </button>
+        <template v-if="!slotProps.row.isFolder">
           <button class="icon-link" @click="emit('pickFile', slotProps.row)">
             <arrow-top-right-on-square-icon class="h-5 w-5" />
           </button>

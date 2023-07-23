@@ -247,7 +247,7 @@
       @dragleave.prevent.stop="indicateDrag = false"
       :class="{'border-2 border-dotted border-vxvue-alt -m-[2px]': indicateDrag }"
   >
-    <div class="flex pb-4 justify-between items-center h-16">
+    <div class="flex pb-4 space-x-4 items-center h-16">
       <div class="flex items-center space-x-4">
         <filemanager-breadcrumbs
             :breadcrumbs="breadcrumbs"
@@ -280,7 +280,7 @@
         />
       </div>
 
-      <div class="bg-slate-200 px-8 py-4 w-1/4 flex justify-center rounded-l rounded-r">
+      <div class="bg-slate-200 px-8 py-4 w-full flex justify-center rounded-l rounded-r">
         <div class="flex space-x-2 items-center" v-if="upload.progressing">
           <button class="icon-link" data-tooltip="Abbrechen" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
           <div class="flex flex-col items-center space-y-2">
@@ -293,7 +293,7 @@
         <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
       </div>
 
-      <div id="search-input" />
+      <div id="search-input" v-if="!isModal" />
     </div>
 
     <sortable
