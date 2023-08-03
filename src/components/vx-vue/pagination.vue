@@ -1,5 +1,6 @@
 <script setup>
-import { computed, watch, ref } from "vue"
+  import { computed, watch, ref } from "vue"
+  import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/solid"
 
   const emit = defineEmits(['update:page'])
   const props = defineProps({
@@ -90,9 +91,7 @@ import { computed, watch, ref } from "vue"
           class="border-transparent pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
           :class="[{'cursor-default pointer-events-none': currentPage <=1 }, markerPositionClass]"
       >
-        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-          <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-        </svg>
+        <chevron-left-icon class="h-5 w-5" />
         {{ prevText }}
       </a>
     </div>
@@ -122,9 +121,7 @@ import { computed, watch, ref } from "vue"
           :class="[markerPositionClass, {'cursor-default pointer-events-none': currentPage >= maxPage }]"
       >
         {{ nextText }}
-        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-        </svg>
+        <chevron-right-icon class="h-5 w-5" />
       </a>
     </div>
   </nav>
