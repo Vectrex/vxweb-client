@@ -26,18 +26,18 @@
   const buttons = ref(null)
 
   const open = (t, m) => {
-    title.value = t;
-    message.value = m;
-    show.value = true;
-    nextTick(() => buttons.value.firstElementChild.focus());
+    title.value = t
+    message.value = m
+    show.value = true
+    nextTick(() => buttons.value.firstElementChild.focus())
     return new Promise((res, rej) => {
-      resolve.value = res;
-      reject.value = rej;
-    });
+      resolve.value = res
+      reject.value = rej
+    })
   }
   const handleClick = (value) => {
-    show.value = false;
-    resolve.value(value);
+    show.value = false
+    resolve.value(value)
   }
 
   defineExpose({ open })
