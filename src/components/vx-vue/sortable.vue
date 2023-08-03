@@ -1,5 +1,5 @@
 <script setup>
-  import { computed, nextTick, ref } from "vue";
+  import { computed, nextTick, ref } from "vue"
 
   const props = defineProps({
     columns: {
@@ -8,10 +8,10 @@
       validator: val => {
         for (const c of val) {
           if(c.label === undefined || c.prop === undefined) {
-            return false;
+            return false
           }
         }
-        return true;
+        return true
       }
     },
     rows: { type: Array, required: true },

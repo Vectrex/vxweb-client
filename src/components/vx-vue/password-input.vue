@@ -1,6 +1,6 @@
 <script setup>
-  import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline';
-  import { useAttrs, computed, ref } from "vue";
+  import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/outline'
+  import { useAttrs, computed, ref } from 'vue'
 
   const props = defineProps(['modelValue'])
   const emit = defineEmits(['update:modelValue'])

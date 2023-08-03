@@ -1,6 +1,6 @@
 <script setup>
   import { XMarkIcon } from '@heroicons/vue/24/solid'
-  import { computed, onMounted, ref, watch } from "vue";
+  import { computed, onMounted, ref, watch } from 'vue'
 
   defineOptions({
     inheritAttrs: false
@@ -15,12 +15,12 @@
   const activeTimeout = ref(null)
   const lines = computed(() => typeof props.message === 'string' ? [props.message] : props.message)
   const startTimeout = () => {
-    window.clearTimeout(activeTimeout.value);
+    window.clearTimeout(activeTimeout.value)
 
     // timeout 0 disables fadeout
 
     if (props.active && props.timeout) {
-      activeTimeout.value = window.setTimeout(() => { emit('timeout') }, props.timeout);
+      activeTimeout.value = window.setTimeout(() => { emit('timeout') }, props.timeout)
     }
   }
 

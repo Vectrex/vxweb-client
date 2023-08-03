@@ -1,10 +1,10 @@
 <script setup>
-  import PasswordInput from "@/components/vx-vue/password-input.vue";
-  import SubmitButton from "@/components/misc/submit-button.vue";
-  import Logo from "@/components/misc/logo.vue";
-  import { HomeIcon } from '@heroicons/vue/20/solid';
-  import { customFetch } from "@/composables/customFetch";
-  import { ref } from "vue";
+  import PasswordInput from "@/components/vx-vue/password-input.vue"
+  import SubmitButton from "@/components/misc/submit-button.vue"
+  import Logo from "@/components/misc/logo.vue"
+  import { HomeIcon } from '@heroicons/vue/20/solid'
+  import { customFetch } from "@/composables/customFetch"
+  import { ref } from "vue"
 
   const emit = defineEmits(['authenticate', 'notify'])
   const form = ref({ username: '', password: '' })

@@ -41,7 +41,7 @@
     showSearch.value = false
   }
   const pickFolder = id => {
-    emit('folder-picked', id);
+    emit('folder-picked', id)
     handleEsc()
   }
 </script>

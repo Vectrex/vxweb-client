@@ -21,7 +21,7 @@
     return items
   })
   const activeTab = computed(() => {
-      return router.currentRoute.value.params.section || 'edit';
+      return router.currentRoute.value.params.section || 'edit'
   })
   const getLinkedFiles = async () => {
     if (props.id) {

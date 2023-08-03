@@ -16,13 +16,13 @@
       prop: "name",
       sortAscFunction: (a, b) => {
         if (a.isFolder && !b.isFolder) {
-          return -1;
+          return -1
         }
         return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1
       },
       sortDescFunction: (a, b) => {
         if (a.isFolder && !b.isFolder) {
-          return -1;
+          return -1
         }
         return a.name.toLowerCase() === b.name.toLowerCase() ? 0 : a.name.toLowerCase() < b.name.toLowerCase() ? 1 : -1
       }

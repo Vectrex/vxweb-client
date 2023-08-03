@@ -45,7 +45,7 @@
       if (data.value?.success) {
         articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
       }
-      emit('notify', data.value);
+      emit('notify', data.value)
     }
   }
   const publish = async (row) => {
