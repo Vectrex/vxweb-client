@@ -1,11 +1,11 @@
 <script setup>
-  import { ref, computed, nextTick } from "vue";
+  import { ref, computed, nextTick } from "vue"
 
   const props = defineProps({
     buttons: {
       type: [Object, Array],
       default: { label: 'Ok', value: 'ok' },
-      validator: p => (Array.isArray(p) && p.filter(v => v['label'] !== 'undefined' && v['value'] !== 'undefined').length === p.length) || (p.label !== undefined && p.value !== undefined)
+      validator: p => (Array.isArray(p) && p.length <= 2 && p.filter(v => v['label'] !== 'undefined' && v['value'] !== 'undefined').length === p.length) || (p.label !== undefined && p.value !== undefined)
     },
     headerClass: {
       type: String,
