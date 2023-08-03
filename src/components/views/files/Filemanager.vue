@@ -421,16 +421,14 @@
         ref="confirm"
         header-class="bg-error text-white"
         :buttons="[
-            { label: 'Löschen!', value: true, 'class': 'button alert' },
-            { label: 'Abbrechen', value: false, 'class': 'button cancel' }
+            { label: 'Löschen!', value: true, class: 'button alert' },
+            { label: 'Abbrechen', value: false, class: 'button cancel' }
           ]"
     />
     <alert
         ref="alert"
         header-class="bg-error text-white"
-        :buttons="[
-            { label: 'Ok!', value: true, 'class': 'button cancel' },
-          ]"
+        :buttons="{ label: 'Ok!', value: true, class: 'button cancel' }"
     />
   </teleport>
 

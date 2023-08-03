@@ -14,7 +14,7 @@
   const props = defineProps({ id: [Number, String]})
   const datepickerAttrs = {
     placeholder: 'dd.mm.yyyy',
-    'class': "w-96 w-full",
+    class: "w-96 w-full",
     dayNames: 'So Mo Di Mi Do Fr Sa'.split(' '),
     startOfWeekIndex: 1,
     inputFormat: 'D.M.YYYY',
@@ -24,12 +24,12 @@
     { type: DatePicker, model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
     { type: DatePicker, model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
     { type: DatePicker, model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
-    { type: FormSwitch, model: 'customflags', label: 'Markiert', attrs: { 'class': 'ml-2' } },
-    { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { 'class': 'w-full', disabledLabel: '(Kategorie wählen)' } },
+    { type: FormSwitch, model: 'customflags', label: 'Markiert', attrs: { class: 'ml-2' } },
+    { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { class: 'w-full', disabledLabel: '(Kategorie wählen)' } },
     { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
     { type: 'text', model: 'subline', label: 'Unterüberschrift' },
     { type: 'textarea', model: 'teaser', label: 'Anrisstext' },
-    { type: Tiptap, model: 'content', label: 'Inhalt', required: true, attrs: { 'class': 'w-full', fileManagerDisable: true } }
+    { type: Tiptap, model: 'content', label: 'Inhalt', required: true, attrs: { class: 'w-full', fileManagerDisable: true } }
   ]
   const busy = ref(false)
   const options = ref({ articlecategoriesid: [] })

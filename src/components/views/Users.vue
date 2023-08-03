@@ -116,8 +116,8 @@
         ref="confirm"
         header-class="bg-error text-white"
         :buttons="[
-            { label: 'Löschen!', value: true, 'class': 'button alert' },
-            { label: 'Abbrechen', value: false, 'class': 'button cancel' }
+            { label: 'Löschen!', value: true, class: 'button alert' },
+            { label: 'Abbrechen', value: false, class: 'button cancel' }
           ]"
     />
   </teleport>
