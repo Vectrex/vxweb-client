@@ -1,7 +1,8 @@
 <script setup>
   import DateInput from "@/components/vx-vue/date-input.vue"
-  import { ref, computed, useAttrs, watch, nextTick } from "vue"
+  import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/vue/24/solid"
   import { onClickOutside } from "@vueuse/core"
+  import { ref, computed, useAttrs, watch, nextTick } from "vue"
 
   const props = defineProps({
     modelValue: [Date, Boolean],
@@ -96,15 +97,11 @@
     <div class="bg-white z-10 shadow-md" v-bind="calendarProps" ref="calendar" :class="[alignHoriz, alignVert]">
       <div class="flex flex-row items-center bg-vxvue-700 text-white py-2 px-3">
         <button @click.stop="previousMonth" class="flex-shrink-0 hover:text-vxvue-50 text-vxvue-100">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-          </svg>
+          <chevron-left-icon class="h-6 w-6" />
         </button>
         <div class="flex-grow text-center">{{ sheetDate.toLocaleString(locale, { month: 'long'}) }} {{ sheetDate.getFullYear() }}</div>
         <button @click.stop="nextMonth" class="flex-shrink-0 hover:text-vxvue-50 text-vxvue-100">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-          </svg>
+          <chevron-right-icon class="h-6 w-6" />
         </button>
       </div>
 
