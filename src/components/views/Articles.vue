@@ -3,11 +3,11 @@
   import Pagination from "@/components/vx-vue/pagination.vue"
   import FormSwitch from "@/components/vx-vue/form-switch.vue"
   import FilterForm from "@/components/views/articles/FilterForm.vue"
-  import Alert from "@/components/vx-vue/alert.vue"
+  import Confirm from "@/components/vx-vue/confirm.vue"
   import Headline from "@/components/app/Headline.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { ref, computed, onMounted } from "vue"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { storeSort, getSort } from "@/util/storeSort"
 
   const emit = defineEmits(['notify'])
@@ -34,14 +34,14 @@
   const confirm = ref(null)
 
   onMounted(async () => {
-    const { data } = await customFetch('articles').json()
+    const { data } = await vxFetch('articles').json()
     articles.value = data.value?.articles || []
     categories.value = data.value?.categories || []
     categories.value.forEach(item => item.key = item.id)
   })
   const del = async article => {
     if (await confirm.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`)) {
-      const { data } = await customFetch('article/' + article.id).delete().json()
+      const { data } = await vxFetch('article/' + article.id).delete().json()
       if (data.value?.success) {
         articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
       }
@@ -50,7 +50,7 @@
   }
   const publish = async (row) => {
     row.pub = !row.pub
-    const { data } = await customFetch(`article/${row.id}/${(row.pub ? 'publish' : 'unpublish')}`).put().json()
+    const { data } = await vxFetch(`article/${row.id}/${(row.pub ? 'publish' : 'unpublish')}`).put().json()
     if(!data.value?.success) {
       row.pub = !row.pub
     }
@@ -112,7 +112,7 @@
     </template>
   </sortable>
 
-  <alert
+  <confirm
       ref="confirm"
       header-class="bg-error text-white"
       :buttons="[

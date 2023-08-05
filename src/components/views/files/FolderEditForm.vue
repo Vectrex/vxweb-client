@@ -1,7 +1,7 @@
 <script setup>
   import SubmitButton from "@/components/misc/submit-button.vue"
   import FormDialog from "@/components/views/shared/FormDialog.vue"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { computed, ref, watch } from "vue"
 
   const props = defineProps({ id: Number })
@@ -24,14 +24,14 @@
       return sanitized
   })
   watch(() => props.id, async v => {
-    const { data } = await customFetch('folder/' + v).json()
+    const { data } = await vxFetch('folder/' + v).json()
     form.value = data.value || {}
 
   }, { immediate: true })
 
   const submit = async () => {
     busy.value = true
-    const response = (await customFetch('folder/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
+    const response = (await vxFetch('folder/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
     busy.value = false
     errors.value = response.errors || {}
     emit(

@@ -23,13 +23,13 @@
   const resolve = ref(null)
   const reject = ref(null)
   const buttonArray = computed (() => Array.isArray(props.buttons) ? props.buttons : [props.buttons])
-  const buttons = ref(null)
+  const buttonsContainer = ref(null)
 
   const open = (t, m) => {
     title.value = t
     message.value = m
     show.value = true
-    nextTick(() => buttons.value.firstElementChild.focus())
+    nextTick(() => buttonsContainer.value.firstElementChild.focus())
     return new Promise((res, rej) => {
       resolve.value = res
       reject.value = rej
@@ -64,7 +64,7 @@
                   <slot :message="message">{{ message }}</slot>
                 </p>
               </div>
-              <div class="mt-5 sm:mt-6 flex justify-center space-x-2" ref="buttons">
+              <div class="mt-5 sm:mt-6 flex justify-center space-x-2" ref="buttonsContainer">
                 <button :class="[buttonClass, button['class']]" @click.prevent="handleClick(button.value)" v-for="button in buttonArray">{{ button.label }}</button>
               </div>
             </div>

@@ -5,7 +5,7 @@
   import Modal from "@/components/vx-vue/modal.vue"
   import PageFiles from "@/components/views/pages/PageFiles.vue"
   import { XMarkIcon } from "@heroicons/vue/24/solid"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import router from "@/router"
   import { onMounted, ref } from "vue"
 
@@ -40,7 +40,7 @@
     emit('notify', response)
   }
   const activateRevision = async revision => {
-    const response = (await customFetch('revision/' + revision.id + '/activate').put().json()).data.value || {}
+    const response = (await vxFetch('revision/' + revision.id + '/activate').put().json()).data.value || {}
     if (response.success) {
       let active = revisions.value.find(item => item.active === true)
       if (active) {
@@ -55,14 +55,14 @@
     emit('notify', response)
   }
   const deleteRevision = async revision => {
-    const response = (await customFetch('revision/' + revision.id).delete().json()).data.value || {}
+    const response = (await vxFetch('revision/' + revision.id).delete().json()).data.value || {}
     if (response.success) {
       handleResponse(response)
     }
     emit('notify', response)
   }
   const loadRevision = async revision => {
-    const response = (await customFetch('revision/' + revision.id).json()).data.value || {}
+    const response = (await vxFetch('revision/' + revision.id).json()).data.value || {}
     if (response.success) {
       handleResponse(response)
     }
@@ -70,7 +70,7 @@
   const insertPickedFile = obj => { editForm.value.tiptap.injectImage(obj); showFm.value = false }
 
   onMounted(async () => {
-    if(props.id) { handleResponse((await customFetch('page/' + props.id).json()).data.value || {}) }
+    if(props.id) { handleResponse((await vxFetch('page/' + props.id).json()).data.value || {}) }
   })
 </script>
 

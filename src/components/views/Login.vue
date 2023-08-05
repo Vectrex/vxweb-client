@@ -3,7 +3,7 @@
   import SubmitButton from "@/components/misc/submit-button.vue"
   import Logo from "@/components/misc/logo.vue"
   import { HomeIcon } from '@heroicons/vue/20/solid'
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
   const emit = defineEmits(['authenticate', 'notify'])
@@ -12,7 +12,7 @@
   const submit = async () => {
     if (form.value.username.trim() && form.value.password.trim()) {
       busy.value = true
-      const { data } = await customFetch("login").post(JSON.stringify(form.value)).json()
+      const { data } = await vxFetch("login").post(JSON.stringify(form.value)).json()
       busy.value = false
       if(data.value.bearerToken) {
         sessionStorage.setItem('bearerToken', data.value.bearerToken)

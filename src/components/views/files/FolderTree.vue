@@ -2,13 +2,13 @@
   import SimpleTree from "@/components/vx-vue/simple-tree/simple-tree.vue"
   import FormTitle from "@/components/views/shared/FormTitle.vue"
   import { urlQueryCreate } from '@/util/url-query'
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
   const root = ref({})
   let resolve = null
   const open = async (route, currentFolder) => {
-    const { data } = await customFetch(urlQueryCreate(route, { folder: currentFolder })).json()
+    const { data } = await vxFetch(urlQueryCreate(route, { folder: currentFolder })).json()
     root.value = data.value || {}
     return new Promise(res => { resolve = res })
   }

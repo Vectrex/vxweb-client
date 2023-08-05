@@ -4,7 +4,7 @@
   import { Focus as vFocus } from "@/directives/focus"
   import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/vue/24/solid"
   import { urlQueryCreate } from "@/util/url-query"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
   const props = defineProps({
@@ -24,7 +24,7 @@
       let term = modelValue.value.trim()
       if (term.length >= props.minLength) {
         busy.value = true
-        const response = (await customFetch(urlQueryCreate("files/search", { search: term })).json()).data.value || {}
+        const response = (await vxFetch(urlQueryCreate("files/search", { search: term })).json()).data.value || {}
         files.value = response.files || []
         folders.value = response.folders || []
         busy.value = false

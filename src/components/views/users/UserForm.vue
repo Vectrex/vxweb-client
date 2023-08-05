@@ -4,7 +4,7 @@
   import FormSelect from "@/components/vx-vue/form-select.vue"
   import PasswordInput from "@/components/vx-vue/password-input.vue"
   import { computed, ref, watch } from "vue"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
 
   const props = defineProps({
     id: { type: [String, Number], default: null }
@@ -32,13 +32,13 @@
     return sanitized
   })
   watch(() => props.id, async newValue => {
-    const response = (await customFetch('user/' + (newValue || '')).json()).data.value || {}
+    const response = (await vxFetch('user/' + (newValue || '')).json()).data.value || {}
     options.value = response.options || {}
     form.value = response.form || {}
   }, { immediate: true })
   const submit = async () => {
     busy.value = true
-    const response = (await customFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()).data.value
+    const response = (await vxFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()).data.value
     busy.value = false
 
     if (response.success) {

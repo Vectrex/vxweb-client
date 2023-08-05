@@ -4,7 +4,7 @@
   import SubmitButton from "@/components/misc/submit-button.vue"
   import Divider from "@/components/misc/divider.vue"
   import { onMounted, ref } from "vue"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
 
   const emit = defineEmits(['notify'])
 
@@ -21,13 +21,13 @@
   const notifications = ref([])
 
   onMounted(async () => {
-    const { data } = await customFetch('profile_data').json()
+    const { data } = await vxFetch('profile_data').json()
     notifications.value = data.value?.notifications || []
     form.value = data.value?.formData || {}
   })
   const submit = async () => {
     busy.value = true
-    const { data } = await customFetch('profile_data').post(JSON.stringify(form.value)).json()
+    const { data } = await vxFetch('profile_data').post(JSON.stringify(form.value)).json()
     busy.value = false
     errors.value = data.value?.errors || {}
     emit('notify', data.value)

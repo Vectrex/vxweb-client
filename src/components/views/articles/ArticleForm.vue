@@ -4,7 +4,7 @@
   import FormSwitch from "@/components/vx-vue/form-switch.vue"
   import Tiptap from "@/components/misc/tiptap.vue"
   import SubmitButton from "@/components/misc/submit-button.vue"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { useDateFormat } from "@vueuse/core"
   import { onMounted, ref } from "vue"
   import router from "@/router"
@@ -36,9 +36,9 @@
   const form = ref({})
   const errors = ref({})
   onMounted(async ()  => {
-    options.value.articlecategoriesid = (await customFetch('article/categories').json()).data.value || []
+    options.value.articlecategoriesid = (await vxFetch('article/categories').json()).data.value || []
     if (props.id) {
-      form.value = (await customFetch('article/' + props.id).json()).data.value || {}
+      form.value = (await vxFetch('article/' + props.id).json()).data.value || {}
 
       elements.forEach(item => {
         if(item.type === DatePicker && form.value[item.model]) {
@@ -53,7 +53,7 @@
         f[key] = value instanceof Date ? useDateFormat(value,'YYYY-MM-DD').value : value
       }
       busy.value = true
-      const response = (await customFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(f)).json()).data.value
+      const response = (await vxFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(f)).json()).data.value
       busy.value = false
 
       errors.value = response.errors || {}

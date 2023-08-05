@@ -1,7 +1,7 @@
 import { createFetch } from "@vueuse/core";
 import router from "@/router";
 
-export const customFetch = createFetch({
+export const vxFetch = createFetch({
     baseUrl: import.meta.env.VITE_API_ROOT || ('//' + window.location.host + '/admin/'),
     options: {
         beforeFetch ({ options }) {

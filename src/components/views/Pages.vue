@@ -1,10 +1,10 @@
 <script setup>
   import Sortable from "@/components/vx-vue/sortable.vue"
-  import Alert from "@/components/vx-vue/alert.vue"
+  import Confirm from "@/components/vx-vue/confirm.vue"
   import Headline from "@/components/app/Headline.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { storeSort, getSort } from "@/util/storeSort"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { ref, onMounted } from "vue"
 
   const emit = defineEmits(['notify'])
@@ -20,12 +20,12 @@
   const confirm = ref(null)
 
   onMounted(async () => {
-    const { data } = await customFetch('pages').json()
+    const { data } = await vxFetch('pages').json()
     pages.value = data.value
   })
   const del = async id => {
     if(await confirm.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
-      const { data } = await customFetch('page/' + id).delete().json()
+      const { data } = await vxFetch('page/' + id).delete().json()
       if (data.value?.success) {
         pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
         emit('notify', { message: 'Seite wurde erfolgreich gelöscht.', success: true })
@@ -66,7 +66,7 @@
   </sortable>
 
   <teleport to="body">
-    <alert
+    <confirm
         ref="confirm"
         header-class="bg-error text-white"
         :buttons="[

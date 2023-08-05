@@ -1,7 +1,7 @@
 <script setup>
   import { SlickList, SlickItem, DragHandle } from 'vue-slicksort'
   import { EyeIcon, EyeSlashIcon, LinkIcon, Bars4Icon } from '@heroicons/vue/24/solid'
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { ref, onMounted } from "vue"
 
   const emit = defineEmits(['update-linked', 'goto-folder'])
@@ -10,22 +10,22 @@
   const saveSort = () => {
     let ids = []
     linkedFiles.value.forEach(f => ids.push(f.id))
-    customFetch('article/' + props.articleId + '/linked-files').put(JSON.stringify({ fileIds: ids }))
+    vxFetch('article/' + props.articleId + '/linked-files').put(JSON.stringify({ fileIds: ids }))
   }
   const unlinkSort = async file => {
-    const { data } = await customFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: file.id })).json()
+    const { data } = await vxFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: file.id })).json()
     if(data.value?.success) {
       linkedFiles.value.splice(linkedFiles.value.findIndex(item => item === file), 1)
       emit('update-linked')
     }
   }
   const toggleVisibility = async file => {
-    const { data } = await customFetch('article/' + props.articleId + '/toggle-linked-file').put(JSON.stringify({ fileId: file.id })).json()
+    const { data } = await vxFetch('article/' + props.articleId + '/toggle-linked-file').put(JSON.stringify({ fileId: file.id })).json()
     if(data.value?.success) {
       file.hidden = !!data.value.hidden
     }
   }
-  onMounted(async () => { linkedFiles.value = (await customFetch('article/' + props.articleId + '/linked-files').json()).data.value })
+  onMounted(async () => { linkedFiles.value = (await vxFetch('article/' + props.articleId + '/linked-files').json()).data.value })
 </script>
 <template>
   <slick-list v-model:list="linkedFiles" lock-axis="y" @update:list="saveSort" useDragHandle>

@@ -4,7 +4,7 @@
   import ArticleForm from "@/components/views/articles/ArticleForm.vue"
   import ArticleFiles from "@/components/views/articles/ArticleFiles.vue"
   import LinkedFiles from "@/components/views/articles/LinkedFiles.vue"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import router from "@/router"
   import { computed, onMounted, ref } from "vue"
 
@@ -25,7 +25,7 @@
   })
   const getLinkedFiles = async () => {
     if (props.id) {
-      const { data } = await customFetch('article/' + props.id + '/linked-files').json()
+      const { data } = await vxFetch('article/' + props.id + '/linked-files').json()
       tabsItems.value.items[1].badge = data.value?.length || 0
     }
   }

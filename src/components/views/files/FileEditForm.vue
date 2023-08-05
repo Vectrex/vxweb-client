@@ -3,7 +3,7 @@
   import FormDialog from "@/components/views/shared/FormDialog.vue"
   import Divider from "@/components/misc/divider.vue"
   import { formatFilesize } from '@/composables/formatFilesize'
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { computed, ref, watch } from "vue"
 
   const props = defineProps({ id: Number })
@@ -29,13 +29,13 @@
     return sanitized
   })
   watch(() => props.id, async v => {
-    const response = (await customFetch('file/' + v).json()).data.value || {}
+    const response = (await vxFetch('file/' + v).json()).data.value || {}
     form.value = response.form || {}
     fileInfo.value = response.fileInfo || {}
   }, { immediate: true })
   const submit = async () => {
     busy.value = true
-    const response = (await customFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
+    const response = (await vxFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
     busy.value = false
     errors.value = response.errors || {}
     emit(

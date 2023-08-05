@@ -1,11 +1,11 @@
 <script setup>
   import Sortable from "@/components/vx-vue/sortable.vue"
-  import Alert from "@/components/vx-vue/alert.vue"
+  import Confrim from "@/components/vx-vue/confirm.vue"
   import Headline from "@/components/app/Headline.vue"
   import UserForm from "@/components/views/users/UserForm.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { ref, onMounted } from "vue"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { storeSort, getSort } from "@/util/storeSort"
 
   const emit = defineEmits(['notify'])
@@ -25,7 +25,7 @@
   const confirm = ref(null)
 
   onMounted(async () => {
-    const { data } = await customFetch('users/init').json()
+    const { data } = await vxFetch('users/init').json()
     users.value = data.value?.users || []
   })
   const edit = id => {
@@ -46,7 +46,7 @@
   }
   const del = async id => {
     if (await confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
-      const { data } = await customFetch('users/' + id).delete().json()
+      const { data } = await vxFetch('users/' + id).delete().json()
       if (data.value?.id) {
         let ndx = users.value.findIndex(row => row.id === data.value.id)
         if (ndx !== -1) {
@@ -112,7 +112,7 @@
   </teleport>
 
   <teleport to="body">
-    <alert
+    <confirm
         ref="confirm"
         header-class="bg-error text-white"
         :buttons="[

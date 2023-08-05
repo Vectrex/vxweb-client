@@ -1,7 +1,7 @@
 <script setup>
   import SubmitButton from "@/components/misc/submit-button.vue"
   import Tiptap from "@/components/misc/tiptap.vue"
-  import { customFetch } from "@/composables/customFetch"
+  import { vxFetch } from "@/composables/vxFetch"
   import { ref, watch } from "vue"
 
   const emit = defineEmits(['responseReceived', 'openFileManager'])
@@ -18,7 +18,7 @@
     ]
   const submit = async () => {
     busy.value = true
-    const response = (await customFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(form.value)).json()).data.value || {}
+    const response = (await vxFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(form.value)).json()).data.value || {}
     busy.value = false
     errors.value = response.errors || {}
     emit('response-received', response)
