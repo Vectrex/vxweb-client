@@ -4,7 +4,7 @@
   const props = defineProps({
     buttons: {
       type: [Object, Array],
-      default: { label: 'Ok', value: 'ok' },
+      default: { label: 'Ok' },
       validator: p => (Array.isArray(p) && p.length <= 2 && p.filter(v => v['label'] !== 'undefined' && v['value'] !== 'undefined').length === p.length) || (p.label !== undefined && p.value !== undefined)
     },
     headerClass: {
@@ -20,8 +20,8 @@
   const title = ref('')
   const message = ref('')
   const show = ref(false)
-  const resolve = ref(null)
-  const reject = ref(null)
+  let resolve = null
+  let reject = null
   const buttonArray = computed (() => Array.isArray(props.buttons) ? props.buttons : [props.buttons])
   const buttonsContainer = ref(null)
 
@@ -31,15 +31,10 @@
     show.value = true
     nextTick(() => buttonsContainer.value.firstElementChild.focus())
     return new Promise((res, rej) => {
-      resolve.value = res
-      reject.value = rej
+      resolve = res
+      reject = rej
     })
   }
-  const handleClick = (value) => {
-    show.value = false
-    resolve.value(value)
-  }
-
   defineExpose({ open })
 </script>
 
@@ -65,7 +60,11 @@
                 </p>
               </div>
               <div class="mt-5 sm:mt-6 flex justify-center space-x-2" ref="buttonsContainer">
-                <button :class="[buttonClass, button['class']]" @click.prevent="handleClick(button.value)" v-for="button in buttonArray">{{ button.label }}</button>
+                <button
+                    v-for="(button, ndx) in buttonArray"
+                    :class="[buttonClass, button['class']]"
+                    @click.prevent="show = false; ndx === 0 ? resolve() : reject()"
+                >{{ button.label }}</button>
               </div>
             </div>
           </div>

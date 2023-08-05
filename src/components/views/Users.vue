@@ -1,6 +1,6 @@
 <script setup>
   import Sortable from "@/components/vx-vue/sortable.vue"
-  import Confrim from "@/components/vx-vue/confirm.vue"
+  import Confirm from "@/components/vx-vue/confirm.vue"
   import Headline from "@/components/app/Headline.vue"
   import UserForm from "@/components/views/users/UserForm.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
@@ -44,8 +44,8 @@
     }
     emit('notify', e)
   }
-  const del = async id => {
-    if (await confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?")) {
+  const del = id => {
+    confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?").then(async() => {
       const { data } = await vxFetch('users/' + id).delete().json()
       if (data.value?.id) {
         let ndx = users.value.findIndex(row => row.id === data.value.id)
@@ -57,7 +57,7 @@
       else {
         emit('notify', { message: data.value.message || 'Es ist ein Fehler aufgetreten!', success: false })
       }
-    }
+    }).catch(() => {})
   }
 </script>
 

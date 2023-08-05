@@ -23,8 +23,8 @@
     const { data } = await vxFetch('pages').json()
     pages.value = data.value
   })
-  const del = async id => {
-    if(await confirm.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?")) {
+  const del = id => {
+    confirm.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?").then(async () => {
       const { data } = await vxFetch('page/' + id).delete().json()
       if (data.value?.success) {
         pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
@@ -32,7 +32,7 @@
       } else {
         emit('notify', { message: data.value.message || 'Es ist ein Fehler aufgetreten!', success: false })
       }
-    }
+    }).catch(() => {})
   }
 </script>
 

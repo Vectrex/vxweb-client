@@ -74,7 +74,7 @@
   const delSelection = async () => {
     const response = (await vxFetch(urlQueryCreate('filesfolders/delete', {
       files: checkedFiles.value.map(({id}) => id).join(","),
-      folders: checkedFolders.valu.map(({id}) => id).join(","),
+      folders: checkedFolders.value.map(({id}) => id).join(","),
       ...props.requestParameters
     })).delete().json()).data.value || {}
 
@@ -113,14 +113,23 @@
   }
   const editFile = row => { formShown.value = 'editFile'; pickedId.value = row.id }
   const editFolder = row => { formShown.value = 'editFolder'; pickedId.value = row.id }
-  const delFile = async row => {
-    if (await confirm.value.open('Datei löschen', "'" + row.name + "' wirklich löschen?")) {
-      const response = (await vxFetch(urlQueryCreate('file/' + row.id, props.requestParameters)).delete().json()).data.value || {}
+  const delFile = row => {
+    confirm.value.open('Datei löschen', `'${row.name}' wirklich löschen?`).then(async () => {
+        const response = (await vxFetch(urlQueryCreate('file/' + row.id, props.requestParameters)).delete().json()).data.value || {}
+        if (response.success) {
+          files.value.splice(files.value.findIndex(item => row === item), 1)
+        }
+        emit('response-received', {...response, _method: 'delFile' })
+      }).catch(() => {})
+  }
+  const delFolder = row => {
+    confirm.value.open('Verzeichnis löschen', `'${row.name}' und enthaltene Dateien wirklich löschen?`).then(async () => {
+      const response = (await vxFetch(urlQueryCreate('folder/' + row.id, props.requestParameters)).delete().json()).data.value || {}
       if (response.success) {
-        files.value.splice(files.value.findIndex(item => row === item), 1)
+        folders.value.splice(folders.value.findIndex(item => row === item), 1)
       }
-      emit('response-received', {...response, _method: 'delFile' })
-    }
+      emit('response-received', {...response, _method: 'delFolder' })
+    }).catch(() => {})
   }
   const rename = async (e, type) => {
     let name = e.target.value.trim()
@@ -130,15 +139,6 @@
         toRename.value.name = response.name || name
         toRename.value = null
       }
-    }
-  }
-  const delFolder = async row => {
-    if (await confirm.value.open('Verzeichnis löschen', "'" + row.name + "' und enthaltene Dateien wirklich löschen?")) {
-      const response = (await vxFetch(urlQueryCreate('folder/' + row.id, props.requestParameters)).delete().json()).data.value || {}
-      if (response.success) {
-        folders.value.splice(folders.value.findIndex(item => row === item), 1)
-      }
-      emit('response-received', {...response, _method: 'delFolder' })
     }
   }
   const createFolder = async name => {

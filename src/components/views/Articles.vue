@@ -39,14 +39,14 @@
     categories.value = data.value?.categories || []
     categories.value.forEach(item => item.key = item.id)
   })
-  const del = async article => {
-    if (await confirm.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`)) {
+  const del = article => {
+    confirm.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`).then(async () => {
       const { data } = await vxFetch('article/' + article.id).delete().json()
       if (data.value?.success) {
         articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
       }
       emit('notify', data.value)
-    }
+    }).catch(() => {})
   }
   const publish = async (row) => {
     row.pub = !row.pub

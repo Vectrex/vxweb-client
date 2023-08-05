@@ -5,11 +5,10 @@
   const instance = getCurrentInstance()
   const props = defineProps({ files: Array, folders: Array })
   const emit = defineEmits(['delete-selection', 'move-selection'])
-  const confirmDelete = async () => {
-    if(await instance.parent.refs.confirm.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?")) {
-      emit('delete-selection')
-    }
+  const confirmDelete = () => {
+    instance.parent.refs.confirm.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?").then(() => emit('delete-selection')).catch(() => {})
   }
+
 </script>
 <template>
     <div class="flex items-center space-x-2">
