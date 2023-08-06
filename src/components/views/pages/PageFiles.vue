@@ -4,9 +4,8 @@
   import { getSort, storeSort } from "@/util/storeSort"
   import { ref } from "vue"
 
-  const props = defineProps({ folderId: [String, Number] })
+  const props = defineProps({ folderId: [String, Number], onlyImages: Boolean })
   const emit = defineEmits(['notify', 'pickFile'])
-  const fm = ref(null)
   const currentFolder = ref('')
   const cols = [
     {
@@ -35,14 +34,13 @@
       :init-sort="getSort()"
       @response-received="emit('notify', $event)"
       @after-sort="storeSort"
-      ref="fm"
       :is-modal="true"
       :folder-id="currentFolder"
       @update:folder-id="currentFolder = $event"
   >
     <template v-slot:action="slotProps">
       <div class="flex items-center space-x-1 justify-end">
-        <template v-if="!slotProps.row.isFolder">
+        <template v-if="!slotProps.row.isFolder && (!onlyImages || slotProps.row.image)">
           <button class="icon-link" @click="emit('pickFile', slotProps.row)">
             <arrow-top-right-on-square-icon class="h-5 w-5" />
           </button>
