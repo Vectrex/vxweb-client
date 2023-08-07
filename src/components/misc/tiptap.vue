@@ -23,7 +23,7 @@
     CheckIcon
   } from '@heroicons/vue/24/solid'
   import Modal from "@/components/vx-vue/modal.vue"
-  import PageFiles from "@/components/views/pages/PageFiles.vue"
+  import tiptapFiles from "@/components/misc/tiptap-files.vue"
   import { onBeforeUnmount, ref, watch } from "vue"
 
   const props = defineProps({ modelValue: String, fileManagerDisable: Boolean })
@@ -129,7 +129,7 @@
     <modal :show="showModal">
       <template #title>
         <div class="fixed flex w-full justify-between items-center bg-vxvue-500 h-16 px-4">
-          <span class="text-xl font-bold text-white">Zieladresse eingeben oder Datei wählen...</span>
+          <span class="text-xl font-bold text-white">{{ onlyImages ? 'Bilddatei selektieren...' : 'Zieladresse eingeben oder Datei wählen...' }}</span>
           <a href="#" @click.prevent="showModal = false"><x-mark-icon class="w-5 h-5 text-white"/></a>
         </div>
       </template>
@@ -142,7 +142,7 @@
             <button class="icon-link" @click="confirmLink"><check-icon class="h-5 w-5" /></button>
           </div>
           <div class="px-4">
-            <page-files :only-images="onlyImages" @pick-file="handlePick" />
+            <tiptap-files :only-images="onlyImages" @pick-file="handlePick" />
           </div>
         </div>
       </template>
