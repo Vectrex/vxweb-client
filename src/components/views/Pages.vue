@@ -59,8 +59,8 @@
   >
     <template v-slot:action="slotProps">
       <div class="flex space-x-2 justify-end">
-        <a class="icon-link" href="#" @click.prevent="$router.push({ name: 'pageEdit', params: { id: slotProps.row.id }})"><PencilSquareIcon class="w-5 h-5"/></a>
-        <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
+        <a class="icon-link" href="#" data-tooltip="Bearbeiten" @click.prevent="$router.push({ name: 'pageEdit', params: { id: slotProps.row.id }})"><PencilSquareIcon class="w-5 h-5"/></a>
+        <a class="icon-link" href="#" data-tooltip="Löschen" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
       </div>
     </template>
   </sortable>
