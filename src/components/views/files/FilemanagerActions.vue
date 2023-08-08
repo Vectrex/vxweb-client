@@ -13,20 +13,20 @@
 <template>
     <div class="flex items-center space-x-2">
       <button
-        class="icon-link flex items-center tooltip"
+        class="flex items-center icon-link tooltip"
         :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'"
         @click="emit('move-selection')"
       >
-        <document-minus-icon class="h-5 w-5"/>
-        <play-icon class="h-3 w-3" />
-        <document-plus-icon class="h-5 w-5"/>
+        <document-minus-icon class="w-5 h-5"/>
+        <play-icon class="w-3 h-3" />
+        <document-plus-icon class="w-5 h-5"/>
       </button>
       <button
         class="icon-link tooltip"
         :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner löschen'"
         @click="confirmDelete"
       >
-        <trash-icon class="h-5 w-5" />
+        <trash-icon class="w-5 h-5" />
       </button>
     </div>
 </template>

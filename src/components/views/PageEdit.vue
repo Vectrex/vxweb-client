@@ -71,11 +71,11 @@
   <teleport to="#tools">
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
-  <div class="flex w-full space-x-4 justify-start pb-4">
+  <div class="flex justify-start pb-4 space-x-4 w-full">
     <page-form :init-data="form" class="w-full" @response-received="handleFormResponse" :id="id" />
     <div class="w-1/3 flex-shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
       <revision-table
-          :revisions="revisions" class="w-full h-full overflow-y-auto"
+          :revisions="revisions" class="overflow-y-auto w-full h-full"
           @activate-revision="activateRevision"
           @delete-revision="deleteRevision"
           @load-revision="loadRevision"

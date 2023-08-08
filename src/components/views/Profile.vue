@@ -39,13 +39,13 @@
     <headline>{{ $route.meta?.heading }}</headline>
   </teleport>
 
-  <div class="space-y-4 pb-4">
+  <div class="pb-4 space-y-4">
     <div class="space-y-4">
         <div v-for="(field, ndx) in fields" :key="ndx">
           <label :for="field.model + '-' + (field.type || 'input')" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
           <div>
             <input
-                class="form-input w-96"
+                class="w-96 form-input"
                 v-if="!field.type"
                 :id="field.model + '-input'"
                 v-model="form[field.model]"

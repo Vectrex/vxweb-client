@@ -13,17 +13,17 @@
   })
 </script>
 <template>
-  <div class="relative inline-block" :class="$attrs['class']">
+  <div class="inline-block relative" :class="$attrs['class']">
     <input
         :value="modelValue"
         :type="show ? 'text': 'password'"
         @input="emit('update:modelValue', $event.target.value)"
         v-bind="inputAttrs"
-        class="form-input w-full pr-10 block focus:border-brand"
+        class="block pr-10 w-full form-input focus:border-brand"
     >
-    <button @click.stop="show = !show" class="absolute right-0 pr-3 flex items-center inset-y-0 text-brand-700 hover:text-brand">
-      <eye-slash-icon class="h-5 w-5" v-if="show" />
-      <eye-icon class="h-5 w-5" v-else />
+    <button @click.stop="show = !show" class="flex absolute inset-y-0 right-0 items-center pr-3 text-brand-700 hover:text-brand">
+      <eye-slash-icon class="w-5 h-5" v-if="show" />
+      <eye-icon class="w-5 h-5" v-else />
     </button>
   </div>
 </template>

@@ -29,16 +29,16 @@
 </script>
 
 <template>
-  <div aria-live="assertive" class="fixed inset-0 flex px-4 py-6 pointer-events-none sm:p-6 items-start z-50">
-    <div class="w-full flex flex-col items-center space-y-4">
+  <div aria-live="assertive" class="flex fixed inset-0 z-50 items-start py-6 px-4 pointer-events-none sm:p-6">
+    <div class="flex flex-col items-center space-y-4 w-full">
       <transition name="messagetoast-fade">
-        <div v-if="active" class="max-w-sm w-full shadow-lg rounded-md pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden" :class="$attrs['class']">
+        <div v-if="active" class="overflow-hidden w-full max-w-sm rounded-md ring-1 ring-black ring-opacity-5 shadow-lg pointer-events-auto" :class="$attrs['class']">
           <div class="p-4">
             <div class="flex items-start">
               <div class="flex-shrink-0">
                 <slot name="icon"></slot>
               </div>
-              <div class="ml-3 w-0 flex-1 pt-0.5">
+              <div class="flex-1 pt-0.5 ml-3 w-0">
                 <p class="font-bold">
                   <slot name="title">{{ title }}</slot>
                 </p>
@@ -46,10 +46,10 @@
                   <slot>{{ line }}</slot>
                 </p>
               </div>
-              <div class="ml-4 flex-shrink-0 flex">
-                <button @click="emit('close')" class="bg-black bg-opacity-20 rounded-sm inline-flex text-white hover:text-stone-200 focus:outline-none focus:ring-2 focus:ring-stone-200">
+              <div class="flex flex-shrink-0 ml-4">
+                <button @click="emit('close')" class="inline-flex text-white bg-black bg-opacity-20 rounded-sm focus:ring-2 focus:outline-none hover:text-stone-200 focus:ring-stone-200">
                   <span class="sr-only">Close</span>
-                  <x-mark-icon class="h-5 w-5" />
+                  <x-mark-icon class="w-5 h-5" />
                 </button>
               </div>
             </div>

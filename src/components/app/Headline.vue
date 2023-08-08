@@ -1,3 +1,3 @@
 <template>
-  <div class="text-3xl font-semibold text-inherit flex space-x-2 items-center"><slot></slot></div>
+  <div class="flex items-center space-x-2 text-3xl font-semibold text-inherit"><slot></slot></div>
 </template>

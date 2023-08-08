@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex justify-start items-center text-vxvue-700">
+  <div class="flex justify-start items-center w-full text-vxvue-700">
     <div id="tools"></div>
   </div>
 </template>

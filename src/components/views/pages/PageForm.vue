@@ -29,7 +29,7 @@
 
 <template>
   <div class="space-y-2">
-    <div class="flex items-center flex-wrap">
+    <div class="flex flex-wrap items-center">
       <label
           for="alias-input"
           :class="['required', { 'text-error': errors.alias }]"
@@ -37,30 +37,30 @@
       <input id="alias-input"
            :value="form.alias"
            @input="form.alias = $event.target.value.toUpperCase()"
-           class="form-input w-full"
+           class="w-full form-input"
            :disabled="id" maxlength="64"
       >
       <p v-if="errors.alias" class="text-sm text-error">{{ errors.alias }}</p>
     </div>
 
-    <div class="flex items-center flex-wrap" v-for="element in elements" :key="element.model">
+    <div class="flex flex-wrap items-center" v-for="element in elements" :key="element.model">
       <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
       <input
           v-if="['text', 'number'].indexOf(element.type) !== -1"
           :id="element.model"
           v-model="form[element.model]"
           :type="element.type"
-          class="form-input w-full"
+          class="w-full form-input"
           v-bind="element.attrs"
       />
       <textarea
           v-else-if="element.type === 'textarea'"
           :id="element.model"
           v-model="form[element.model]"
-          class="form-textarea w-full"
+          class="w-full form-textarea"
       />
     </div>
-    <div class="flex items-center flex-wrap">
+    <div class="flex flex-wrap items-center">
       <label for="markup" :class="['required', { 'text-error': errors.markup }]">Inhalt</label>
       <tiptap
           v-model="form.markup"

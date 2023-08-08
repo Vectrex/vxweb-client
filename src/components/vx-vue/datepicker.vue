@@ -94,20 +94,20 @@
         :locale="locale"
     />
 
-    <div class="bg-white z-10 shadow-md" v-bind="calendarProps" ref="calendar" :class="[alignHoriz, alignVert]">
-      <div class="flex flex-row items-center bg-vxvue-700 text-white py-2 px-3">
-        <button @click.stop="previousMonth" class="flex-shrink-0 hover:text-vxvue-50 text-vxvue-100">
-          <chevron-left-icon class="h-6 w-6" />
+    <div class="z-10 bg-white shadow-md" v-bind="calendarProps" ref="calendar" :class="[alignHoriz, alignVert]">
+      <div class="flex flex-row items-center py-2 px-3 text-white bg-vxvue-700">
+        <button @click.stop="previousMonth" class="flex-shrink-0 text-vxvue-100 hover:text-vxvue-50">
+          <chevron-left-icon class="w-6 h-6" />
         </button>
         <div class="flex-grow text-center">{{ sheetDate.toLocaleString(locale, { month: 'long'}) }} {{ sheetDate.getFullYear() }}</div>
-        <button @click.stop="nextMonth" class="flex-shrink-0 hover:text-vxvue-50 text-vxvue-100">
-          <chevron-right-icon class="h-6 w-6" />
+        <button @click.stop="nextMonth" class="flex-shrink-0 text-vxvue-100 hover:text-vxvue-50">
+          <chevron-right-icon class="w-6 h-6" />
         </button>
       </div>
 
       <div class="grid grid-cols-7 gap-0.5 p-0.5">
 
-        <div v-for="weekday in localizedDayNames" class="text-center bg-gray-200 py-2">{{ weekday }}</div>
+        <div v-for="weekday in localizedDayNames" class="py-2 text-center bg-gray-200">{{ weekday }}</div>
 
         <div v-for="day in days" class="text-center"
              :class="day.getMonth() - sheetDate.getMonth() === 0 ? 'text-vxvue-700' : 'text-gray-400'">

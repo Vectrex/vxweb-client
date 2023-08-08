@@ -17,7 +17,7 @@
       <template v-if="branch.branches && branch.branches.length">
         <input type="checkbox" :id="'branch-' + branch.id" @click="expanded = !expanded" :checked="expanded" class="hidden">
         <label :for="'branch-' + branch.id" class="mr-2">
-          <component :is="expanded ? MinusIcon : PlusIcon" class="h-4 w-4 border" />
+          <component :is="expanded ? MinusIcon : PlusIcon" class="w-4 h-4 border" />
         </label>
       </template>
       <strong v-if="branch.current">{{ branch.label }}</strong>

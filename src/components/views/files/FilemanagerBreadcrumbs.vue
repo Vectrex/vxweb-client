@@ -41,8 +41,7 @@
     <span class="flex items-center">
         <button
             v-for="(breadcrumb, ndx) in items"
-            :class="[
-              'border-t-2 border-b-2 border-l border-r px-4 py-2 border-vxvue-500 text-vxvue-500',
+            :class="['border-t-2 border-b-2 border-l border-r px-4 py-2 border-vxvue-500 text-vxvue-500',
               {
                 'rounded-l !border-l-2': ndx === 0,
                 'rounded-r !border-r-2': ndx === items.length -1,

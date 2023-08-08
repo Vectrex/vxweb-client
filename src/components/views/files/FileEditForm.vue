@@ -55,17 +55,17 @@
               <div>
                   <img :src="fileInfo.thumb" v-if="(fileInfo.mimetype || '').startsWith('image')" class="w-full">
                   <divider class="px-4">Details</divider>
-                  <div class="px-4 py-2 space-y-2 text-sm">
-                      <span class="w-1/3 inline-block">Typ</span><span class="w-2/3 inline-block">{{ fileInfo.mimetype }}</span>
-                      <span class="w-1/3 inline-block">Link</span><span class="w-2/3 inline-block"><a class="link" :href="fileInfo.url" target="_blank">{{ fileInfo.name }}</a></span>
+                  <div class="py-2 px-4 space-y-2 text-sm">
+                      <span class="inline-block w-1/3">Typ</span><span class="inline-block w-2/3">{{ fileInfo.mimetype }}</span>
+                      <span class="inline-block w-1/3">Link</span><span class="inline-block w-2/3"><a class="link" :href="fileInfo.url" target="_blank">{{ fileInfo.name }}</a></span>
                       <template v-if="fileInfo.cache">
-                          <span class="w-1/3 inline-block">Cache</span><span class="w-2/3 inline-block">{{ fileInfo.cache.count }} Dateien, {{ formatFilesize(fileInfo.cache.totalSize).formatted.value }}</span>
+                          <span class="inline-block w-1/3">Cache</span><span class="inline-block w-2/3">{{ fileInfo.cache.count }} Dateien, {{ formatFilesize(fileInfo.cache.totalSize).formatted.value }}</span>
                       </template>
                   </div>
               </div>
               <div>
                   <divider class="px-4">Metadaten</divider>
-                  <div v-for="field in fields" class="px-4 py-2 space-y-2">
+                  <div v-for="field in fields" class="py-2 px-4 space-y-2">
                       <div>
                           <label
                                   :class="{ 'text-error': errors[field.model], 'required': field.required }"

@@ -39,10 +39,10 @@
       @update:folder-id="currentFolder = $event"
   >
     <template v-slot:action="slotProps">
-      <div class="flex items-center space-x-1 justify-end">
+      <div class="flex justify-end items-center space-x-1">
         <template v-if="!slotProps.row.isFolder && (!onlyImages || slotProps.row.image)">
           <button class="icon-link" @click="emit('pickFile', slotProps.row)">
-            <arrow-top-right-on-square-icon class="h-5 w-5" />
+            <arrow-top-right-on-square-icon class="w-5 h-5" />
           </button>
         </template>
       </div>

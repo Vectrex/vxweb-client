@@ -31,7 +31,7 @@
   </div>
   <div class="hidden sm:block">
     <div class="border-b border-gray-200">
-      <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+      <nav class="flex -mb-px space-x-8" aria-label="Tabs">
         <a v-for="item in items"
            :key="item.name"
            href="#"

@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <div class="flex space-x-2 items-center">
+  <div class="flex items-center space-x-2">
     <button class="button success" @click="emit('submit')" :disabled="busy"><slot /></button>
     <spinner v-if="busy" class="!text-green-700" />
   </div>

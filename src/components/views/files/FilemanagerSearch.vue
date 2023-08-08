@@ -48,15 +48,15 @@
 
 <template>
   <teleport to="#search-input" v-if="isMounted">
-    <button class="icon-link flex items-center" @click="showSearch = !showSearch"><magnifying-glass-icon class="h-5 w-5" /> Suchen...</button>
+    <button class="flex items-center icon-link" @click="showSearch = !showSearch"><magnifying-glass-icon class="w-5 h-5" /> Suchen...</button>
   </teleport>
 
   <modal :show="showSearch">
     <template #title>
-      <div class="fixed flex w-full justify-between items-center bg-vxvue-500 h-16 px-4">
+      <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
         <div class="flex items-center space-x-2 w-full">
           <input
-              class="form-input w-1/2"
+              class="w-1/2 form-input"
               :value="modelValue"
               :placeholder="placeholder"
               @keydown.esc="handleEsc"
@@ -64,7 +64,7 @@
               @focus="handleInput"
               v-focus
           />
-          <spinner class="h-5 w-5 text-vxvue" v-if="busy" />
+          <spinner class="w-5 h-5 text-vxvue" v-if="busy" />
         </div>
         <a href="#" @click.prevent="handleEsc"><x-mark-icon class="w-5 h-5 text-white"/></a>
       </div>
@@ -74,7 +74,7 @@
       <div class="pt-16">
         <div v-for="(folder, ndx) in (folders || [])" :key="folder.id" :class="['px-4 py-2', { 'bg-slate-100': ndx % 2 }]">
           <div class="flex items-center space-x-2">
-            <folder-icon class="h-5 w-5" />
+            <folder-icon class="w-5 h-5" />
             <a
                 :href="'#' + folder.path"
                 @click.prevent="pickFolder(folder)"
@@ -82,13 +82,13 @@
           </div>
         </div>
         <div class="flex justify-center py-2" v-if="files.length && folders.length">
-          <ellipsis-horizontal-icon class="h-5 w-5 text-slate-700" />
+          <ellipsis-horizontal-icon class="w-5 h-5 text-slate-700" />
         </div>
         <div v-for="(file, ndx) in (files || [])" :key="file.id" :class="['px-4 py-2', { 'bg-slate-100': ndx % 2 }]">
-          <div class="flex space-x-2 items-center">
+          <div class="flex items-center space-x-2">
             <div class="w-1/2"><div>{{ file.name }}</div><div class="text-sm text-slate-700">{{ file.type }}</div></div>
-            <div class="w-1/2 flex items-center space-x-2">
-              <folder-icon class="h-5 w-5" />
+            <div class="flex items-center space-x-2 w-1/2">
+              <folder-icon class="w-5 h-5" />
               <a
                   :href="'/' + file.folder.path"
                   @click.prevent="pickFolder(file.folder)"

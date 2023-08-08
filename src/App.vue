@@ -45,13 +45,13 @@
 <template>
   <div class="flex w-full">
     <div :class="['min-h-screen flex flex-col transition-all duration-100', sideBarExpanded ? 'w-80' : 'w-16']" v-if="isNotLoginView">
-      <div class="flex flex-grow flex-col overflow-y-auto bg-vxvue">
-        <div class="pb-2 pl-4 h-24 bg-vxvue-600 flex items-end pr-2 space-x-2">
-          <a href="#" @click.prevent="sideBarExpanded = !sideBarExpanded"><bars3-icon class="h-8 w-8 text-white flex-shrink-0" /></a>
-          <logo class="text-vxvue-500 w-44" v-if="sideBarExpanded" />
+      <div class="flex overflow-y-auto flex-col flex-grow bg-vxvue">
+        <div class="flex items-end pr-2 pb-2 pl-4 space-x-2 h-24 bg-vxvue-600">
+          <a href="#" @click.prevent="sideBarExpanded = !sideBarExpanded"><bars3-icon class="flex-shrink-0 w-8 h-8 text-white" /></a>
+          <logo class="w-44 text-vxvue-500" v-if="sideBarExpanded" />
         </div>
-        <div class="flex flex-1 flex-col">
-          <main-menu class="flex-1 space-y-1 px-2 py-6" :expanded="sideBarExpanded" />
+        <div class="flex flex-col flex-1">
+          <main-menu class="flex-1 py-6 px-2 space-y-1" :expanded="sideBarExpanded" />
         </div>
         <div class="p-4 h-32 border-t border-t-white">
           <account-info @authenticate="authenticate" :user="user" :expanded="sideBarExpanded" />
@@ -59,12 +59,12 @@
       </div>
     </div>
 
-    <div class="flex-1 flex flex-col min-h-screen">
-      <div class="h-24 flex flex-1 items-end pb-2 bg-white px-8 shadow border-b border-slate-500/10" v-if="isNotLoginView">
+    <div class="flex flex-col flex-1 min-h-screen">
+      <div class="flex flex-1 items-end px-8 pb-2 h-24 bg-white border-b shadow border-slate-500/10" v-if="isNotLoginView">
         <headerbar />
       </div>
       <div :class="['overflow-hidden', !isNotLoginView ? 'h-screen' : 'h-[calc(100vh-var(--header-height))]']">
-        <main class="w-full h-full overflow-y-auto flex flex-1 flex-col">
+        <main class="flex overflow-y-auto flex-col flex-1 w-full h-full">
           <div :class="[{'px-8 pt-6': isNotLoginView }]">
             <div>
               <router-view

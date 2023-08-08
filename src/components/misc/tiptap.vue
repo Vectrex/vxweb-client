@@ -96,12 +96,12 @@
 
 <template>
   <div>
-    <div class="flex items-center justify-start rounded-t p-1 bg-slate-200">
-      <div class="flex space-x-1 px-1 border-r px-1 border-slate-500">
-        <button @click="editor.commands.undo()" :class="buttonClass()"><arrow-uturn-left-icon class="h-5 w-5" /></button>
-        <button @click="editor.commands.redo()" :class="buttonClass()"><arrow-uturn-right-icon class="h-5 w-5" /></button>
+    <div class="flex justify-start items-center p-1 rounded-t bg-slate-200">
+      <div class="flex px-1 space-x-1 border-r border-slate-500">
+        <button @click="editor.commands.undo()" :class="buttonClass()"><arrow-uturn-left-icon class="w-5 h-5" /></button>
+        <button @click="editor.commands.redo()" :class="buttonClass()"><arrow-uturn-right-icon class="w-5 h-5" /></button>
       </div>
-      <div class="flex space-x-1 px-1 border-r border-slate-500">
+      <div class="flex px-1 space-x-1 border-r border-slate-500">
         <button @click="editor.chain().focus().toggleBold().run()" :class="buttonClass('bold')"><strong class="block h-5">Ab</strong></button>
         <button @click="editor.chain().focus().toggleItalic().run()" :class="buttonClass('italic')"><em class="block h-5">Ab</em></button>
         <button @click="editor.commands.toggleBulletList()" :class="buttonClass()">
@@ -111,7 +111,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"><path fill="none" d="M0 0h24v24H0z"/><path d="M8 4h13v2H8V4zM5 3v3h1v1H3V6h1V4H3V3h2zM3 14v-2.5h2V11H3v-1h3v2.5H4v.5h2v1H3zm2 5.5H3v-1h2V18H3v-1h3v4H3v-1h2v-.5zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor"/></svg>
         </button>
       </div>
-      <div class="flex space-x-1 px-1 border-r border-slate-500">
+      <div class="flex px-1 space-x-1 border-r border-slate-500">
         <button @click="pickLink" :class="buttonClass('link')">
             <link-icon class="w-5 h-5" />
         </button>
@@ -119,27 +119,27 @@
           <photo-icon class="w-5 h-5" />
         </button>
       </div>
-      <div class="flex space-x-1 px-1">
-        <button @click="showSrc = !showSrc" :class="['icon-link', showSrc ? 'bg-slate-400' : '']"><code-bracket-square-icon class="h-5 w-5" /></button>
+      <div class="flex px-1 space-x-1">
+        <button @click="showSrc = !showSrc" :class="['icon-link', showSrc ? 'bg-slate-400' : '']"><code-bracket-square-icon class="w-5 h-5" /></button>
       </div>
     </div>
-    <editor-content :editor="editor" class="prose w-full max-w-none"/>
-    <textarea class="form-textarea w-full text-sm my-2" @blur="emit('update:modelValue', $event.target.value)" :value="modelValue" v-if="showSrc" />
+    <editor-content :editor="editor" class="w-full max-w-none prose"/>
+    <textarea class="my-2 w-full text-sm form-textarea" @blur="emit('update:modelValue', $event.target.value)" :value="modelValue" v-if="showSrc" />
 
     <modal :show="showModal">
       <template #title>
-        <div class="fixed flex w-full justify-between items-center bg-vxvue-500 h-16 px-4">
+        <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
           <span class="text-xl font-bold text-white">{{ onlyImages ? 'Bilddatei selektieren...' : 'Zieladresse eingeben oder Datei wählen...' }}</span>
           <a href="#" @click.prevent="showModal = false"><x-mark-icon class="w-5 h-5 text-white"/></a>
         </div>
       </template>
       <template #default>
         <div class="space-y-4">
-          <div class="pt-16 px-4 flex space-x-2 items-center" v-if="!onlyImages">
-            <input class="form-input flex-grow" v-model.trim="linkData.href" />
-            <button class="icon-link" @click="linkData.href = ''"><trash-icon class="h-5 w-5" /></button>
+          <div class="flex items-center px-4 pt-16 space-x-2" v-if="!onlyImages">
+            <input class="flex-grow form-input" v-model.trim="linkData.href" />
+            <button class="icon-link" @click="linkData.href = ''"><trash-icon class="w-5 h-5" /></button>
             <input type="checkbox" class="form-checkbox" id="set-target" v-model="linkData.target" /><label for="set-target">in eigenem Tab öffnen</label>
-            <button class="icon-link" @click="confirmLink"><check-icon class="h-5 w-5" /></button>
+            <button class="icon-link" @click="confirmLink"><check-icon class="w-5 h-5" /></button>
           </div>
           <div class="px-4">
             <tiptap-files :only-images="onlyImages" @pick-file="handlePick" />

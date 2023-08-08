@@ -247,7 +247,7 @@
       @dragleave.prevent.stop="indicateDrag = false"
       :class="{'border-2 border-dotted border-vxvue-alt -m-[2px]': indicateDrag }"
   >
-    <div class="flex pb-4 space-x-4 items-center h-16">
+    <div class="flex items-center pb-4 space-x-4 h-16">
       <div class="flex items-center space-x-4">
         <filemanager-breadcrumbs
             :breadcrumbs="breadcrumbs"
@@ -280,17 +280,17 @@
         />
       </div>
 
-      <div class="bg-slate-200 px-8 py-4 w-full flex justify-center rounded-l rounded-r">
-        <div class="flex space-x-2 items-center" v-if="upload.progressing">
-          <button class="icon-link" data-tooltip="Abbrechen" @click="cancelUpload"><x-mark-icon class="h-5 w-5" /></button>
+      <div class="flex justify-center py-4 px-8 w-full rounded-r rounded-l bg-slate-200">
+        <div class="flex items-center space-x-2" v-if="upload.progressing">
+          <button class="icon-link" data-tooltip="Abbrechen" @click="cancelUpload"><x-mark-icon class="w-5 h-5" /></button>
           <div class="flex flex-col items-center space-y-2">
             <div class="text-sm">{{ progress.file }}</div>
-            <div class="w-64 bg-slate-200 rounded-full h-2">
-              <div class="bg-vxvue-500 rounded-full h-full" :style="{ width: (100 * progress.loaded / (progress.total || 1)) + '%' }" />
+            <div class="w-64 h-2 rounded-full bg-slate-200">
+              <div class="h-full rounded-full bg-vxvue-500" :style="{ width: (100 * progress.loaded / (progress.total || 1)) + '%' }" />
             </div>
           </div>
         </div>
-        <strong class="text-primary d-block col-12 text-center" v-else>Dateien zum Upload hierher ziehen</strong>
+        <strong class="text-center text-primary d-block col-12" v-else>Dateien zum Upload hierher ziehen</strong>
       </div>
 
       <div id="search-input" v-if="!isModal" />
@@ -332,11 +332,11 @@
             <template v-else>
               <a :href="'#' + slotProps.row.id" @click.prevent="emit('update:folder-id', slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
               <button
-                  class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
+                  class="opacity-0 transition-opacity group-hover:opacity-100 icon-link tooltip"
                   data-tooltip="Umbenennen"
                   @click="toRename = slotProps.row"
               >
-                <pencil-square-icon class="h-5 w-5" />
+                <pencil-square-icon class="w-5 h-5" />
               </button>
             </template>
           </template>
@@ -353,11 +353,11 @@
             <template v-else>
               <span>{{ slotProps.row.name }}</span>
               <button
-                class="icon-link opacity-0 group-hover:opacity-100 transition-opacity tooltip"
+                class="opacity-0 transition-opacity group-hover:opacity-100 icon-link tooltip"
                 data-tooltip="Umbenennen"
                 @click="toRename = slotProps.row"
               >
-                <pencil-square-icon class="h-5 w-5" />
+                <pencil-square-icon class="w-5 h-5" />
               </button>
             </template>
           </template>
@@ -383,7 +383,7 @@
   <teleport to="body">
     <transition name="fade">
       <div
-        class="z-10 fixed right-0 bottom-0 top-24 left-0 bg-white/75 backdrop-blur-sm"
+        class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-sm"
         v-if="formShown"
         @click.stop="formShown = null"
       />
@@ -395,7 +395,7 @@
         v-if="formShown === 'editFolder'"
         @cancel="formShown = null"
         @response-received="emit('response-received', $event)"
-        class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
+        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
       />
     </transition>
 
@@ -405,21 +405,21 @@
         v-if="formShown === 'editFile'"
         @cancel="formShown = null"
         @response-received="emit('response-received', $event)"
-        class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
+        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
       />
     </transition>
 
     <transition name="slide-from-right">
       <folder-tree
         v-if="formShown === 'folderTree'"
-        class="fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0 z-50"
+        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
         ref="folderTree"
       />
     </transition>
 
     <confirm
         ref="confirm"
-        header-class="bg-error text-white"
+        header-class="text-white bg-error"
         :buttons="[
             { label: 'Löschen!', value: true, class: 'button alert' },
             { label: 'Abbrechen', value: false, class: 'button cancel' }
@@ -427,7 +427,7 @@
     />
     <confirm
         ref="alert"
-        header-class="bg-error text-white"
+        header-class="text-white bg-error"
         :buttons="{ label: 'Ok!', value: true, class: 'button cancel' }"
     />
   </teleport>

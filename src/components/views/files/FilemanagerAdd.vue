@@ -26,7 +26,7 @@
 
 <template>
   <div
-      class="absolute left-0 z-10 mt-2 origin-top-right rounded bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      class="absolute left-0 z-10 py-1 mt-2 bg-white rounded ring-1 ring-black ring-opacity-5 shadow-lg origin-top-right focus:outline-none"
       role="menu"
       aria-orientation="vertical"
       ref="container"
@@ -34,7 +34,7 @@
     <input
       v-if="showAddFolderInput"
       v-focus
-      class="form-input mx-4 my-2"
+      class="my-2 mx-4 form-input"
       @keydown.enter="addFolder"
       @keydown.esc="showAddFolderInput = false"
       @blur="showAddFolderInput = false"
@@ -43,14 +43,14 @@
     <button
         v-else
         @click.stop="showAddFolderInput = true"
-        class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex space-x-1 items-center"
+        class="flex items-center py-2 px-4 space-x-1 text-sm text-gray-700 hover:bg-gray-100"
     >
       <folder-plus-icon class="w-5 h-5" />
       <span class="">Verzeichnis&nbsp;erstellen</span>
     </button>
     <label
       for="file_upload"
-      class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex space-x-1 items-center"
+      class="flex items-center py-2 px-4 space-x-1 text-sm text-gray-700 hover:bg-gray-100"
     >
       <document-arrow-up-icon class="w-5 h-5" />
       <span>Datei hochladen</span>

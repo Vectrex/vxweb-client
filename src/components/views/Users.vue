@@ -72,7 +72,7 @@
       </button>
     </headline>
   </teleport>
-  <div class="rounded overflow-hidden">
+  <div class="overflow-hidden rounded">
     <sortable
         :rows="users"
         :columns="cols"
@@ -83,7 +83,7 @@
         @after-sort="storeSort"
     >
       <template v-slot:action="slotProps">
-        <div class="flex space-x-2 justify-end" v-if="currentUser.username !== slotProps.row.username">
+        <div class="flex justify-end space-x-2" v-if="currentUser.username !== slotProps.row.username">
           <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="w-5 h-5"/></a>
           <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
         </div>
@@ -94,7 +94,7 @@
   <teleport to="body">
     <transition name="fade">
       <div
-          class="z-10 fixed right-0 bottom-0 top-24 left-0 bg-white/75 backdrop-blur-sm"
+          class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-sm"
           v-if="formShown"
           @click.stop="formShown = false"
       />
@@ -106,7 +106,7 @@
           @response-received="handleResponse"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
-          class="z-20 fixed top-24 bottom-0 shadow-gray shadow-lg bg-white w-sidebar right-0"
+          class="fixed right-0 bottom-0 top-24 z-20 bg-white shadow-lg shadow-gray w-sidebar"
       />
     </transition>
   </teleport>
@@ -114,7 +114,7 @@
   <teleport to="body">
     <confirm
         ref="confirm"
-        header-class="bg-error text-white"
+        header-class="text-white bg-error"
         :buttons="[
             { label: 'Löschen!', value: true, class: 'button alert' },
             { label: 'Abbrechen', value: false, class: 'button cancel' }

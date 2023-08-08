@@ -47,7 +47,7 @@
   <form-dialog @cancel="emit('cancel')">
       <template #title>{{ form.path }}</template>
       <template #content>
-          <div class="space-y-4 pt-20 pb-4 px-4">
+          <div class="px-4 pt-20 pb-4 space-y-4">
               <div v-for="field in fields">
                   <label
                           :class="{ 'text-error': errors[field.model], 'required': field.required }"

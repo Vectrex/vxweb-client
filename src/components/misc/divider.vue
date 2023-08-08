@@ -1,10 +1,10 @@
 <template>
   <div class="relative">
-    <div class="absolute inset-0 flex items-center" aria-hidden="true">
+    <div class="flex absolute inset-0 items-center" aria-hidden="true">
       <div class="w-full border-t border-slate-300" />
     </div>
-    <div class="relative flex justify-start">
-      <span class="bg-white pr-3 text-base font-semibold leading-6 text-slate-900"><slot /></span>
+    <div class="flex relative justify-start">
+      <span class="pr-3 text-base font-semibold leading-6 bg-white text-slate-900"><slot /></span>
     </div>
   </div>
 </template>

@@ -17,14 +17,14 @@
   <label :class="$attrs['class']">
     <span
         :class="outerClass"
-        class="relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-vxvue"
+        class="inline-flex relative flex-shrink-0 w-11 h-6 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out cursor-pointer focus:ring-2 focus:ring-offset-2 focus:outline-none focus:ring-vxvue"
         role="switch"
         :aria-checked="!!modelValue"
     >
       <span
           aria-hidden="true"
           :class="innerClass"
-          class="pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200"
+          class="inline-block w-5 h-5 bg-white rounded-full ring-0 shadow transition duration-200 ease-in-out transform pointer-events-none"
       ></span>
       <input class="hidden" value="1" type="checkbox" @change="emit('update:modelValue', $event.target.checked)" v-bind="inputAttrs" :checked="modelValue" />
     </span>

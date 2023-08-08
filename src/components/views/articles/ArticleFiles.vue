@@ -65,26 +65,26 @@
     </template>
 
     <template v-slot:action="slotProps">
-      <div class="flex items-center space-x-1 justify-end">
+      <div class="flex justify-end items-center space-x-1">
         <template v-if="slotProps.row.isFolder">
           <button class="icon-link tooltip" data-tooltip="Bearbeiten" @click="fm.editFolder(slotProps.row)">
-            <pencil-square-icon class="h-5 w-5" />
+            <pencil-square-icon class="w-5 h-5" />
           </button>
           <button class="icon-link tooltip" data-tooltip="leeren &amp; löschen" @click="fm.delFolder(slotProps.row)">
-            <trash-icon class="h-5 w-5" />
+            <trash-icon class="w-5 h-5" />
           </button>
         </template>
         <template v-else>
           <button class="icon-link tooltip" data-tooltip="Bearbeiten" @click="fm.editFile(slotProps.row)">
-            <pencil-square-icon class="h-5 w-5" />
+            <pencil-square-icon class="w-5 h-5" />
           </button>
-          <button class="icon-link flex items-center tooltip" data-tooltip="Verschieben" @click="fm.moveFile(slotProps.row)">
-            <document-minus-icon class="h-5 w-5"/>
-            <play-icon class="h-3 w-3" />
-            <document-plus-icon class="h-5 w-5"/>
+          <button class="flex items-center icon-link tooltip" data-tooltip="Verschieben" @click="fm.moveFile(slotProps.row)">
+            <document-minus-icon class="w-5 h-5"/>
+            <play-icon class="w-3 h-3" />
+            <document-plus-icon class="w-5 h-5"/>
           </button>
           <button class="icon-link tooltip" data-tooltip="Löschen" @click="fm.delFile(slotProps.row)">
-            <trash-icon class="h-5 w-5" />
+            <trash-icon class="w-5 h-5" />
           </button>
         </template>
       </div>

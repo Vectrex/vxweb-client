@@ -66,23 +66,23 @@
 </script>
 
 <template>
-  <div class="max-w-4xl py-4">
+  <div class="py-4 max-w-4xl">
     <div class="space-y-2">
-      <div class="flex items-center flex-wrap" v-for="element in elements" :key="element.model">
+      <div class="flex flex-wrap items-center" v-for="element in elements" :key="element.model">
         <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
         <input
           v-if="['text', 'number'].indexOf(element.type) !== -1"
           :id="element.model"
           v-model="form[element.model]"
           :type="element.type"
-          class="form-input w-full"
+          class="w-full form-input"
           v-bind="element.attrs"
         />
         <textarea
             v-else-if="element.type === 'textarea'"
             :id="element.model"
             v-model="form[element.model]"
-            class="form-textarea w-full"
+            class="w-full form-textarea"
         />
         <component
           v-else

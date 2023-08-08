@@ -3,7 +3,7 @@
   const emit = defineEmits(['cancel'])
 </script>
 <template>
-  <div class="fixed flex justify-between items-center bg-vxvue-500 h-16 px-4">
+  <div class="flex fixed justify-between items-center px-4 h-16 bg-vxvue-500">
     <span class="text-xl font-bold text-white"><slot /></span>
     <a href="#" @click.prevent="emit('cancel')"><x-mark-icon class="w-5 h-5 text-white"/></a>
   </div>

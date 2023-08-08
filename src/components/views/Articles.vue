@@ -70,7 +70,7 @@
     </headline>
   </teleport>
 
-  <div class="h-16 flex items-center justify-between">
+  <div class="flex justify-between items-center h-16">
     <filter-form v-model="filter" :options="{ categories: [ { key: 0, label: '(Alle Kategorien)' }, ...categories ] }" />
     <pagination
         class="w-1/4"
@@ -101,12 +101,12 @@
       <input type="checkbox" class="form-checkbox text-slate-500" disabled="disabled" :checked="slotProps.row.marked">
     </template>
     <template v-slot:action="slotProps">
-      <div class="flex items-center space-x-1 justify-end">
+      <div class="flex justify-end items-center space-x-1">
         <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link tooltip" data-tooltip="Bearbeiten">
-          <pencil-square-icon class="h-5 w-5" />
+          <pencil-square-icon class="w-5 h-5" />
         </router-link>
         <button class="icon-link tooltip" data-tooltip="Löschen" @click="del(slotProps.row)">
-          <trash-icon class="h-5 w-5" />
+          <trash-icon class="w-5 h-5" />
         </button>
       </div>
     </template>
@@ -114,7 +114,7 @@
 
   <confirm
       ref="confirm"
-      header-class="bg-error text-white"
+      header-class="text-white bg-error"
       :buttons="[
         { label: 'Löschen!', value: true, class: 'button alert' },
         { label: 'Abbrechen', value: false, class: 'button cancel' }

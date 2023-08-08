@@ -82,27 +82,27 @@
 </script>
 
 <template>
-  <nav class="px-4 flex items-center justify-between sm:px-0">
-    <div class="-mt-px w-0 flex-1 flex">
+  <nav class="flex justify-between items-center px-4 sm:px-0">
+    <div class="flex flex-1 -mt-px w-0">
       <a
           @click.prevent="prevPage"
           v-if="showNavButtons"
           href="#"
-          class="border-transparent pr-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          class="inline-flex items-center pr-1 text-sm font-medium text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300"
           :class="[{'cursor-default pointer-events-none': currentPage <=1 }, markerPositionClass]"
       >
-        <chevron-left-icon class="h-5 w-5" />
+        <chevron-left-icon class="w-5 h-5" />
         {{ prevText }}
       </a>
     </div>
-    <div class="hidden md:-mt-px md:flex">
+    <div class="hidden md:flex md:-mt-px">
       <component
           v-for="(page, idx) in pagesToShow"
           :is="page !== 'dots' ? 'a' : 'span'"
           @click.prevent="page !== 'dots' ? emit('update:page', page) : null"
           :key="idx"
           :href="page !== 'dots' ? '#' : null"
-          class="px-4 inline-flex items-center text-sm font-medium"
+          class="inline-flex items-center px-4 text-sm font-medium"
           :class="[{
           'border-vxvue-500 text-vxvue-700': page === currentPage,
           'border-transparent text-gray-500': page !== currentPage,
@@ -112,16 +112,16 @@
         {{ page !== 'dots' ? page : '...' }}
       </component>
     </div>
-    <div class="-mt-px w-0 flex-1 flex justify-end">
+    <div class="flex flex-1 justify-end -mt-px w-0">
       <a
           @click.prevent="nextPage"
           v-if="showNavButtons"
           href="#"
-          class="border-transparent pl-1 inline-flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          class="inline-flex items-center pl-1 text-sm font-medium text-gray-500 border-transparent hover:text-gray-700 hover:border-gray-300"
           :class="[markerPositionClass, {'cursor-default pointer-events-none': currentPage >= maxPage }]"
       >
         {{ nextText }}
-        <chevron-right-icon class="h-5 w-5" />
+        <chevron-right-icon class="w-5 h-5" />
       </a>
     </div>
   </nav>

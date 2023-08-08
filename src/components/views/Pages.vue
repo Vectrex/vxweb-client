@@ -58,7 +58,7 @@
       @after-sort="storeSort"
   >
     <template v-slot:action="slotProps">
-      <div class="flex space-x-2 justify-end">
+      <div class="flex justify-end space-x-2">
         <a class="icon-link" href="#" data-tooltip="Bearbeiten" @click.prevent="$router.push({ name: 'pageEdit', params: { id: slotProps.row.id }})"><PencilSquareIcon class="w-5 h-5"/></a>
         <a class="icon-link" href="#" data-tooltip="Löschen" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
       </div>
@@ -68,7 +68,7 @@
   <teleport to="body">
     <confirm
         ref="confirm"
-        header-class="bg-error text-white"
+        header-class="text-white bg-error"
         :buttons="[
             { label: 'Löschen!', value: true, class: 'button alert' },
             { label: 'Abbrechen', value: false, class: 'button cancel' }
