@@ -8,8 +8,7 @@
   const root = ref({})
   let resolve = null
   const open = async (route, currentFolder) => {
-    const { data } = await vxFetch(urlQueryCreate(route, { folder: currentFolder })).json()
-    root.value = data.value || {}
+    root.value = (await vxFetch(urlQueryCreate(route, { folder: currentFolder })).json()).data.value || {}
     return new Promise(res => { resolve = res })
   }
   defineExpose({ open })

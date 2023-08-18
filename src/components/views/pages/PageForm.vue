@@ -24,7 +24,6 @@
     emit('response-received', response)
   }
   watch(() => props.initData, v => form.value = v || {}, { immediate: true })
-  defineExpose({ tiptap })
 </script>
 
 <template>

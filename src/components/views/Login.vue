@@ -10,7 +10,7 @@
   const form = ref({ username: '', password: '' })
   const busy = ref(false)
   const submit = async () => {
-    if (form.value.username.trim() && form.value.password.trim()) {
+    if (form.value.username && form.value.password) {
       busy.value = true
       const { data } = await vxFetch("login").post(JSON.stringify(form.value)).json()
       busy.value = false
@@ -38,8 +38,8 @@
         </div>
 
         <div class="py-8 px-4 space-y-4 bg-white sm:px-10">
-          <input v-model="form.username" type="text" class="w-full form-input" placeholder="Username" />
-          <password-input v-model="form.password" class="w-full" placeholder="Passwort" />
+          <input v-model.trim="form.username" type="text" class="w-full form-input" placeholder="Username" />
+          <password-input v-model.trim="form.password" class="w-full" placeholder="Passwort" />
 
           <div class="flex justify-between items-center">
             <submit-button :busy="busy" @submit="submit">Anmelden</submit-button>

@@ -19,19 +19,18 @@
   const errors = ref({})
   const busy = ref(false)
   const notifications = ref([])
-
-  onMounted(async () => {
-    const { data } = await vxFetch('profile_data').json()
-    notifications.value = data.value?.notifications || []
-    form.value = data.value?.formData || {}
-  })
   const submit = async () => {
     busy.value = true
-    const { data } = await vxFetch('profile_data').post(JSON.stringify(form.value)).json()
+    const response = (await vxFetch('profile_data').post(JSON.stringify(form.value)).json()).data.value || {}
     busy.value = false
-    errors.value = data.value?.errors || {}
-    emit('notify', data.value)
+    errors.value = response.errors || {}
+    emit('notify', response)
   }
+  onMounted(async () => {
+    const response = (await vxFetch('profile_data').json()).data.value || {}
+    notifications.value = response.notifications || []
+    form.value = response.formData || {}
+  })
 </script>
 
 <template>
@@ -48,12 +47,12 @@
                 class="w-96 form-input"
                 v-if="!field.type"
                 :id="field.model + '-input'"
-                v-model="form[field.model]"
+                v-model.trim="form[field.model]"
             />
             <component :is="field.type"
                 v-else
                 :id="field.model + '-' + field.type"
-                v-model="form[field.model]"
+                v-model.trim="form[field.model]"
                 class="w-96"
             />
             <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>

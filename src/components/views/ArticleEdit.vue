@@ -8,8 +8,8 @@
   import router from "@/router"
   import { computed, onMounted, ref } from "vue"
 
-  const props = defineProps({ id: [String, Number], sectionId: [String, Number], section: [String, Number] })
   const emit = defineEmits(['notify'])
+  const props = defineProps({ id: [String, Number], sectionId: [String, Number], section: [String, Number] })
   const tabsItems = ref({ items: [
       { section: 'edit', name: 'Artikel' },
       { section: 'files', name: 'Verlinkte Dateien', badge: null },
@@ -25,8 +25,8 @@
   })
   const getLinkedFiles = async () => {
     if (props.id) {
-      const { data } = await vxFetch('article/' + props.id + '/linked-files').json()
-      tabsItems.value.items[1].badge = data.value?.length || 0
+      const response = (await vxFetch('article/' + props.id + '/linked-files').json()).data.value || []
+      tabsItems.value.items[1].badge = response.length || 0
     }
   }
   onMounted(getLinkedFiles)

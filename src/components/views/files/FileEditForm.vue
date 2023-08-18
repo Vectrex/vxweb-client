@@ -28,23 +28,18 @@
     }
     return sanitized
   })
-  watch(() => props.id, async v => {
-    const response = (await vxFetch('file/' + v).json()).data.value || {}
-    form.value = response.form || {}
-    fileInfo.value = response.fileInfo || {}
-  }, { immediate: true })
   const submit = async () => {
     busy.value = true
     const response = (await vxFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
     busy.value = false
     errors.value = response.errors || {}
-    emit(
-        'response-received',
-        response.success ?
-            { success: true, message: response.message, payload: response.form || null } :
-            { success: false, message: response.message }
-    )
+    emit('response-received', { ...response, payload: response.form || null })
   }
+  watch(() => props.id, async v => {
+    const response = (await vxFetch('file/' + v).json()).data.value || {}
+    form.value = response.form || {}
+    fileInfo.value = response.fileInfo || {}
+  }, { immediate: true })
 </script>
 
 <template>

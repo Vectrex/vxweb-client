@@ -23,24 +23,14 @@
       }
       return sanitized
   })
-  watch(() => props.id, async v => {
-    const { data } = await vxFetch('folder/' + v).json()
-    form.value = data.value || {}
-
-  }, { immediate: true })
-
   const submit = async () => {
     busy.value = true
     const response = (await vxFetch('folder/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
     busy.value = false
     errors.value = response.errors || {}
-    emit(
-    'response-received',
-    response.success ?
-      { success: true, message: response.message, payload: response.form || null } :
-      { success: false, message: response.message }
-    )
+    emit('response-received', { ...response, payload: response.form || null })
   }
+  watch(() => props.id, async v => { form.value = (await vxFetch('folder/' + v).json()).data.value || {} }, { immediate: true })
 </script>
 
 <template>

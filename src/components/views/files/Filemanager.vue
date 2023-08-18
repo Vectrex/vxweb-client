@@ -19,10 +19,10 @@
 
   const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id'])
   const props = defineProps({
-      columns: {type: Array, required: true},
-      folderId: {type: [Number, String], default: ''},
+      columns: { type: Array, required: true },
+      folderId: { type: [Number, String], default: '' },
       initSort: Object,
-      requestParameters: {type: Object, default: {}},
+      requestParameters: { type: Object, default: {} },
       isModal: Boolean
   })
   const isMounted = ref(false)

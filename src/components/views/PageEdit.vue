@@ -72,7 +72,12 @@
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
   <div class="flex justify-start pb-4 space-x-4 w-full">
-    <page-form :init-data="form" class="w-full" @response-received="handleFormResponse" :id="id" />
+    <page-form
+        :init-data="form"
+        :id="id"
+        class="w-full"
+        @response-received="handleFormResponse"
+    />
     <div class="w-1/3 flex-shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
       <revision-table
           :revisions="revisions" class="overflow-y-auto w-full h-full"

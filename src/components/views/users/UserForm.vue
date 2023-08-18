@@ -6,18 +6,10 @@
   import { computed, ref, watch } from "vue"
   import { vxFetch } from "@/composables/vxFetch"
 
+  const emit = defineEmits(['cancel', 'response-received'])
   const props = defineProps({
     id: { type: [String, Number], default: null }
   })
-  const emit = defineEmits(['cancel', 'response-received'])
-  const fields = [
-    { model: 'username', label: 'Username', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
-    { model: 'email', label: 'E-Mail', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
-    { model: 'name', label: 'Name', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
-    { type: FormSelect, model: 'admingroupsid', label: 'Gruppe', required: true, options: [] },
-    { type: PasswordInput, model: 'new_PWD', label: 'Neues Passwort', attrs: {maxlength: 128, autocomplete: "off" }},
-    { type: PasswordInput, model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: {maxlength: 128, autocomplete: "off" }}
-  ]
   const form = ref({})
   const errors = ref({})
   const options = ref({})
@@ -31,11 +23,14 @@
     }
     return sanitized
   })
-  watch(() => props.id, async newValue => {
-    const response = (await vxFetch('user/' + (newValue || '')).json()).data.value || {}
-    options.value = response.options || {}
-    form.value = response.form || {}
-  }, { immediate: true })
+  const fields = [
+    { model: 'username', label: 'Username', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
+    { model: 'email', label: 'E-Mail', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
+    { model: 'name', label: 'Name', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
+    { type: FormSelect, model: 'admingroupsid', label: 'Gruppe', required: true, options: [] },
+    { type: PasswordInput, model: 'new_PWD', label: 'Neues Passwort', attrs: {maxlength: 128, autocomplete: "off" }},
+    { type: PasswordInput, model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: {maxlength: 128, autocomplete: "off" }}
+  ]
   const submit = async () => {
     busy.value = true
     const response = (await vxFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()).data.value
@@ -51,6 +46,11 @@
       emit('response-received', { success: false, message: response.message })
     }
   }
+  watch(() => props.id, async newValue => {
+    const response = (await vxFetch('user/' + (newValue || '')).json()).data.value || {}
+    options.value = response.options || {}
+    form.value = response.form || {}
+  }, { immediate: true })
 </script>
 <template>
   <form-dialog @cancel="emit('cancel')">
