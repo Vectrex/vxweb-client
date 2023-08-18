@@ -62,26 +62,28 @@
               <div>
                   <divider class="px-4">Metadaten</divider>
                   <div v-for="field in fields" class="py-2 px-4 space-y-2">
-                      <div>
-                          <label
-                                  :class="{ 'text-error': errors[field.model], 'required': field.required }"
-                                  :for="field.model + '-' + field.type || 'input'"
-                          >
-                              {{ field.label }}
-                          </label>
+                      <div class="relative">
                           <input
                                   v-if="!field.type"
                                   :id="field.model + '-input'"
-                                  class="w-full form-input"
+                                  class="w-full form-input peer"
                                   v-model="form[field.model]"
                                   v-bind="field.attrs"
+                                  placeholder=" "
                           />
                           <textarea
                                   v-else-if="field.type === 'textarea'"
-                                  class="w-full form-textarea"
+                                  class="w-full form-textarea peer"
                                   :id="field.model + '-' + field.type"
                                   v-model="form[field.model]"
+                                  placeholder=" "
                           />
+                          <label
+                              :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
+                              :for="field.model + '-' + field.type || 'input'"
+                          >
+                            {{ field.label }}
+                          </label>
                           <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
                       </div>
                   </div>
