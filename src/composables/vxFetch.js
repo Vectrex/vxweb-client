@@ -1,7 +1,6 @@
 import { createFetch } from "@vueuse/core";
-import router from "@/router";
 
-export const vxFetch = createFetch({
+export const vxFetch = (emit = null) => { return createFetch({
     baseUrl: import.meta.env.VITE_API_ROOT || ('//' + window.location.host + '/admin/'),
     options: {
         beforeFetch ({ options }) {
@@ -18,12 +17,13 @@ export const vxFetch = createFetch({
             return ctx;
         },
         onFetchError (ctx) {
-            router.replace({ name: 'authFailed' });
-            ctx.data = {};
+            if (emit) {
+                emit('fetch-error', ctx.response);
+            }
             return ctx;
         }
     },
     fetchOptions: {
         mode: 'cors'
     }
-})
+})}

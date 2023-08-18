@@ -8,8 +8,13 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { storeSort, getSort } from "@/util/storeSort"
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
 
+  const users = ref([])
+  const formShown = ref(false)
+  const editData = ref({ id: null })
+  const confirm = ref(null)
+  const doFetch = vxFetch(emit)
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))
   const cols = [
     { label: "Username", sortable: true, width: "w-1/4", prop: "username" },
@@ -18,21 +23,11 @@
     { label: "Gruppe", sortable: true, width: "w-1/6", prop: "alias" },
     { label: "", width: "w-1/12", prop: "action", cssClass: "text-right" }
   ]
-
-  const users = ref([])
-  const formShown = ref(false)
-  const editData = ref({ id: null })
-  const confirm = ref(null)
-
-  onMounted(async () => {
-    const { data } = await vxFetch('users/init').json()
-    users.value = data.value?.users || []
-  })
   const edit = id => {
     formShown.value = true
     editData.value.id = id
   }
-  const handleResponse = (e) => {
+  const handleResponse = e => {
     if (e.payload?.id) {
       let ndx = users.value.findIndex(item => item.id === e.payload.id)
       if (ndx !== -1) {
@@ -45,22 +40,22 @@
     emit('notify', e)
   }
   const del = id => {
-    confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?").then(async() => {
-      const { data } = await vxFetch('users/' + id).delete().json()
-      if (data.value?.id) {
-        let ndx = users.value.findIndex(row => row.id === data.value.id)
+    confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?").then(async () => {
+      const response = (await doFetch('users/' + id).delete().json()).data.value || {}
+      if (response.id) {
+        let ndx = users.value.findIndex(row => row.id === response.id)
         if (ndx !== -1) {
           users.value.splice(ndx, 1)
           emit('notify', { message: 'Benutzer wurde erfolgreich gelöscht.', success: true })
         }
       }
       else {
-        emit('notify', { message: data.value.message || 'Es ist ein Fehler aufgetreten!', success: false })
+        emit('notify', { message: response.message })
       }
     }).catch(() => {})
   }
+  onMounted(async () => { users.value = (await doFetch('users/init').json()).data.value?.users || [] })
 </script>
-
 <template>
   <teleport to="#tools">
     <headline><span>Benutzer</span>
@@ -104,6 +99,7 @@
           v-if="formShown"
           @cancel="formShown = false"
           @response-received="handleResponse"
+          @fetch-error="emit('fetch-error', $event)"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
           class="fixed right-0 bottom-0 top-24 z-20 bg-white shadow-lg shadow-gray w-sidebar"

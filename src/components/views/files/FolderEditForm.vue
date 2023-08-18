@@ -5,7 +5,7 @@
   import { computed, ref, watch } from "vue"
 
   const props = defineProps({ id: Number })
-  const emit = defineEmits(['cancel', 'response-received'])
+  const emit = defineEmits(['cancel', 'response-received', 'fetch-error'])
 
   const form = ref({})
   const errors = ref({})
@@ -23,24 +23,15 @@
       }
       return sanitized
   })
-  watch(() => props.id, async v => {
-    const { data } = await vxFetch('folder/' + v).json()
-    form.value = data.value || {}
-
-  }, { immediate: true })
-
+  const doFetch = vxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await vxFetch('folder/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
+    const response = (await doFetch('folder/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
     busy.value = false
     errors.value = response.errors || {}
-    emit(
-    'response-received',
-    response.success ?
-      { success: true, message: response.message, payload: response.form || null } :
-      { success: false, message: response.message }
-    )
+    emit('response-received', { ...response, payload: response.form || null })
   }
+  watch(() => props.id, async v => { form.value = (await doFetch('folder/' + v).json()).data.value || {} }, { immediate: true })
 </script>
 
 <template>

@@ -5,11 +5,12 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
+  const emit = defineEmits(['fetch-error'])
   const root = ref({})
   let resolve = null
+  const doFetch = vxFetch(emit)
   const open = async (route, currentFolder) => {
-    const { data } = await vxFetch(urlQueryCreate(route, { folder: currentFolder })).json()
-    root.value = data.value || {}
+    root.value = (await doFetch(urlQueryCreate(route, { folder: currentFolder })).json()).data.value || {}
     return new Promise(res => { resolve = res })
   }
   defineExpose({ open })

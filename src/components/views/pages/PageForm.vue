@@ -4,7 +4,7 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { ref, watch } from "vue"
 
-  const emit = defineEmits(['responseReceived', 'openFileManager'])
+  const emit = defineEmits(['response-received', 'open-file-manager', 'fetch-error'])
   const props = defineProps({ initData: Object, id: [String, Number] })
   const form = ref({})
   const errors = ref({})
@@ -12,19 +12,19 @@
   const busy = ref(false)
   const tiptap = ref(null)
   const elements = [
-      { type: 'text', model: 'title', label: 'Titel', required: true },
-      { type: 'textarea', model: 'description', label: 'Beschreibung' },
-      { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' }
-    ]
+    { type: 'text', model: 'title', label: 'Titel', required: true },
+    { type: 'textarea', model: 'description', label: 'Beschreibung' },
+    { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' }
+  ]
+  const doFetch = vxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await vxFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(form.value)).json()).data.value || {}
+    const response = (await doFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(form.value)).json()).data.value || {}
     busy.value = false
     errors.value = response.errors || {}
     emit('response-received', response)
   }
   watch(() => props.initData, v => form.value = v || {}, { immediate: true })
-  defineExpose({ tiptap })
 </script>
 
 <template>

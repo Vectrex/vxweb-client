@@ -7,7 +7,7 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { ref, onMounted } from "vue"
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
   const cols = [
     { label: "Alias/Titel", sortable: true, prop: "alias" },
     { label: "Datei", sortable: true, prop: "template" },
@@ -18,20 +18,18 @@
   ]
   const pages = ref([])
   const confirm = ref(null)
+  const doFetch = vxFetch(emit)
 
   onMounted(async () => {
-    const { data } = await vxFetch('pages').json()
-    pages.value = data.value
+    pages.value = (await doFetch('pages').json()).data.value || []
   })
   const del = id => {
     confirm.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?").then(async () => {
-      const { data } = await vxFetch('page/' + id).delete().json()
-      if (data.value?.success) {
+      const response = (await doFetch('page/' + id).delete().json()).data.value
+      if (response.success) {
         pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
-        emit('notify', { message: 'Seite wurde erfolgreich gelöscht.', success: true })
-      } else {
-        emit('notify', { message: data.value.message || 'Es ist ein Fehler aufgetreten!', success: false })
       }
+      emit('notify', response)
     }).catch(() => {})
   }
 </script>
@@ -59,8 +57,12 @@
   >
     <template v-slot:action="slotProps">
       <div class="flex justify-end space-x-2">
-        <a class="icon-link" href="#" data-tooltip="Bearbeiten" @click.prevent="$router.push({ name: 'pageEdit', params: { id: slotProps.row.id }})"><PencilSquareIcon class="w-5 h-5"/></a>
-        <a class="icon-link" href="#" data-tooltip="Löschen" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
+        <router-link :to="{ name: 'pageEdit', params: { id: slotProps.row.id }}" class="icon-link" data-tooltip="Bearbeiten">
+          <PencilSquareIcon class="w-5 h-5"/>
+        </router-link>
+        <button class="icon-link" data-tooltip="Löschen" @click="del(slotProps.row.id)">
+          <TrashIcon class="w-5 h-5" />
+        </button>
       </div>
     </template>
   </sortable>

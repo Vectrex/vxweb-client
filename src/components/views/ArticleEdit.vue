@@ -8,8 +8,8 @@
   import router from "@/router"
   import { computed, onMounted, ref } from "vue"
 
+  const emit = defineEmits(['notify', 'fetch-error'])
   const props = defineProps({ id: [String, Number], sectionId: [String, Number], section: [String, Number] })
-  const emit = defineEmits(['notify'])
   const tabsItems = ref({ items: [
       { section: 'edit', name: 'Artikel' },
       { section: 'files', name: 'Verlinkte Dateien', badge: null },
@@ -23,10 +23,11 @@
   const activeTab = computed(() => {
       return router.currentRoute.value.params.section || 'edit'
   })
+  const doFetch = vxFetch(emit)
   const getLinkedFiles = async () => {
     if (props.id) {
-      const { data } = await vxFetch('article/' + props.id + '/linked-files').json()
-      tabsItems.value.items[1].badge = data.value?.length || 0
+      const response = (await doFetch('article/' + props.id + '/linked-files').json()).data.value || []
+      tabsItems.value.items[1].badge = response.length || 0
     }
   }
   onMounted(getLinkedFiles)
@@ -48,6 +49,7 @@
     <article-form
         :id="id"
         @response-received="emit('notify', $event)"
+        @fetch-error="emit('fetch-error', $event)"
     />
   </div>
   <div v-if="activeTab === 'files' && id">
@@ -56,6 +58,7 @@
         :selected-folder="$route.params.sectionId"
         @update-linked="getLinkedFiles"
         @notify="emit('notify', $event)"
+        @fetch-error="emit('fetch-error', $event)"
     />
   </div>
   <div v-if="activeTab === 'sort' && id">
@@ -63,6 +66,7 @@
         :article-id="id"
         @update-linked="getLinkedFiles"
         @goto-folder="router.push( { name: 'articleEdit', params: { id: id, section: 'files', sectionId: $event.id }})"
+        @fetch-error="emit('fetch-error', $event)"
     />
   </div>
 </template>

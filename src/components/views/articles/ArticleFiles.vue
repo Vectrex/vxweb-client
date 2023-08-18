@@ -8,7 +8,7 @@
   import { ref } from "vue"
 
   const props = defineProps({ articleId: [Number, String], selectedFolder: [Number, String] })
-  const emit = defineEmits(['notify', 'update-linked'])
+  const emit = defineEmits(['notify', 'update-linked', 'fetch-error'])
   const cols = [
     {
       label: "Dateiname",
@@ -34,8 +34,9 @@
     { label: "", prop: "action" }
   ]
   const fm = ref(null)
+  const doFetch = vxFetch(emit)
   const handleLink = async row => {
-    const response = (await vxFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: row.id })).json()).data.value || {}
+    const response = (await doFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: row.id })).json()).data.value || {}
     if(response.success) {
       row.linked = response.status === 'linked'
       emit('update-linked')
@@ -57,6 +58,7 @@
     :folder-id="selectedFolder"
     @update:folder-id="handleFolderChange"
     @response-received="handleReceivedResponse"
+    @fetch-error="emit('fetch-error', $event)"
     @after-sort="storeSort"
     ref="fm"
   >

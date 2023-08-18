@@ -10,7 +10,7 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { storeSort, getSort } from "@/util/storeSort"
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify','fetch-error'])
   const cols = [
     { label: "Kategorie", sortable: true, prop: "catId" },
     { label: "Titel", sortable: true, prop: "title" },
@@ -23,6 +23,7 @@
     { label: "Angelegt/aktualisiert", sortable: true, prop: "updated" },
     { label: "", prop: "action" }
   ]
+  const doFetch = vxFetch(emit)
   const articles = ref([])
   const categories = ref([])
   const paginated = ref({ page: 1, entriesPerPage: 20 })
@@ -32,30 +33,28 @@
     return articles.value.filter(item => (!filter.value.cat || filter.value.cat === item.catId) && (!titleFilter || item.title.toLowerCase().indexOf(titleFilter) !== -1))
   })
   const confirm = ref(null)
-
-  onMounted(async () => {
-    const { data } = await vxFetch('articles').json()
-    articles.value = data.value?.articles || []
-    categories.value = data.value?.categories || []
-    categories.value.forEach(item => item.key = item.id)
-  })
   const del = article => {
     confirm.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`).then(async () => {
-      const { data } = await vxFetch('article/' + article.id).delete().json()
-      if (data.value?.success) {
+      const response = (await doFetch('article/' + article.id).delete().json()).data.value || {}
+      if (response.success) {
         articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
       }
-      emit('notify', data.value)
+      emit('notify', response)
     }).catch(() => {})
   }
-  const publish = async (row) => {
-    row.pub = !row.pub
-    const { data } = await vxFetch(`article/${row.id}/${(row.pub ? 'publish' : 'unpublish')}`).put().json()
-    if(!data.value?.success) {
+  const publish = async row => {
+    const response = (await doFetch(`article/${row.id}/${(!row.pub ? 'publish' : 'unpublish')}`).put().json()).data.value || {}
+    if(response.success) {
       row.pub = !row.pub
     }
-    emit('notify', data.value)
+    emit('notify', response)
   }
+  onMounted(async () => {
+    const response = (await doFetch('articles').json()).data.value || {}
+    articles.value = response.articles || []
+    categories.value = response.categories || []
+    categories.value.forEach(item => item.key = item.id)
+  })
 </script>
 
 <template>

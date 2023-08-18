@@ -4,28 +4,29 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { ref, onMounted } from "vue"
 
-  const emit = defineEmits(['update-linked', 'goto-folder'])
+  const emit = defineEmits(['update-linked', 'goto-folder', 'fetch-error'])
   const props = defineProps({ articleId: { type: [Number, String], required: true }})
   const linkedFiles = ref([])
+  const doFetch = vxFetch(emit)
   const saveSort = () => {
     let ids = []
     linkedFiles.value.forEach(f => ids.push(f.id))
-    vxFetch('article/' + props.articleId + '/linked-files').put(JSON.stringify({ fileIds: ids }))
+    doFetch('article/' + props.articleId + '/linked-files').put(JSON.stringify({ fileIds: ids }))
   }
-  const unlinkSort = async file => {
-    const { data } = await vxFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: file.id })).json()
-    if(data.value?.success) {
+  const unlink = async file => {
+    const response = (await doFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: file.id })).json()).data.value || {}
+    if(response.success) {
       linkedFiles.value.splice(linkedFiles.value.findIndex(item => item === file), 1)
       emit('update-linked')
     }
   }
   const toggleVisibility = async file => {
-    const { data } = await vxFetch('article/' + props.articleId + '/toggle-linked-file').put(JSON.stringify({ fileId: file.id })).json()
-    if(data.value?.success) {
-      file.hidden = !!data.value.hidden
+    const response = (await doFetch('article/' + props.articleId + '/toggle-linked-file').put(JSON.stringify({ fileId: file.id })).json()).data.value || {}
+    if(response.success) {
+      file.hidden = !!response.hidden
     }
   }
-  onMounted(async () => { linkedFiles.value = (await vxFetch('article/' + props.articleId + '/linked-files').json()).data.value })
+  onMounted(async () => { linkedFiles.value = (await doFetch('article/' + props.articleId + '/linked-files').json()).data.value || {} })
 </script>
 <template>
   <slick-list v-model:list="linkedFiles" lock-axis="y" @update:list="saveSort" useDragHandle>
@@ -37,7 +38,7 @@
         <div class="overflow-hidden whitespace-nowrap overflow-ellipsis" v-else>{{ item.type }}</div>
       </div>
       <div class="flex justify-center items-center space-x-2 w-24">
-        <button class="icon-link" data-tooltip="Verlinkung entfernen" @click="unlinkSort(item)">
+        <button class="icon-link" data-tooltip="Verlinkung entfernen" @click="unlink(item)">
           <link-icon class="w-5 h-5" />
         </button>
         <button class="icon-link" :data-tooltip="item.hidden ? 'Anzeigen' : 'Verstecken'" @click="toggleVisibility(item)">
