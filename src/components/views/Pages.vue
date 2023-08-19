@@ -7,7 +7,7 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { ref, onMounted } from "vue"
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
   const cols = [
     { label: "Alias/Titel", sortable: true, prop: "alias" },
     { label: "Datei", sortable: true, prop: "template" },
@@ -18,13 +18,14 @@
   ]
   const pages = ref([])
   const confirm = ref(null)
+  const doFetch = vxFetch(emit)
 
   onMounted(async () => {
-    pages.value = (await vxFetch('pages').json()).data.value || []
+    pages.value = (await doFetch('pages').json()).data.value || []
   })
   const del = id => {
     confirm.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?").then(async () => {
-      const response = (await vxFetch('page/' + id).delete().json()).data.value
+      const response = (await doFetch('page/' + id).delete().json()).data.value
       if (response.success) {
         pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
       }

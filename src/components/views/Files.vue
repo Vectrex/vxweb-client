@@ -7,7 +7,7 @@
   import { ref } from "vue"
 
   const props = defineProps({ folderId: [String, Number] })
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
   const fm = ref(null)
   const cols = [
     {
@@ -44,6 +44,7 @@
     :folder-id="folderId"
     @update:folder-id="router.push({ name: 'files', params: { folderId: $event } })"
     @response-received="emit('notify', $event)"
+    @fetch-error="emit('fetch-error', $event)"
     @after-sort="storeSort"
     ref="fm"
   >

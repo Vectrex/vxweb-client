@@ -72,6 +72,12 @@
     .link {
         @apply text-vxvue hover:text-vxvue-700 active:text-vxvue-700 hover:underline active:underline
     }
+    .floating-label {
+        @apply absolute px-2 left-1 top-2 scale-75 z-10 origin-[0]
+        bg-white -translate-y-5 transform-gpu duration-200
+        peer-focus:text-blue-600 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-5 peer-focus:bg-white
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-slate-400 peer-placeholder-shown:bg-transparent peer-placeholder-shown:cursor-text
+    }
 }
 
 /* define the default vx-vue color set */

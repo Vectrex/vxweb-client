@@ -7,10 +7,11 @@
   import { onMounted, ref } from "vue"
 
   const props = defineProps({ id: [Number, String] })
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
   const form = ref({})
   const revisions = ref([])
 
+  const doFetch = vxFetch(emit)
   const handleResponse = response => {
     if (response.current) {
       form.value = response.current
@@ -35,7 +36,7 @@
     emit('notify', response)
   }
   const activateRevision = async revision => {
-    const response = (await vxFetch('revision/' + revision.id + '/activate').put().json()).data.value || {}
+    const response = (await doFetch('revision/' + revision.id + '/activate').put().json()).data.value || {}
     if (response.success) {
       let active = revisions.value.find(item => item.active === true)
       if (active) {
@@ -50,20 +51,20 @@
     emit('notify', response)
   }
   const deleteRevision = async revision => {
-    const response = (await vxFetch('revision/' + revision.id).delete().json()).data.value || {}
+    const response = (await doFetch('revision/' + revision.id).delete().json()).data.value || {}
     if (response.success) {
       handleResponse(response)
     }
     emit('notify', response)
   }
   const loadRevision = async revision => {
-    const response = (await vxFetch('revision/' + revision.id).json()).data.value || {}
+    const response = (await doFetch('revision/' + revision.id).json()).data.value || {}
     if (response.success) {
       handleResponse(response)
     }
   }
   onMounted(async () => {
-    if(props.id) { handleResponse((await vxFetch('page/' + props.id).json()).data.value || {}) }
+    if(props.id) { handleResponse((await doFetch('page/' + props.id).json()).data.value || {}) }
   })
 </script>
 
@@ -77,6 +78,7 @@
         :id="id"
         class="w-full"
         @response-received="handleFormResponse"
+        @fetch-error="emit('fetch-error', $event)"
     />
     <div class="w-1/3 flex-shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
       <revision-table

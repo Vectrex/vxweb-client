@@ -27,10 +27,21 @@
 
   }
   const notify = data => {
-    toast.value = {
-      active: true,
-      message: data.message || (data.success ? 'Success!' : 'Failure!'),
-      css: data.success ? 'bg-green-700 text-white' : 'bg-red-700 text-white'
+    if (data.message) {
+      toast.value = {
+        active: true,
+        message: data.message,
+        css: data.success ? 'bg-green-700 text-white' : 'bg-red-700 text-white'
+      }
+    }
+  }
+  const handleFetchError = response => {
+    if (response.status === 401) {
+      notify({ message: 'Authentifizierung fehlgeschlagen. Erneute Anmeldung erforderlich.' })
+      router.replace({ name: 'login' })
+    }
+    else {
+      notify({ message: `${response.status}: ${response.statusText}.`})
     }
   }
   const currentUser = sessionStorage.getItem("currentUser")
@@ -70,6 +81,7 @@
               <router-view
                   @notify="notify"
                   @authenticate="authenticate"
+                  @fetch-error="handleFetchError"
               />
             </div>
           </div>

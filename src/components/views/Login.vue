@@ -9,10 +9,12 @@
   const emit = defineEmits(['authenticate', 'notify'])
   const form = ref({ username: '', password: '' })
   const busy = ref(false)
+  const doFetch = vxFetch()
+
   const submit = async () => {
     if (form.value.username && form.value.password) {
       busy.value = true
-      const { data } = await vxFetch("login").post(JSON.stringify(form.value)).json()
+      const { data } = await doFetch("login").post(JSON.stringify(form.value)).json()
       busy.value = false
       if(data.value.bearerToken) {
         sessionStorage.setItem('bearerToken', data.value.bearerToken)

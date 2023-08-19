@@ -9,9 +9,9 @@
   import { onMounted, ref } from "vue"
   import router from "@/router"
 
-
-  const emit = defineEmits(['response-received'])
+  const emit = defineEmits(['response-received', 'fetch-error'])
   const props = defineProps({ id: [Number, String]})
+  const doFetch = vxFetch(emit)
   const datepickerAttrs = {
     placeholder: 'dd.mm.yyyy',
     class: "w-96 w-full",
@@ -36,9 +36,9 @@
   const form = ref({})
   const errors = ref({})
   onMounted(async ()  => {
-    options.value.articlecategoriesid = (await vxFetch('article/categories').json()).data.value || []
+    options.value.articlecategoriesid = (await doFetch('article/categories').json()).data.value || []
     if (props.id) {
-      form.value = (await vxFetch('article/' + props.id).json()).data.value || {}
+      form.value = (await doFetch('article/' + props.id).json()).data.value || {}
 
       elements.forEach(item => {
         if(item.type === DatePicker && form.value[item.model]) {
@@ -53,7 +53,7 @@
         f[key] = value instanceof Date ? useDateFormat(value,'YYYY-MM-DD').value : value
       }
       busy.value = true
-      const response = (await vxFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(f)).json()).data.value
+      const response = (await doFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(f)).json()).data.value || {}
       busy.value = false
 
       errors.value = response.errors || {}

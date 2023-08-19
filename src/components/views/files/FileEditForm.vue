@@ -7,7 +7,7 @@
   import { computed, ref, watch } from "vue"
 
   const props = defineProps({ id: Number })
-  const emit = defineEmits(['cancel', 'response-received'])
+  const emit = defineEmits(['cancel', 'response-received', 'fetch-error'])
 
   const form = ref({})
   const fileInfo = ref({})
@@ -28,17 +28,28 @@
     }
     return sanitized
   })
+  const doFetch = vxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await vxFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
+    const response = (await doFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value
     busy.value = false
-    errors.value = response.errors || {}
-    emit('response-received', { ...response, payload: response.form || null })
+    if(!response) {
+      emit('cancel')
+    }
+    else {
+      errors.value = response.errors || {}
+      emit('response-received', { ...response, payload: response.form || null })
+    }
   }
   watch(() => props.id, async v => {
-    const response = (await vxFetch('file/' + v).json()).data.value || {}
-    form.value = response.form || {}
-    fileInfo.value = response.fileInfo || {}
+    const response = (await doFetch('file/' + v).json()).data.value
+    if (response) {
+      form.value = response.form || {}
+      fileInfo.value = response.fileInfo || {}
+    }
+    else {
+      emit('cancel')
+    }
   }, { immediate: true })
 </script>
 
@@ -61,26 +72,28 @@
               <div>
                   <divider class="px-4">Metadaten</divider>
                   <div v-for="field in fields" class="py-2 px-4 space-y-2">
-                      <div>
-                          <label
-                                  :class="{ 'text-error': errors[field.model], 'required': field.required }"
-                                  :for="field.model + '-' + field.type || 'input'"
-                          >
-                              {{ field.label }}
-                          </label>
+                      <div class="relative">
                           <input
                                   v-if="!field.type"
                                   :id="field.model + '-input'"
-                                  class="w-full form-input"
+                                  class="w-full form-input peer"
                                   v-model="form[field.model]"
                                   v-bind="field.attrs"
+                                  placeholder=" "
                           />
                           <textarea
                                   v-else-if="field.type === 'textarea'"
-                                  class="w-full form-textarea"
+                                  class="w-full form-textarea peer"
                                   :id="field.model + '-' + field.type"
                                   v-model="form[field.model]"
+                                  placeholder=" "
                           />
+                          <label
+                              :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
+                              :for="field.model + '-' + field.type || 'input'"
+                          >
+                            {{ field.label }}
+                          </label>
                           <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
                       </div>
                   </div>

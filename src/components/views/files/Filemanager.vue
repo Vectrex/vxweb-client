@@ -17,7 +17,7 @@
   import router from "@/router"
   import {ref, onMounted, watch, computed, nextTick } from "vue"
 
-  const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id'])
+  const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id', 'fetch-error'])
   const props = defineProps({
       columns: { type: Array, required: true },
       folderId: { type: [Number, String], default: '' },
@@ -52,8 +52,9 @@
   })
   const checkedFiles = computed(() => files.value.filter(({ checked }) => checked))
   const checkedFolders = computed(() => folders.value.filter(({ checked }) => checked))
+  const doFetch = vxFetch(emit)
   const readFolder = async () => {
-    const response = (await vxFetch(urlQueryCreate('folder/' + (props.folderId || '-') + '/read', props.requestParameters)).json()).data.value || {}
+    const response = (await doFetch(urlQueryCreate('folder/' + (props.folderId || '-') + '/read', props.requestParameters)).json()).data.value || {}
     if (response.success) {
       parentId.value = response.parendId
       files.value = response.files || []
@@ -72,7 +73,7 @@
     }
   }
   const delSelection = async () => {
-    const response = (await vxFetch(urlQueryCreate('filesfolders/delete', {
+    const response = (await doFetch(urlQueryCreate('filesfolders/delete', {
       files: checkedFiles.value.map(({id}) => id).join(","),
       folders: checkedFolders.value.map(({id}) => id).join(","),
       ...props.requestParameters
@@ -94,7 +95,7 @@
           const folder = await folderTree.value.open(urlQueryCreate('folders/tree', props.requestParameters), currentFolderId.value)
           formShown.value = null
           if (folder !== false) {
-            const response = (await vxFetch(urlQueryCreate('filesfolders/moveto/' + folder.id , props.requestParameters)).put(JSON.stringify({
+            const response = (await doFetch(urlQueryCreate('filesfolders/moveto/' + folder.id , props.requestParameters)).put(JSON.stringify({
               files: checkedFiles.value.map(({ id }) => id),
               folders: checkedFolders.value.map(({ id }) => id)
             })).json()).data.value || {}
@@ -115,7 +116,7 @@
   const editFolder = row => { formShown.value = 'editFolder'; pickedId.value = row.id }
   const delFile = row => {
     confirm.value.open('Datei löschen', `'${row.name}' wirklich löschen?`).then(async () => {
-        const response = (await vxFetch(urlQueryCreate('file/' + row.id, props.requestParameters)).delete().json()).data.value || {}
+        const response = (await doFetch(urlQueryCreate('file/' + row.id, props.requestParameters)).delete().json()).data.value || {}
         if (response.success) {
           files.value.splice(files.value.findIndex(item => row === item), 1)
         }
@@ -124,7 +125,7 @@
   }
   const delFolder = row => {
     confirm.value.open('Verzeichnis löschen', `'${row.name}' und enthaltene Dateien wirklich löschen?`).then(async () => {
-      const response = (await vxFetch(urlQueryCreate('folder/' + row.id, props.requestParameters)).delete().json()).data.value || {}
+      const response = (await doFetch(urlQueryCreate('folder/' + row.id, props.requestParameters)).delete().json()).data.value || {}
       if (response.success) {
         folders.value.splice(folders.value.findIndex(item => row === item), 1)
       }
@@ -134,7 +135,7 @@
   const rename = async (e, type) => {
     let name = e.target.value.trim()
     if (name && toRename.value) {
-      const response = (await vxFetch(urlQueryCreate(type + '/' + toRename.value.id + '/rename', props.requestParameters)).put(JSON.stringify({ name: name })).json()).data.value || {}
+      const response = (await doFetch(urlQueryCreate(type + '/' + toRename.value.id + '/rename', props.requestParameters)).put(JSON.stringify({ name: name })).json()).data.value || {}
       if (response.success) {
         toRename.value.name = response.name || name
         toRename.value = null
@@ -143,7 +144,7 @@
   }
   const createFolder = async name => {
     showAddActivities.value = false
-    const response = (await vxFetch(urlQueryCreate('folder', props.requestParameters)).post(JSON.stringify({ name: name, parent: currentFolderId.value })).json()).data.value || {}
+    const response = (await doFetch(urlQueryCreate('folder', props.requestParameters)).post(JSON.stringify({ name: name, parent: currentFolderId.value })).json()).data.value || {}
     if (response.folder) {
       folders.value.push(response.folder)
     }
@@ -156,7 +157,7 @@
           let folder = await folderTree.value.open(urlQueryCreate('folders/tree', props.requestParameters), currentFolderId.value)
           formShown.value = null
           if (folder !== false) {
-            const response = (await vxFetch(urlQueryCreate('file/' + row.id + '/move', props.requestParameters)).put(JSON.stringify({ folderId: folder.id })).json()).data.value || {}
+            const response = (await doFetch(urlQueryCreate('file/' + row.id + '/move', props.requestParameters)).put(JSON.stringify({ folderId: folder.id })).json()).data.value || {}
             if (response.success) {
               files.value.splice(files.value.findIndex(item => row === item), 1)
             }
@@ -395,6 +396,7 @@
         v-if="formShown === 'editFolder'"
         @cancel="formShown = null"
         @response-received="emit('response-received', $event)"
+        @fetch-error="emit('fetch-error', $event)"
         class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
       />
     </transition>
@@ -405,6 +407,7 @@
         v-if="formShown === 'editFile'"
         @cancel="formShown = null"
         @response-received="emit('response-received', $event)"
+        @fetch-error="emit('fetch-error', $event)"
         class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
       />
     </transition>
@@ -414,6 +417,7 @@
         v-if="formShown === 'folderTree'"
         class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
         ref="folderTree"
+        @fetch-error="emit('fetch-error', $event)"
       />
     </transition>
 
@@ -432,5 +436,10 @@
     />
   </teleport>
 
-  <filemanager-search @folder-picked="emit('update:folder-id', $event.id)" :is-mounted="isMounted" v-if="!isModal" />
+  <filemanager-search
+      v-if="!isModal"
+      :is-mounted="isMounted"
+      @folder-picked="emit('update:folder-id', $event.id)"
+      @fetch-error="emit('fetch-error', $event)"
+  />
 </template>

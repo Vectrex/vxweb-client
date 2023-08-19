@@ -10,7 +10,7 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { storeSort, getSort } from "@/util/storeSort"
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify','fetch-error'])
   const cols = [
     { label: "Kategorie", sortable: true, prop: "catId" },
     { label: "Titel", sortable: true, prop: "title" },
@@ -23,6 +23,7 @@
     { label: "Angelegt/aktualisiert", sortable: true, prop: "updated" },
     { label: "", prop: "action" }
   ]
+  const doFetch = vxFetch(emit)
   const articles = ref([])
   const categories = ref([])
   const paginated = ref({ page: 1, entriesPerPage: 20 })
@@ -34,7 +35,7 @@
   const confirm = ref(null)
   const del = article => {
     confirm.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`).then(async () => {
-      const response = (await vxFetch('article/' + article.id).delete().json()).data.value || {}
+      const response = (await doFetch('article/' + article.id).delete().json()).data.value || {}
       if (response.success) {
         articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
       }
@@ -42,14 +43,14 @@
     }).catch(() => {})
   }
   const publish = async row => {
-    const response = (await vxFetch(`article/${row.id}/${(!row.pub ? 'publish' : 'unpublish')}`).put().json()).data.value || {}
+    const response = (await doFetch(`article/${row.id}/${(!row.pub ? 'publish' : 'unpublish')}`).put().json()).data.value || {}
     if(response.success) {
       row.pub = !row.pub
     }
     emit('notify', response)
   }
   onMounted(async () => {
-    const response = (await vxFetch('articles').json()).data.value || {}
+    const response = (await doFetch('articles').json()).data.value || {}
     articles.value = response.articles || []
     categories.value = response.categories || []
     categories.value.forEach(item => item.key = item.id)

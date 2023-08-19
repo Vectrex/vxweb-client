@@ -8,12 +8,13 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { storeSort, getSort } from "@/util/storeSort"
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
 
   const users = ref([])
   const formShown = ref(false)
   const editData = ref({ id: null })
   const confirm = ref(null)
+  const doFetch = vxFetch(emit)
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))
   const cols = [
     { label: "Username", sortable: true, width: "w-1/4", prop: "username" },
@@ -40,7 +41,7 @@
   }
   const del = id => {
     confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?").then(async () => {
-      const response = (await vxFetch('users/' + id).delete().json()).data.value || {}
+      const response = (await doFetch('users/' + id).delete().json()).data.value || {}
       if (response.id) {
         let ndx = users.value.findIndex(row => row.id === response.id)
         if (ndx !== -1) {
@@ -53,7 +54,7 @@
       }
     }).catch(() => {})
   }
-  onMounted(async () => { users.value = (await vxFetch('users/init').json()).data.value?.users || [] })
+  onMounted(async () => { users.value = (await doFetch('users/init').json()).data.value?.users || [] })
 </script>
 <template>
   <teleport to="#tools">
@@ -98,6 +99,7 @@
           v-if="formShown"
           @cancel="formShown = false"
           @response-received="handleResponse"
+          @fetch-error="emit('fetch-error', $event)"
           :id="editData.id"
           :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
           class="fixed right-0 bottom-0 top-24 z-20 bg-white shadow-lg shadow-gray w-sidebar"

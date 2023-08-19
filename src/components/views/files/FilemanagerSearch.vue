@@ -7,7 +7,7 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
-  const emit = defineEmits(['folder-picked'])
+  const emit = defineEmits(['folder-picked','fetch-error'])
   const props = defineProps({
     isMounted: Boolean,
     placeholder: { type: String, default: 'Datei/Verzeichnis suchen...' },
@@ -18,13 +18,14 @@
   const folders = ref([])
   const busy = ref(false)
   const showSearch = ref(false)
+  const doFetch = vxFetch(emit)
 
   const handleInput = async e => {
       modelValue.value = e.target.value
       let term = modelValue.value.trim()
       if (term.length >= props.minLength) {
         busy.value = true
-        const response = (await vxFetch(urlQueryCreate("files/search", { search: term })).json()).data.value || {}
+        const response = (await doFetch(urlQueryCreate("files/search", { search: term })).json()).data.value || {}
         files.value = response.files || []
         folders.value = response.folders || []
         busy.value = false

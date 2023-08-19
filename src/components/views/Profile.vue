@@ -6,7 +6,7 @@
   import { onMounted, ref } from "vue"
   import { vxFetch } from "@/composables/vxFetch"
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
 
   const fields = [
     { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
@@ -19,15 +19,16 @@
   const errors = ref({})
   const busy = ref(false)
   const notifications = ref([])
+  const doFetch = vxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await vxFetch('profile_data').post(JSON.stringify(form.value)).json()).data.value || {}
+    const response = (await doFetch('profile_data').post(JSON.stringify(form.value)).json()).data.value || {}
     busy.value = false
     errors.value = response.errors || {}
     emit('notify', response)
   }
   onMounted(async () => {
-    const response = (await vxFetch('profile_data').json()).data.value || {}
+    const response = (await doFetch('profile_data').json()).data.value || {}
     notifications.value = response.notifications || []
     form.value = response.formData || {}
   })
@@ -41,17 +42,17 @@
   <div class="pb-4 space-y-4">
     <div class="space-y-4">
         <div v-for="(field, ndx) in fields" :key="ndx">
-          <label :for="field.model + '-' + (field.type || 'input')" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
+          <label :for="field.model" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
           <div>
             <input
                 class="w-96 form-input"
                 v-if="!field.type"
-                :id="field.model + '-input'"
+                :id="field.model"
                 v-model.trim="form[field.model]"
             />
             <component :is="field.type"
                 v-else
-                :id="field.model + '-' + field.type"
+                :id="field.model"
                 v-model.trim="form[field.model]"
                 class="w-96"
             />
