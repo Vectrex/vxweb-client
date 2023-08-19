@@ -26,12 +26,25 @@
   const doFetch = vxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await doFetch('folder/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value || {}
+    const response = (await doFetch('folder/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value
     busy.value = false
-    errors.value = response.errors || {}
-    emit('response-received', { ...response, payload: response.form || null })
+    if(!response) {
+      emit('cancel')
+    }
+    else {
+      errors.value = response.errors || {}
+      emit('response-received', { ...response, payload: response.form || null })
+    }
   }
-  watch(() => props.id, async v => { form.value = (await doFetch('folder/' + v).json()).data.value || {} }, { immediate: true })
+  watch(() => props.id, async v => {
+    const response = (await doFetch('folder/' + v).json()).data.value
+    if (response) {
+      form.value = response
+    }
+    else {
+      emit('cancel')
+    }
+  }, { immediate: true })
 </script>
 
 <template>

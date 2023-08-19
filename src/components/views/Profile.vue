@@ -42,17 +42,17 @@
   <div class="pb-4 space-y-4">
     <div class="space-y-4">
         <div v-for="(field, ndx) in fields" :key="ndx">
-          <label :for="field.model + '-' + (field.type || 'input')" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
+          <label :for="field.model" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
           <div>
             <input
                 class="w-96 form-input"
                 v-if="!field.type"
-                :id="field.model + '-input'"
+                :id="field.model"
                 v-model.trim="form[field.model]"
             />
             <component :is="field.type"
                 v-else
-                :id="field.model + '-' + field.type"
+                :id="field.model"
                 v-model.trim="form[field.model]"
                 class="w-96"
             />

@@ -36,21 +36,23 @@
     busy.value = true
     const response = (await doFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()).data.value
     busy.value = false
-
-    if (response.success) {
-      errors.value = {}
-      form.value = response.form
-      emit('response-received', { success: true, message: response.message, payload: Object.assign({}, response.form) || null })
+    if(!response) {
+      emit('cancel')
     }
     else {
       errors.value = response.errors || {}
-      emit('response-received', { success: false, message: response.message })
+      emit('response-received', { ...response, payload: response.form || null })
     }
   }
-  watch(() => props.id, async newValue => {
-    const response = (await doFetch('user/' + (newValue || '')).json()).data.value || {}
-    options.value = response.options || {}
-    form.value = response.form || {}
+  watch(() => props.id, async v => {
+    const response = (await doFetch('user/' + (v || '')).json()).data.value
+    if (response) {
+      options.value = response.options || {}
+      form.value = response.form || {}
+    }
+    else {
+      emit('cancel')
+    }
   }, { immediate: true })
 </script>
 <template>
@@ -58,27 +60,38 @@
       <template #title>Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}</template>
       <template #content>
           <div class="px-4 pt-20 pb-4 space-y-4">
-              <div v-for="(field, ndx) in fields" :key="ndx">
-                  <label
-                          :class="{ 'text-error': errors[field.model], 'required': field.required }"
-                          :for="field.model + '-' + field.type || 'input'"
-                  >
+              <div v-for="(field, ndx) in fields" :key="ndx" class="relative">
+                  <template v-if="!field.type">
+                    <input
+                      :id="field.model"
+                      v-model.trim="form[field.model]"
+                      class="w-full form-input peer"
+                      placeholder=" "
+                    />
+                    <label
+                      :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
+                      :for="field.model"
+                    >
                       {{ field.label }}
-                  </label>
-                  <input
-                          v-if="!field.type"
-                          :id="field.model + '-input'"
-                          class="w-full form-input"
-                          v-model="form[field.model]"
-                  />
-                  <component :is="field.type"
-                             v-else
-                             class="w-full"
-                             :id="field.model + '-' + field.type"
-                             v-model="form[field.model]"
-                             :options="options[field.model]"
-                  />
-                  <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
+                    </label>
+                  </template>
+                  <template v-else>
+                    <component :is="field.type"
+                       :id="field.model"
+                       v-model.trim="form[field.model]"
+                       :options="options[field.model]"
+                       class="w-full"
+                       placeholder=" "
+                    >
+                      <label
+                        :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
+                        :for="field.model"
+                      >
+                        {{ field.label }}
+                      </label>
+                    </component>
+                  </template>
+                <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
               </div>
               <submit-button :busy="busy" @submit="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
           </div>
