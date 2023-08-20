@@ -23,7 +23,6 @@
   const alignVert = ref('top-0')
   const input = ref(null)
   const calendar = ref(null)
-  const inputProps = computed(() => { let attrs = Object.assign({}, useAttrs()); delete attrs['class']; return attrs })
   const calendarProps = computed(() => props.hasInput ? { 'class': ['absolute', expanded.value ? 'block' : 'hidden'] } : {})
   const days = computed(() => {
     const
@@ -88,11 +87,11 @@
         :modelValue="selectedDate"
         @toggle-datepicker="expanded = true"
         @update:modelValue="handleInput"
-        v-bind="inputProps"
+        v-bind="$attrs"
         ref="input"
         class="w-full"
         :locale="locale"
-    />
+    ><slot /></date-input>
 
     <div class="z-10 bg-white shadow-md" v-bind="calendarProps" ref="calendar" :class="[alignHoriz, alignVert]">
       <div class="flex flex-row items-center py-2 px-3 text-white bg-vxvue-700">
