@@ -136,7 +136,10 @@
       <template #default>
         <div class="space-y-4">
           <div class="flex items-center px-4 pt-16 space-x-2" v-if="!onlyImages">
-            <input class="flex-grow form-input" v-model.trim="linkData.href" />
+            <div class="relative flex-grow">
+              <input id="link-input" class="w-full form-input peer" v-model.trim="linkData.href" placeholder=" " />
+              <label for="link-input" class="floating-label">Vollständige Zieladresse (https://...)</label>
+            </div>
             <button class="icon-link" @click="linkData.href = ''"><trash-icon class="w-5 h-5" /></button>
             <input type="checkbox" class="form-checkbox" id="set-target" v-model="linkData.target" /><label for="set-target">in eigenem Tab öffnen</label>
             <button class="icon-link" @click="confirmLink"><check-icon class="w-5 h-5" /></button>
