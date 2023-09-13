@@ -68,12 +68,12 @@
     sheetDate.value = new Date(sheetDate.value.getFullYear(), sheetDate.value.getMonth() + 1, 1)
     emit("month-change", sheetDate.value)
   }
-  const selectDate = (day) => {
+  const selectDate = day => {
     selectedDate.value = day
     emit('update:modelValue', day)
     expanded.value = !props.hasInput
   }
-  const handleInput = (date) => {
+  const handleInput = date => {
     selectedDate.value = date
     emit('update:modelValue', date)
   }
@@ -106,10 +106,9 @@
 
       <div class="grid grid-cols-7 gap-0.5 p-0.5">
 
-        <div v-for="weekday in localizedDayNames" class="py-2 text-center bg-gray-200">{{ weekday }}</div>
+        <div v-for="(weekday, ndx) in localizedDayNames" class="py-2 text-center bg-gray-200" :key="ndx">{{ weekday }}</div>
 
-        <div v-for="day in days" class="text-center"
-             :class="day.getMonth() - sheetDate.getMonth() === 0 ? 'text-vxvue-700' : 'text-gray-400'">
+        <div v-for="day in days" :class="['text-center', day.getMonth() - sheetDate.getMonth() === 0 ? 'text-vxvue-700' : 'text-gray-400']">
           <button
               :class="[
                 {
@@ -120,8 +119,7 @@
               ]"
               :disabled="(validFrom && validFrom > day) || (validUntil && validUntil < day)"
               @click.stop="(validFrom && validFrom > day) || (validUntil && validUntil < day) ? null : selectDate(day)"
-          >{{ day.getDate() }}
-          </button>
+          >{{ day.getDate() }}</button>
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@
        class="block w-full form-input focus:border-vxvue peer"
        :class="{ 'pr-10': showButton }"
        v-model="inputString"
-       @blur="emit('update:modelValue', parseDate(inputString, props.inputFormat).date || null)"
+       @blur="emit('update:modelValue', parseDate(inputString, props.inputFormat).date?.value || null)"
        @input.prevent
        v-bind="inputAttrs"
     >
