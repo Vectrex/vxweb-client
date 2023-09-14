@@ -55,7 +55,7 @@
 </script>
 <template>
   <div class="flex w-full">
-    <div :class="['min-h-screen flex flex-col transition-all duration-100', sideBarExpanded ? 'w-80' : 'w-16']" v-if="isNotLoginView">
+    <div :class="['min-h-screen flex flex-col transition-all duration-100 flex-shrink-0', sideBarExpanded ? 'w-72' : 'w-16']" v-if="isNotLoginView">
       <div class="flex overflow-y-auto flex-col flex-grow bg-vxvue">
         <div class="flex items-end pr-2 pb-2 pl-4 space-x-2 h-24 bg-vxvue-600">
           <a href="#" @click.prevent="sideBarExpanded = !sideBarExpanded"><bars3-icon class="flex-shrink-0 w-8 h-8 text-white" /></a>
