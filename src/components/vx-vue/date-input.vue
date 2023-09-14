@@ -38,7 +38,7 @@
     >
     <button
       v-if="showButton"
-      class="flex absolute inset-y-0 right-0 items-center pr-3 text-vxvue-700 hover:text-vxvue focus-visible:outline-none"
+      class="flex absolute inset-y-0 right-0 items-center px-2 text-vxvue-700 hover:text-vxvue"
       @click.stop="emit('toggle-datepicker')"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
