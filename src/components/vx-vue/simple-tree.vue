@@ -1,6 +1,6 @@
 <script setup>
   import { PlusIcon, MinusIcon } from '@heroicons/vue/24/solid'
-  import {onMounted, ref} from "vue"
+  import { onMounted, ref } from "vue"
 
   const props = defineProps({ branch: { type: Object, default: {} }})
   const emit = defineEmits(['branch-selected', 'expand'])
@@ -12,7 +12,7 @@
   })
 </script>
 <template>
-  <li :class="[!branch.branches || !branch.branches.length ? 'terminates' : '', $attrs['class']]">
+  <div :class="[!branch.branches || !branch.branches.length ? 'terminates' : '', $attrs['class']]">
     <div class="flex items-center pb-1">
       <template v-if="branch.branches && branch.branches.length">
         <input type="checkbox" :id="'branch-' + branch.id" @click="expanded = !expanded" :checked="expanded" class="hidden">
@@ -24,7 +24,7 @@
       <a :href="branch.path" @click.prevent="emit('branch-selected', branch)" v-else>{{ branch.label }}</a>
     </div>
     <ul v-if="branch.branches && branch.branches.length" v-show="expanded" class="ml-6">
-      <simple-tree-branch
+      <simple-tree
           v-for="child in branch.branches"
           :branch="child"
           :key="child.id"
@@ -32,5 +32,5 @@
           @expand="expanded = $event; emit('expand', $event)"
       />
     </ul>
-  </li>
+  </div>
 </template>
