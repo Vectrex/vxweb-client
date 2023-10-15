@@ -72,7 +72,7 @@
     </template>
 
     <template #default>
-      <div class="pt-16">
+      <div>
         <div v-for="(folder, ndx) in (folders || [])" :key="folder.id" :class="['px-4 py-2', { 'bg-slate-100': ndx % 2 }]">
           <div class="flex items-center space-x-2">
             <folder-icon class="w-5 h-5" />

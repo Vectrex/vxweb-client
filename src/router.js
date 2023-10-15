@@ -6,12 +6,19 @@ function lazyLoad (view) {
 }
 
 const router = createRouter({
+    mode: 'history',
     history: createWebHistory(),
     routes: [
         {
             name: 'login',
             path: '/',
             component: lazyLoad('Login')
+        },
+        {
+            name: 'reset-password',
+            path: '/reset-password/:hash',
+            component: lazyLoad('ResetPassword'),
+            props: true
         },
         {
             name: 'profile',
@@ -84,8 +91,7 @@ const router = createRouter({
             }
         },
         {
-            name: 'authFailed',
-            component: lazyLoad('AuthFailed')
+            path: '/:pathMatch(.*)', component: lazyLoad('404')
         }
     ]
 });

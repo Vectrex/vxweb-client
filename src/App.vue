@@ -11,7 +11,7 @@
   const sideBarExpanded = ref(true)
   const user = ref({})
   const toast = ref({})
-  const isNotLoginView = computed(() => router.currentRoute.value.name !== undefined && router.currentRoute.value.name !== 'login')
+  const isNotLoginView = computed(() => router.currentRoute.value.name !== undefined && ['login', 'reset-password'].indexOf(router.currentRoute.value.name) === -1)
   const authenticate = e => {
     if (!e) {
       sessionStorage.removeItem("currentUser")
@@ -31,7 +31,8 @@
       toast.value = {
         active: true,
         message: data.message,
-        css: data.success ? 'bg-green-700 text-white' : 'bg-red-700 text-white'
+        css: data.success ? 'bg-green-700 text-white' : 'bg-red-700 text-white',
+        timeout: data.timeout !== undefined ? data.timeout : 5000
       }
     }
   }
@@ -94,6 +95,7 @@
       :active="toast.active"
       :class="toast.css"
       :message="toast.message"
+      :timeout="toast.timeout"
       @close="toast.active = false"
       @timeout="toast.active = false"
   />

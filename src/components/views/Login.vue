@@ -1,28 +1,54 @@
 <script setup>
   import PasswordInput from "@/components/vx-vue/password-input.vue"
   import SubmitButton from "@/components/misc/submit-button.vue"
+  import Modal from "@/components/vx-vue/modal.vue"
   import Logo from "@/components/misc/logo.vue"
   import { HomeIcon } from '@heroicons/vue/20/solid'
+  import { XMarkIcon } from "@heroicons/vue/24/solid"
   import { vxFetch } from "@/composables/vxFetch"
+  import { Focus as vFocus } from "@/directives/focus"
   import { ref } from "vue"
 
   const emit = defineEmits(['authenticate', 'notify'])
   const form = ref({ username: '', password: '' })
+  const email = ref('')
   const busy = ref(false)
+  const showPasswordForgotten = ref(false)
   const doFetch = vxFetch()
 
   const submit = async () => {
     if (form.value.username && form.value.password) {
       busy.value = true
-      const { data } = await doFetch("login").post(JSON.stringify(form.value)).json()
+      const response = (await doFetch("login").post(JSON.stringify(form.value)).json()).data.value
       busy.value = false
-      if(data.value.bearerToken) {
-        sessionStorage.setItem('bearerToken', data.value.bearerToken)
-        emit('authenticate', data.value)
+      if(response.bearerToken) {
+        sessionStorage.setItem('bearerToken', response.bearerToken)
+        emit('authenticate', response)
       }
       else {
-        emit('notify', data.value)
+        emit('notify', response)
       }
+    }
+  }
+  const showDialog = () => {
+    showPasswordForgotten.value = true
+    email.value = ''
+  }
+  const hideDialog = () => {
+    showPasswordForgotten.value = false
+  }
+  const requestPassword = async () => {
+    if(/[^@]+@[^@]/.test(email.value)) {
+      busy.value = true
+      const response = (await doFetch("request-password").put(JSON.stringify({ email: email })).json()).data.value
+      if (!response.success) {
+        emit('notify', response)
+      }
+      else {
+        emit('notify', { ...response, timeout: 0 })
+      }
+      busy.value = false
+      hideDialog()
     }
   }
   const getWindow = () => window
@@ -45,7 +71,8 @@
 
           <div class="flex justify-between items-center">
             <submit-button :busy="busy" @submit="submit">Anmelden</submit-button>
-            <span class="flex space-x-1">
+            <a href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog">Passwort vergessen?</a>
+            <span class="flex space-x-1" v-if="!getWindow().location.host.match(/^localhost/)">
               <home-icon class="w-5 h-5"/>
               <a :href="getWindow().location.protocol + '//' + getWindow().location.host" class="text-rose-600 hover:text-rose-500 link">
                 {{ getWindow().location.host }}
@@ -55,5 +82,21 @@
         </div>
       </div>
     </transition>
+    <modal :show="showPasswordForgotten" container-class="w-full lg:w-1/2 xl:w-1/4" @clicked-outside="hideDialog">
+      <template #title>
+        <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
+          <span class="text-xl font-bold text-white">Passwort vergessen?</span>
+          <a href="#" @click.prevent="hideDialog"><x-mark-icon class="w-5 h-5 text-white"/></a>
+        </div>
+      </template>
+      <template #default>
+        <div class="py-8 px-4 space-y-4 sm:px-10">
+          <input v-model.trim="email" type="text" class="w-full form-input" placeholder="E-Mail" v-focus />
+          <div class="flex justify-center">
+            <submit-button :busy="busy" @submit="requestPassword">Passwort anfordern</submit-button>
+          </div>
+        </div>
+      </template>
+    </modal>
   </div>
 </template>
