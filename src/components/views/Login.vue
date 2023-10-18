@@ -1,7 +1,6 @@
 <script setup>
-  import PasswordInput from "@/components/vx-vue/password-input.vue"
+  import { PasswordInput, Modal } from "vx-vue"
   import SubmitButton from "@/components/misc/submit-button.vue"
-  import Modal from "@/components/vx-vue/modal.vue"
   import Logo from "@/components/misc/logo.vue"
   import { HomeIcon } from '@heroicons/vue/20/solid'
   import { XMarkIcon } from "@heroicons/vue/24/solid"

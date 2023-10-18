@@ -1,5 +1,5 @@
 <script setup>
-  import PasswordInput from "@/components/vx-vue/password-input.vue"
+  import { PasswordInput } from "vx-vue"
   import Headline from "@/components/app/Headline.vue"
   import SubmitButton from "@/components/misc/submit-button.vue"
   import Divider from "@/components/misc/divider.vue"

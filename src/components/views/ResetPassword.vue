@@ -1,5 +1,5 @@
 <script setup>
-  import PasswordInput from "@/components/vx-vue/password-input.vue"
+  import { PasswordInput } from "vx-vue"
 
   const props = defineProps({ hash: String })
 </script>

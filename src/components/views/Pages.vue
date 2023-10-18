@@ -1,6 +1,5 @@
 <script setup>
-  import Sortable from "@/components/vx-vue/sortable.vue"
-  import Confirm from "@/components/vx-vue/confirm.vue"
+  import { Confirm, Sortable } from "vx-vue"
   import Headline from "@/components/app/Headline.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { storeSort, getSort } from "@/util/storeSort"

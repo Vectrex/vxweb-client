@@ -1,7 +1,5 @@
 <script setup>
-  import Sortable from "@/components/vx-vue/sortable.vue"
-  import Pagination from "@/components/vx-vue/pagination.vue"
-  import FormSwitch from "@/components/vx-vue/form-switch.vue"
+  import { Sortable, Pagination, FormSwitch } from "vx-vue"
   import FilterForm from "@/components/views/articles/FilterForm.vue"
   import Confirm from "@/components/vx-vue/confirm.vue"
   import Headline from "@/components/app/Headline.vue"

@@ -1,5 +1,5 @@
 <script setup>
-  import Tabs from "@/components/vx-vue/tabs.vue"
+  import { Tabs } from "vx-vue"
   import Headline from "@/components/app/Headline.vue"
   import ArticleForm from "@/components/views/articles/ArticleForm.vue"
   import ArticleFiles from "@/components/views/articles/ArticleFiles.vue"
