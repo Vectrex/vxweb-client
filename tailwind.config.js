@@ -2,7 +2,8 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 
 module.exports = {
     content: [
-        './src/**/*.{vue,js,html}'
+        './src/**/*.{vue,js,html}',
+        './node_modules/vx-vue/**/*.js'
     ],
     theme: {
         extend: {
