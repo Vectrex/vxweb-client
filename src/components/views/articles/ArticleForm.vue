@@ -1,7 +1,5 @@
 <script setup>
-  import DatePicker from "@/components/vx-vue/datepicker.vue"
-  import FormSelect from "@/components/vx-vue/form-select.vue"
-  import FormSwitch from "@/components/vx-vue/form-switch.vue"
+  import { Datepicker, FormSelect, FormSwitch } from "vx-vue"
   import Tiptap from "@/components/misc/tiptap.vue"
   import SubmitButton from "@/components/misc/submit-button.vue"
   import { vxFetch } from "@/composables/vxFetch"
@@ -21,9 +19,9 @@
     outputFormat: 'D MMMM YYYY'
   }
   const elements = [
-    { type: DatePicker, model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
-    { type: DatePicker, model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
-    { type: DatePicker, model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
+    { type: Datepicker, model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
+    { type: Datepicker, model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
+    { type: Datepicker, model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
     { type: FormSwitch, model: 'customflags', label: 'Markiert', attrs: { class: 'ml-2' } },
     { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { class: 'w-full', disabledLabel: '(Kategorie wählen)' } },
     { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },

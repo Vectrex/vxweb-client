@@ -1,6 +1,6 @@
 <script setup>
   import Filemanager from "@/components/views/files/Filemanager.vue"
-  import FormSwitch from "@/components/vx-vue/form-switch.vue"
+  import { FormSwitch } from "vx-vue"
   import { PencilSquareIcon, TrashIcon, DocumentMinusIcon, PlayIcon, DocumentPlusIcon } from '@heroicons/vue/24/solid'
   import { getSort, storeSort } from "@/util/storeSort"
   import { vxFetch } from "@/composables/vxFetch"

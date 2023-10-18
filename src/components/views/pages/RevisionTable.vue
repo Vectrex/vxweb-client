@@ -1,5 +1,5 @@
 <script setup>
-  import FormSwitch from "@/components/vx-vue/form-switch.vue"
+  import { FormSwitch } from "vx-vue"
   import { EyeIcon, TrashIcon } from '@heroicons/vue/24/solid'
   import { computed } from "vue"
   import { useDateFormat } from "@vueuse/core"

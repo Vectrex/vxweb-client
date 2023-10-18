@@ -1,5 +1,4 @@
 <script setup>
-  import Sortable from "@/components/vx-vue/sortable.vue"
   import FileEditForm from "@/components/views/files/FileEditForm.vue"
   import FolderEditForm from "@/components/views/files/FolderEditForm.vue"
   import FilemanagerActions from "@/components/views/files/FilemanagerActions.vue"
@@ -7,7 +6,7 @@
   import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue"
   import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue"
   import FolderTree from "@/components/views/files/FolderTree.vue"
-  import Confirm from "@/components/vx-vue/confirm.vue"
+  import { Sortable, Confirm } from "vx-vue"
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
   import { urlQueryCreate } from '@/util/url-query'
   import { formatFilesize } from "@/composables/formatFilesize"

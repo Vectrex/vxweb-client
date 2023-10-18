@@ -1,8 +1,7 @@
 <script setup>
   import SubmitButton from "@/components/misc/submit-button.vue"
   import FormDialog from "@/components/views/shared/FormDialog.vue"
-  import FormSelect from "@/components/vx-vue/form-select.vue"
-  import PasswordInput from "@/components/vx-vue/password-input.vue"
+  import { FormSelect, PasswordInput } from "vx-vue"
   import { computed, ref, watch } from "vue"
   import { vxFetch } from "@/composables/vxFetch"
 

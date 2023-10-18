@@ -1,5 +1,5 @@
 <script setup>
-  import FormSelect from "@/components/vx-vue/form-select.vue"
+  import { FormSelect } from "vx-vue"
   const props = defineProps({ modelValue: Object, options: Object })
   const emit = defineEmits(['update:modelValue'])
 </script>

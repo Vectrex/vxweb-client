@@ -1,6 +1,6 @@
 <script setup>
-  import SimpleTree from "@/components/vx-vue/simple-tree.vue"
   import FormTitle from "@/components/views/shared/FormTitle.vue"
+  import { SimpleTree } from "vx-vue"
   import { urlQueryCreate } from '@/util/url-query'
   import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
