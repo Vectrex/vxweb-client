@@ -1,7 +1,6 @@
 <script setup>
-  import { Sortable, Pagination, FormSwitch } from "vx-vue"
+  import { Sortable, Pagination, FormSwitch, Confirm } from "vx-vue"
   import FilterForm from "@/components/views/articles/FilterForm.vue"
-  import Confirm from "@/components/vx-vue/confirm.vue"
   import Headline from "@/components/app/Headline.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { ref, computed, onMounted } from "vue"

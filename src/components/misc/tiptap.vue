@@ -22,7 +22,7 @@
     TrashIcon,
     CheckIcon
   } from '@heroicons/vue/24/solid'
-  import Modal from "@/components/vx-vue/modal.vue"
+  import { Modal } from "vx-vue"
   import tiptapFiles from "@/components/misc/tiptap-files.vue"
   import { onBeforeUnmount, ref, watch } from "vue"
 
