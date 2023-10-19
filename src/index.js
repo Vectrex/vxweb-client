@@ -1,4 +1,5 @@
 import './index.css'
+import 'vx-vue/vx-vue.css'
 import { createApp } from 'vue'
 import router from './router'
 import App from './App.vue'
