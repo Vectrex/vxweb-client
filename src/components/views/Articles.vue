@@ -1,5 +1,5 @@
 <script setup>
-  import { Sortable, Pagination, FormSwitch, Confirm } from "vx-vue"
+  import { Confirm, FormSwitch, Pagination, Sortable  } from "vx-vue"
   import FilterForm from "@/components/views/articles/FilterForm.vue"
   import Headline from "@/components/app/Headline.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
@@ -29,9 +29,9 @@
     const titleFilter = filter.value.title.toLowerCase()
     return articles.value.filter(item => (!filter.value.cat || filter.value.cat === item.catId) && (!titleFilter || item.title.toLowerCase().indexOf(titleFilter) !== -1))
   })
-  const confirm = ref(null)
+  const deleteRequest = ref(null)
   const del = article => {
-    confirm.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`).then(async () => {
+    deleteRequest.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`).then(async () => {
       const response = (await doFetch('article/' + article.id).delete().json()).data.value || {}
       if (response.success) {
         articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
@@ -109,7 +109,7 @@
   </sortable>
 
   <confirm
-      ref="confirm"
+      ref="deleteRequest"
       header-class="text-white bg-error"
       :buttons="[
         { label: 'Löschen!', value: true, class: 'button alert' },

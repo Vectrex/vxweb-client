@@ -16,14 +16,14 @@
     { label: "", prop: "action" }
   ]
   const pages = ref([])
-  const confirm = ref(null)
+  const deleteRequest = ref(null)
   const doFetch = vxFetch(emit)
 
   onMounted(async () => {
     pages.value = (await doFetch('pages').json()).data.value || []
   })
   const del = id => {
-    confirm.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?").then(async () => {
+    deleteRequest.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?").then(async () => {
       const response = (await doFetch('page/' + id).delete().json()).data.value
       if (response.success) {
         pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
@@ -68,7 +68,7 @@
 
   <teleport to="body">
     <confirm
-        ref="confirm"
+        ref="deleteRequest"
         header-class="text-white bg-error"
         :buttons="[
             { label: 'Löschen!', value: true, class: 'button alert' },

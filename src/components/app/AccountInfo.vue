@@ -1,5 +1,5 @@
 <script setup>
-  import { PowerIcon } from '@heroicons/vue/24/solid'
+  import { Cog6ToothIcon, PowerIcon } from '@heroicons/vue/24/solid'
 
   const props = defineProps({ user: Object, expanded: Boolean })
   const emit = defineEmits(['authenticate'])

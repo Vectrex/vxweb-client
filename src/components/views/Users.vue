@@ -12,7 +12,7 @@
   const users = ref([])
   const formShown = ref(false)
   const editData = ref({ id: null })
-  const confirm = ref(null)
+  const deleteRequest = ref(null)
   const doFetch = vxFetch(emit)
   const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))
   const cols = [
@@ -39,7 +39,7 @@
     emit('notify', e)
   }
   const del = id => {
-    confirm.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?").then(async () => {
+    deleteRequest.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?").then(async () => {
       const response = (await doFetch('users/' + id).delete().json()).data.value || {}
       if (response.id) {
         let ndx = users.value.findIndex(row => row.id === response.id)
@@ -108,7 +108,7 @@
 
   <teleport to="body">
     <confirm
-        ref="confirm"
+        ref="deleteRequest"
         header-class="text-white bg-error"
         :buttons="[
             { label: 'Löschen!', value: true, class: 'button alert' },

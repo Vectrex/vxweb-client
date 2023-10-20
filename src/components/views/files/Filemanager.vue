@@ -6,7 +6,7 @@
   import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue"
   import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue"
   import FolderTree from "@/components/views/files/FolderTree.vue"
-  import { Sortable, Confirm } from "vx-vue"
+  import { Confirm, Sortable } from "vx-vue"
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
   import { urlQueryCreate } from '@/util/url-query'
   import { formatFilesize } from "@/composables/formatFilesize"
@@ -39,7 +39,7 @@
   const upload = ref({ files: [], progressing: false, cancelToken: {} })
   const progress = ref({ total: null, loaded: null, file: null })
 
-  const confirm = ref(null)
+  const deleteRequest = ref(null)
   const alert = ref(null)
   const multiCheckbox = ref(null)
   const folderTree = ref(null)
@@ -114,7 +114,7 @@
   const editFile = row => { formShown.value = 'editFile'; pickedId.value = row.id }
   const editFolder = row => { formShown.value = 'editFolder'; pickedId.value = row.id }
   const delFile = row => {
-    confirm.value.open('Datei löschen', `'${row.name}' wirklich löschen?`).then(async () => {
+    deleteRequest.value.open('Datei löschen', `'${row.name}' wirklich löschen?`).then(async () => {
         const response = (await doFetch(urlQueryCreate('file/' + row.id, props.requestParameters)).delete().json()).data.value || {}
         if (response.success) {
           files.value.splice(files.value.findIndex(item => row === item), 1)
@@ -123,7 +123,7 @@
       }).catch(() => {})
   }
   const delFolder = row => {
-    confirm.value.open('Verzeichnis löschen', `'${row.name}' und enthaltene Dateien wirklich löschen?`).then(async () => {
+    deleteRequest.value.open('Verzeichnis löschen', `'${row.name}' und enthaltene Dateien wirklich löschen?`).then(async () => {
       const response = (await doFetch(urlQueryCreate('folder/' + row.id, props.requestParameters)).delete().json()).data.value || {}
       if (response.success) {
         folders.value.splice(folders.value.findIndex(item => row === item), 1)
@@ -421,7 +421,7 @@
     </transition>
 
     <confirm
-        ref="confirm"
+        ref="deleteRequest"
         header-class="text-white bg-error"
         :buttons="[
             { label: 'Löschen!', value: true, class: 'button alert' },
