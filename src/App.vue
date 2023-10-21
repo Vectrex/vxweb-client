@@ -24,7 +24,6 @@
       router.push({ name: 'profile' })
       user.value = e.user
     }
-
   }
   const notify = data => {
     if (data.message) {
