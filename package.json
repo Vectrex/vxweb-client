@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "vite",
     "dev-remote": "vite --mode remote",
-    "build": "vite build --mode production",
+    "build": "dotenv -- cross-var vite build --mode production --base=%VITE_PATH_PREFIX%",
     "serve": "vite preview"
   },
   "dependencies": {
@@ -38,6 +38,8 @@
     "@tailwindcss/typography": "^0.5.10",
     "rustywind": "^0.20.0",
     "vite": "^4.5.0",
-    "vx-vue": "^0.6.4"
+    "vx-vue": "^0.6.4",
+    "dotenv-cli": "^7.3.0",
+    "cross-var": "^1.1.0"
   }
 }
