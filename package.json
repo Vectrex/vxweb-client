@@ -40,6 +40,7 @@
     "vite": "^4.5.0",
     "vx-vue": "^0.6.4",
     "dotenv-cli": "^7.3.0",
-    "cross-var": "^1.1.0"
+    "cross-var": "^1.1.0",
+    "@niku/vite-env-caster": "^1.0.1"
   }
 }

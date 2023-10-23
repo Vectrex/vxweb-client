@@ -7,6 +7,7 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { Focus as vFocus } from "@/directives/focus"
   import { ref } from "vue"
+  import appEnv from "app-env"
 
   const emit = defineEmits(['authenticate', 'notify'])
   const form = ref({ username: '', password: '' })
@@ -51,6 +52,9 @@
     }
   }
   const getWindow = () => window
+
+  console.log(typeof import.meta.env.VITE_DISABLE_PASSWORD_RESET)
+  console.log(typeof appEnv.VITE_DISABLE_PASSWORD_RESET)
 </script>
 
 <template>
@@ -70,7 +74,7 @@
 
           <div class="flex justify-between items-center">
             <submit-button :busy="busy" @submit="submit">Anmelden</submit-button>
-            <a href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog">Passwort vergessen?</a>
+            <a href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog" v-if="!appEnv.VITE_DISABLE_PASSWORD_RESET">Passwort vergessen?</a>
             <span class="flex space-x-1" v-if="!getWindow().location.host.match(/^localhost/)">
               <home-icon class="w-5 h-5"/>
               <a :href="getWindow().location.protocol + '//' + getWindow().location.host" class="text-rose-600 hover:text-rose-500 link">
