@@ -4,11 +4,13 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
+  const emit = defineEmits(['notify'])
   const props = defineProps({ hash: String })
   const form = ref({ password: '', passwordRepeat: '' })
   const submit = async () => {
     if(form.value.password.length >= 8 && form.value.password === form.value.passwordRepeat) {
-      const response = await ((vxFetch())().post(JSON.stringify(form.value)).json()).data.value
+      const response = await ((vxFetch('/set-password/' + props.hash))().put(JSON.stringify(form.value)).json()).data.value
+      emit('notify', response)
       console.log(response)
     }
   }
