@@ -52,9 +52,6 @@
     }
   }
   const getWindow = () => window
-
-  console.log(typeof import.meta.env.VITE_DISABLE_PASSWORD_RESET)
-  console.log(typeof appEnv.VITE_DISABLE_PASSWORD_RESET)
 </script>
 
 <template>

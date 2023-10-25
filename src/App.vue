@@ -50,7 +50,6 @@
   }
   else {
     user.value = {}
-    router.push({ name: 'login' })
   }
 </script>
 <template>

@@ -9,13 +9,19 @@ const routes = [
     {
         name: 'login',
         path: '/',
-        component: lazyLoad('Login')
+        component: lazyLoad('Login'),
+        meta: {
+            noAuth: true
+        }
     },
     {
         name: 'reset-password',
         path: '/reset-password/:hash',
         component: lazyLoad('ResetPassword'),
-        props: true
+        props: true,
+        meta: {
+            noAuth: true
+        }
     },
     {
         name: 'profile',
@@ -101,4 +107,9 @@ const router = createRouter({
     routes: routes
 });
 
+router.beforeEach(async (to, from) => {
+    if (!to.meta.noAuth && !sessionStorage.getItem("currentUser")) {
+        return { name: 'login' };
+    }
+})
 export default router;
