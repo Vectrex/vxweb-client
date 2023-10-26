@@ -84,28 +84,30 @@
 
 :root {
     --vxvue-color: #0089CC;
-    --vxvue-color-50: #B3E6FF;
-    --vxvue-color-100: #70D0FF;
-    --vxvue-color-200: #47C3FF;
-    --vxvue-color-300: #1FB5FF;
-    --vxvue-color-400: #00A4F5;
+    --vxvue-50: #f0f9ff;
+    --vxvue-100: #e0f2fe;
+    --vxvue-200: #b9e7fe;
+    --vxvue-300: #7cd5fd;
+    --vxvue-400: #36c0fa;
     --vxvue-color-500: var(--vxvue-color);
-    --vxvue-color-600: #006394;
-    --vxvue-color-700: #003E5C;
-    --vxvue-color-800: #001824;
-    --vxvue-color-900: #000000;
+    --vxvue-600: #0089cc;
+    --vxvue-700: #016ba3;
+    --vxvue-800: #065a86;
+    --vxvue-900: #0b4b6f;
+    --vxvue-950: #07304a;
 
     --vxvue-highlight: #ff9400;
-    --vxvue-highlight-50: #FFE1B8;
-    --vxvue-highlight-100: #FFD8A3;
-    --vxvue-highlight-200: #FFC77A;
-    --vxvue-highlight-300: #FFB652;
-    --vxvue-highlight-400: #FFA529;
+    --vxvue-highlight-50: #fffbea;
+    --vxvue-highlight-100: #fff1c5;
+    --vxvue-highlight-200: #ffe385;
+    --vxvue-highlight-300: #ffce46;
+    --vxvue-highlight-400: #ffb81b;
     --vxvue-highlight-500: var(--vxvue-highlight);
-    --vxvue-highlight-600: #C77300;
-    --vxvue-highlight-700: #8F5300;
-    --vxvue-highlight-800: #573200;
-    --vxvue-highlight-900: #1F1200;
+    --vxvue-highlight-600: #e26d00;
+    --vxvue-highlight-700: #bb4902;
+    --vxvue-highlight-800: #983808;
+    --vxvue-highlight-900: #7c2f0b;
+    --vxvue-highlight-950: #481600;
 
     --warn-color: #e2b625;
     --error-color: #b51212;
