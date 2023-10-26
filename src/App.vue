@@ -30,7 +30,7 @@
       toast.value = {
         active: true,
         message: data.message,
-        css: data.success ? 'bg-green-700 text-white' : 'bg-red-700 text-white',
+        css: data.success ? 'bg-success-700 text-success-100' : 'bg-error-700 text-error-100',
         timeout: data.timeout !== undefined ? data.timeout : 5000
       }
     }
