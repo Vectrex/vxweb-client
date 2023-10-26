@@ -58,7 +58,7 @@
       <div class="flex overflow-y-auto flex-col flex-grow bg-vxvue">
         <div class="flex items-end pr-2 pb-2 pl-4 space-x-2 h-24 bg-vxvue-600">
           <a href="#" @click.prevent="sideBarExpanded = !sideBarExpanded"><bars3-icon class="flex-shrink-0 w-8 h-8 text-white" /></a>
-          <logo class="w-44 text-vxvue-500" v-if="sideBarExpanded" />
+          <logo class="w-44 text-white" v-if="sideBarExpanded" />
         </div>
         <div class="flex flex-col flex-1">
           <main-menu class="flex-1 py-6 px-2 space-y-1" :expanded="sideBarExpanded" />

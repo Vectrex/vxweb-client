@@ -34,10 +34,10 @@
         @apply inline-flex items-center justify-center px-8 py-2 border border-transparent text-base font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2;
     }
     .button.success {
-        @apply bg-green-700 hover:bg-green-600 focus:ring-green-600 text-white
+        @apply bg-success-700 hover:bg-success-600 focus:ring-success-600 text-white
     }
     .button.alert {
-        @apply bg-red-700 hover:bg-red-600 focus:ring-red-600 text-white
+        @apply bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white
     }
     .button.cancel {
         @apply bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800
@@ -84,17 +84,17 @@
 
 :root {
     --vxvue-color: #0089CC;
-    --vxvue-50: #f0f9ff;
-    --vxvue-100: #e0f2fe;
-    --vxvue-200: #b9e7fe;
-    --vxvue-300: #7cd5fd;
-    --vxvue-400: #36c0fa;
-    --vxvue-color-500: var(--vxvue-color);
-    --vxvue-600: #0089cc;
-    --vxvue-700: #016ba3;
-    --vxvue-800: #065a86;
-    --vxvue-900: #0b4b6f;
-    --vxvue-950: #07304a;
+    --vxvue-color-50: #f0f9ff;
+    --vxvue-color-100: #e0f2fe;
+    --vxvue-color-200: #b9e7fe;
+    --vxvue-color-300: #7cd5fd;
+    --vxvue-color-400: #36c0fa;
+    --vxvue-color-500: #0ca9eb;
+    --vxvue-color-600: var(--vxvue-color);
+    --vxvue-color-700: #016ba3;
+    --vxvue-color-800: #065a86;
+    --vxvue-color-900: #0b4b6f;
+    --vxvue-color-950: #07304a;
 
     --vxvue-highlight: #ff9400;
     --vxvue-highlight-50: #fffbea;
@@ -109,9 +109,57 @@
     --vxvue-highlight-900: #7c2f0b;
     --vxvue-highlight-950: #481600;
 
-    --warn-color: #e2b625;
     --error-color: #b51212;
+    --error-color-50: #fff1f1;
+    --error-color-100: #ffe0e0;
+    --error-color-200: #ffc7c7;
+    --error-color-300: #ffa0a0;
+    --error-color-400: #ff6969;
+    --error-color-500: var(--error-color);
+    --error-color-600: #e61c1c;
+    --error-color-700: #b51212;
+    --error-color-800: #a01414;
+    --error-color-900: #841818;
+    --error-color-950: #480707;
+
+    --warn-color: #e2b625;
+    --warn-color-50: #fcf9ea;
+    --warn-color-100: #f8f2c9;
+    --warn-color-200: #f2e496;
+    --warn-color-300: #ebcf59;
+    --warn-color-400: var(--warn-color);
+    --warn-color-500: #d3a11f;
+    --warn-color-600: #b67e18;
+    --warn-color-700: #915b17;
+    --warn-color-800: #79491a;
+    --warn-color-900: #673e1c;
+    --warn-color-950: #3c1f0c;
+
     --info-color: #0080f0;
+    --info-color-50: #edfbff;
+    --info-color-100: #d6f4ff;
+    --info-color-200: #b5eeff;
+    --info-color-300: #83e6ff;
+    --info-color-400: #48d5ff;
+    --info-color-500: #1eb8ff;
+    --info-color-600: #069cff;
+    --info-color-700: var(--info-color);
+    --info-color-800: #0867c5;
+    --info-color-900: #0d599b;
+    --info-color-950: #0e355d;
+
+    --success-color: #20b840;
+    --success-color-50: #f0fdf2;
+    --success-color-100: #dcfce2;
+    --success-color-200: #bbf7c7;
+    --success-color-300: #86ef9b;
+    --success-color-400: #4ade69;
+    --success-color-500: var(--success-color);
+    --success-color-600: #16a334;
+    --success-color-700: #15802c;
+    --success-color-800: #166528;
+    --success-color-900: #145323;
+    --success-color-950: #052e10;
 
     --header-height: 6rem;
 }
