@@ -91,7 +91,7 @@
       </template>
       <template #default>
         <div class="py-8 px-4 space-y-4 sm:px-10">
-          <input v-model.trim="email" type="text" class="w-full form-input" placeholder="E-Mail" v-focus @keydown.enter="requestPassword" />
+          <input v-model.trim="email" type="text" class="w-full form-input" placeholder="E-Mail" v-focus @keydown.enter="requestPassword" @keydown.esc="hideDialog" />
           <div class="flex justify-center">
             <submit-button :busy="busy" @submit="requestPassword">Passwort anfordern</submit-button>
           </div>
