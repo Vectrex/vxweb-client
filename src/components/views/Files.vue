@@ -54,7 +54,7 @@
           <button class="icon-link tooltip" data-tooltip="Bearbeiten" @click="fm.editFolder(slotProps.row)">
             <pencil-square-icon class="w-5 h-5" />
           </button>
-          <button class="icon-link tooltip" data-tooltip="leeren &amp; löschen" @click="fm.delFolder(slotProps.row)">
+          <button class="icon-link tooltip" data-tooltip="Löschen" @click="fm.delFolder(slotProps.row)">
             <trash-icon class="w-5 h-5" />
           </button>
         </template>

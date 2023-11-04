@@ -39,7 +39,7 @@
       form.value = (await doFetch('article/' + props.id).json()).data.value || {}
 
       elements.forEach(item => {
-        if(item.type === DatePicker && form.value[item.model]) {
+        if(item.type === Datepicker && form.value[item.model]) {
           form.value[item.model] = new Date(form.value[item.model])
         }
       })
