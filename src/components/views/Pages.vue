@@ -46,25 +46,31 @@
     </headline>
   </teleport>
 
-  <sortable
-      :rows="pages"
-      :columns="cols"
-      :sort-prop="getSort().prop"
-      :sort-direction="getSort().dir"
-      key-property="id"
-      @after-sort="storeSort"
-  >
-    <template v-slot:action="slotProps">
-      <div class="flex justify-end space-x-2">
-        <router-link :to="{ name: 'pageEdit', params: { id: slotProps.row.id }}" class="icon-link" data-tooltip="Bearbeiten">
-          <PencilSquareIcon class="w-5 h-5"/>
-        </router-link>
-        <button class="icon-link" data-tooltip="Löschen" @click="del(slotProps.row.id)">
-          <TrashIcon class="w-5 h-5" />
-        </button>
+  <div class="grid">
+    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded">
+      <div class="overflow-x-auto">
+        <sortable
+            :rows="pages"
+            :columns="cols"
+            :sort-prop="getSort().prop"
+            :sort-direction="getSort().dir"
+            key-property="id"
+            @after-sort="storeSort"
+        >
+          <template v-slot:action="slotProps">
+            <div class="flex justify-end space-x-2">
+              <router-link :to="{ name: 'pageEdit', params: { id: slotProps.row.id }}" class="icon-link" data-tooltip="Bearbeiten">
+                <PencilSquareIcon class="w-5 h-5"/>
+              </router-link>
+              <button class="icon-link" data-tooltip="Löschen" @click="del(slotProps.row.id)">
+                <TrashIcon class="w-5 h-5" />
+              </button>
+            </div>
+          </template>
+        </sortable>
       </div>
-    </template>
-  </sortable>
+    </div>
+  </div>
 
   <teleport to="body">
     <confirm

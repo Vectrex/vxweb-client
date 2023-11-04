@@ -66,23 +66,28 @@
       </button>
     </headline>
   </teleport>
-  <div class="overflow-hidden rounded">
-    <sortable
-        :rows="users"
-        :columns="cols"
-        :sort-prop="getSort().prop"
-        :sort-direction="getSort().dir"
-        class="w-full"
-        key-property="id"
-        @after-sort="storeSort"
-    >
-      <template v-slot:action="slotProps">
-        <div class="flex justify-end space-x-2" v-if="currentUser.username !== slotProps.row.username">
-          <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="w-5 h-5"/></a>
-          <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
-        </div>
-      </template>
-    </sortable>
+
+  <div class="grid">
+    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded">
+      <div class="overflow-x-auto">
+        <sortable
+            :rows="users"
+            :columns="cols"
+            :sort-prop="getSort().prop"
+            :sort-direction="getSort().dir"
+            class="w-full"
+            key-property="id"
+            @after-sort="storeSort"
+        >
+          <template v-slot:action="slotProps">
+            <div class="flex justify-end space-x-2" v-if="currentUser.username !== slotProps.row.username">
+              <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="w-5 h-5"/></a>
+              <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
+            </div>
+          </template>
+        </sortable>
+      </div>
+    </div>
   </div>
 
   <teleport to="body">

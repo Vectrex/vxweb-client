@@ -296,88 +296,93 @@
       <div id="search-input" v-if="!isModal" />
     </div>
 
-    <sortable
-        :rows="directoryEntries"
-        :columns="columns"
-        :sort-prop="initSort.prop"
-        :sort-direction="initSort.dir"
-        @after-sort="emit('after-sort', $event)"
-        ref="sortable"
-    >
-
-      <template v-slot:checked-header>
-        <input type="checkbox"
-          class="form-checkbox"
-          @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked)"
-          ref="multiCheckbox"
-        />
-      </template>
-
-      <template v-slot:checked="slotProps">
-        <input type="checkbox" class="form-checkbox" v-model="slotProps.row.checked" />
-      </template>
-
-      <template v-slot:name="slotProps">
-        <div class="flex items-center space-x-1 group">
-          <template v-if="slotProps.row.isFolder">
-            <input
-                v-if="slotProps.row === toRename"
-                v-focus
-                class="form-input"
-                :value="slotProps.row.name"
-                @keydown.enter="rename($event, 'folder')"
-                @keydown.esc="toRename = null"
-                @blur="toRename = null"
-            >
-            <template v-else>
-              <a :href="'#' + slotProps.row.id" @click.prevent="emit('update:folder-id', slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
-              <button
-                  class="opacity-0 transition-opacity group-hover:opacity-100 icon-link tooltip"
-                  data-tooltip="Umbenennen"
-                  @click="toRename = slotProps.row"
-              >
-                <pencil-square-icon class="w-5 h-5" />
-              </button>
+    <div class="grid">
+      <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded">
+        <div class="overflow-x-auto">
+          <sortable
+              :rows="directoryEntries"
+              :columns="columns"
+              :sort-prop="initSort.prop"
+              :sort-direction="initSort.dir"
+              @after-sort="emit('after-sort', $event)"
+              ref="sortable"
+          >
+            <template v-slot:checked-header>
+              <input type="checkbox"
+                class="form-checkbox"
+                @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked)"
+                ref="multiCheckbox"
+              />
             </template>
-          </template>
-          <template v-else>
-            <input
-                v-if="slotProps.row === toRename"
-                v-focus
-                class="form-input"
-                :value="slotProps.row.name"
-                @keydown.enter="rename($event, 'file')"
-                @keydown.esc="toRename = null"
-                @blur="toRename = null"
-            >
-            <template v-else>
-              <span>{{ slotProps.row.name }}</span>
-              <button
-                class="opacity-0 transition-opacity group-hover:opacity-100 icon-link tooltip"
-                data-tooltip="Umbenennen"
-                @click="toRename = slotProps.row"
-              >
-                <pencil-square-icon class="w-5 h-5" />
-              </button>
+
+            <template v-slot:checked="slotProps">
+              <input type="checkbox" class="form-checkbox" v-model="slotProps.row.checked" />
             </template>
-          </template>
+
+            <template v-slot:name="slotProps">
+              <div class="flex items-center space-x-1 group">
+                <template v-if="slotProps.row.isFolder">
+                  <input
+                      v-if="slotProps.row === toRename"
+                      v-focus
+                      class="form-input"
+                      :value="slotProps.row.name"
+                      @keydown.enter="rename($event, 'folder')"
+                      @keydown.esc="toRename = null"
+                      @blur="toRename = null"
+                  >
+                  <template v-else>
+                    <a :href="'#' + slotProps.row.id" @click.prevent="emit('update:folder-id', slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
+                    <button
+                        class="opacity-0 transition-opacity group-hover:opacity-100 icon-link tooltip"
+                        data-tooltip="Umbenennen"
+                        @click="toRename = slotProps.row"
+                    >
+                      <pencil-square-icon class="w-5 h-5" />
+                    </button>
+                  </template>
+                </template>
+                <template v-else>
+                  <input
+                      v-if="slotProps.row === toRename"
+                      v-focus
+                      class="form-input"
+                      :value="slotProps.row.name"
+                      @keydown.enter="rename($event, 'file')"
+                      @keydown.esc="toRename = null"
+                      @blur="toRename = null"
+                  >
+                  <template v-else>
+                    <span>{{ slotProps.row.name }}</span>
+                    <button
+                      class="opacity-0 transition-opacity group-hover:opacity-100 icon-link tooltip"
+                      data-tooltip="Umbenennen"
+                      @click="toRename = slotProps.row"
+                    >
+                      <pencil-square-icon class="w-5 h-5" />
+                    </button>
+                  </template>
+                </template>
+              </div>
+            </template>
+
+            <template v-slot:size="slotProps">
+              <template v-if="!slotProps.row.isFolder">{{ formatFilesize(slotProps.row.size, ',').formatted.value }}</template>
+            </template>
+
+            <template v-slot:type="slotProps">
+              <img :src="slotProps.row.src" alt="" v-if="slotProps.row.image" class="thumb">
+              <span v-else>{{ slotProps.row.type }}</span>
+            </template>
+
+            <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
+              <slot :name="name" v-bind="slotData"/>
+            </template>
+          </sortable>
         </div>
-      </template>
+      </div>
+    </div>
 
-      <template v-slot:size="slotProps">
-        <template v-if="!slotProps.row.isFolder">{{ formatFilesize(slotProps.row.size, ',').formatted.value }}</template>
-      </template>
-
-      <template v-slot:type="slotProps">
-        <img :src="slotProps.row.src" alt="" v-if="slotProps.row.image" class="thumb">
-        <span v-else>{{ slotProps.row.type }}</span>
-      </template>
-
-      <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
-        <slot :name="name" v-bind="slotData"/>
-      </template>
-
-    </sortable>
   </div>
 
   <teleport to="body">

@@ -1,5 +1,5 @@
 <script setup>
-  import { Confirm, FormSwitch, Pagination, Sortable  } from "vx-vue"
+  import { Confirm, FormSwitch, Pagination, Sortable } from "vx-vue"
   import FilterForm from "@/components/views/articles/FilterForm.vue"
   import Headline from "@/components/app/Headline.vue"
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
@@ -78,35 +78,43 @@
         marker-position="below"
     />
   </div>
-  <sortable
-      :rows="filteredArticles"
-      :columns="cols"
-      :sort-prop="getSort().prop"
-      :sort-direction="getSort().dir"
-      :offset="(paginated.page - 1) * paginated.entriesPerPage"
-      :count="paginated.entriesPerPage"
-      @after-sort="storeSort"
-  >
-    <template v-slot:catId="slotProps">
-      {{ categories.find(c => c.id === slotProps.row.catId).label }}
-    </template>
-    <template v-slot:pub="slotProps">
-      <form-switch :model-value="slotProps.row.pub" @update:model-value="publish(slotProps.row)" />
-    </template>
-    <template v-slot:marked="slotProps">
-      <input type="checkbox" class="form-checkbox text-slate-500" disabled="disabled" :checked="slotProps.row.marked">
-    </template>
-    <template v-slot:action="slotProps">
-      <div class="flex justify-end items-center space-x-1">
-        <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link tooltip" data-tooltip="Bearbeiten">
-          <pencil-square-icon class="w-5 h-5" />
-        </router-link>
-        <button class="icon-link tooltip" data-tooltip="Löschen" @click="del(slotProps.row)">
-          <trash-icon class="w-5 h-5" />
-        </button>
+
+  <div class="grid">
+    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded">
+      <div class="overflow-x-auto">
+
+        <sortable
+          :rows="filteredArticles"
+          :columns="cols"
+          :sort-prop="getSort().prop"
+          :sort-direction="getSort().dir"
+          :offset="(paginated.page - 1) * paginated.entriesPerPage"
+          :count="paginated.entriesPerPage"
+          @after-sort="storeSort"
+        >
+          <template v-slot:catId="slotProps">
+            {{ categories.find(c => c.id === slotProps.row.catId).label }}
+          </template>
+          <template v-slot:pub="slotProps">
+            <form-switch :model-value="slotProps.row.pub" @update:model-value="publish(slotProps.row)" />
+          </template>
+          <template v-slot:marked="slotProps">
+            <input type="checkbox" class="form-checkbox text-slate-500" disabled="disabled" :checked="slotProps.row.marked">
+          </template>
+          <template v-slot:action="slotProps">
+            <div class="flex justify-end items-center space-x-1">
+              <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link tooltip" data-tooltip="Bearbeiten">
+                <pencil-square-icon class="w-5 h-5" />
+              </router-link>
+              <button class="icon-link tooltip" data-tooltip="Löschen" @click="del(slotProps.row)">
+                <trash-icon class="w-5 h-5" />
+              </button>
+            </div>
+          </template>
+        </sortable>
       </div>
-    </template>
-  </sortable>
+    </div>
+  </div>
 
   <confirm
       ref="deleteRequest"
