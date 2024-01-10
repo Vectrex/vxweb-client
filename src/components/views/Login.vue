@@ -7,7 +7,6 @@
   import { vxFetch } from "@/composables/vxFetch"
   import { Focus as vFocus } from "@/directives/focus"
   import { ref } from "vue"
-  import appEnv from "app-env"
 
   const emit = defineEmits(['authenticate', 'notify'])
   const form = ref({ username: '', password: '' })
@@ -15,6 +14,7 @@
   const busy = ref(false)
   const showPasswordForgotten = ref(false)
   const doFetch = vxFetch()
+  const disablePasswordReset = JSON.parse((import.meta.env.VITE_DISABLE_PASSWORD_RESET || 'true').toLowerCase())
 
   const submit = async () => {
     if (form.value.username && form.value.password) {
@@ -71,9 +71,9 @@
 
           <div class="flex justify-between items-center">
             <submit-button :busy="busy" @submit="submit">Anmelden</submit-button>
-            <a href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog" v-if="!appEnv.VITE_DISABLE_PASSWORD_RESET">Passwort vergessen?</a>
+            <a href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog" v-if="!disablePasswordReset">Passwort vergessen?</a>
             <span class="flex space-x-1" v-if="!getWindow().location.host.match(/^localhost/)">
-              <home-icon class="w-5 h-5"/>
+              <home-icon class="size-5"/>
               <a :href="getWindow().location.protocol + '//' + getWindow().location.host" class="text-rose-600 hover:text-rose-500 link">
                 {{ getWindow().location.host }}
               </a>
@@ -86,7 +86,7 @@
       <template #title>
         <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
           <span class="text-xl font-bold text-white">Passwort vergessen?</span>
-          <a href="#" @click.prevent="hideDialog"><x-mark-icon class="w-5 h-5 text-white"/></a>
+          <a href="#" @click.prevent="hideDialog"><x-mark-icon class="size-5 text-white"/></a>
         </div>
       </template>
       <template #default>

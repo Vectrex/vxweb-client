@@ -49,7 +49,7 @@
 
 <template>
   <teleport to="#search-input" v-if="isMounted">
-    <button class="flex items-center icon-link" @click="showSearch = !showSearch"><magnifying-glass-icon class="w-5 h-5" /> Suchen...</button>
+    <button class="flex items-center icon-link" @click="showSearch = !showSearch"><magnifying-glass-icon class="size-5" /> Suchen...</button>
   </teleport>
 
   <modal :show="showSearch">
@@ -65,9 +65,9 @@
               @focus="handleInput"
               v-focus
           />
-          <spinner class="w-5 h-5 text-vxvue" v-if="busy" />
+          <spinner class="size-5 text-vxvue" v-if="busy" />
         </div>
-        <a href="#" @click.prevent="handleEsc"><x-mark-icon class="w-5 h-5 text-white"/></a>
+        <a href="#" @click.prevent="handleEsc"><x-mark-icon class="size-5 text-white"/></a>
       </div>
     </template>
 
@@ -75,7 +75,7 @@
       <div>
         <div v-for="(folder, ndx) in (folders || [])" :key="folder.id" :class="['px-4 py-2', { 'bg-slate-100': ndx % 2 }]">
           <div class="flex items-center space-x-2">
-            <folder-icon class="w-5 h-5" />
+            <folder-icon class="size-5" />
             <a
                 :href="'#' + folder.path"
                 @click.prevent="pickFolder(folder)"
@@ -83,13 +83,13 @@
           </div>
         </div>
         <div class="flex justify-center py-2" v-if="files.length && folders.length">
-          <ellipsis-horizontal-icon class="w-5 h-5 text-slate-700" />
+          <ellipsis-horizontal-icon class="size-5 text-slate-700" />
         </div>
         <div v-for="(file, ndx) in (files || [])" :key="file.id" :class="['px-4 py-2', { 'bg-slate-100': ndx % 2 }]">
           <div class="flex items-center space-x-2">
             <div class="w-1/2"><div>{{ file.name }}</div><div class="text-sm text-slate-700">{{ file.type }}</div></div>
             <div class="flex items-center space-x-2 w-1/2">
-              <folder-icon class="w-5 h-5" />
+              <folder-icon class="size-5" />
               <a
                   :href="'/' + file.folder.path"
                   @click.prevent="pickFolder(file.folder)"

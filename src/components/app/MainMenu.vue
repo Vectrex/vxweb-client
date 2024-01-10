@@ -19,7 +19,7 @@
               $route.matched[0].path === route.path ? 'bg-vxvue-600 text-white' : 'text-slate-100 hover:bg-vxvue-700'
           ]"
       >
-        <component :is="route.meta.icon" v-if="route.meta.icon" class="flex-shrink-0 w-8 h-8" />
+        <component :is="route.meta.icon" v-if="route.meta.icon" class="flex-shrink-0 size-8" />
         <span v-if="expanded">{{ route.meta.label }}</span>
       </router-link>
     </template>

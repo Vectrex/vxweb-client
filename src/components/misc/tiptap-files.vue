@@ -42,7 +42,7 @@
       <div class="flex justify-end items-center space-x-1">
         <template v-if="!slotProps.row.isFolder && (!onlyImages || slotProps.row.image)">
           <button class="icon-link" @click="emit('pickFile', slotProps.row)">
-            <arrow-top-right-on-square-icon class="w-5 h-5" />
+            <arrow-top-right-on-square-icon class="size-5" />
           </button>
         </template>
       </div>

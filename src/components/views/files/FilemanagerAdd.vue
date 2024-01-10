@@ -45,14 +45,14 @@
         @click.stop="showAddFolderInput = true"
         class="flex items-center py-2 px-4 space-x-1 text-sm text-gray-700 hover:bg-gray-100"
     >
-      <folder-plus-icon class="w-5 h-5" />
+      <folder-plus-icon class="size-5" />
       <span class="">Verzeichnis&nbsp;erstellen</span>
     </button>
     <label
       for="file_upload"
       class="flex items-center py-2 px-4 space-x-1 text-sm text-gray-700 hover:bg-gray-100"
     >
-      <document-arrow-up-icon class="w-5 h-5" />
+      <document-arrow-up-icon class="size-5" />
       <span>Datei hochladen</span>
     </label>
     <input type="file" id="file_upload" class="hidden" :multiple="multiple" @change="fileChanged" />

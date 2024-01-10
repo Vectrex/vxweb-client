@@ -41,7 +41,7 @@
           class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
           @click="$router.push({ name: 'pageEdit' })"
       >
-        <plus-icon class="w-5 h-5" />
+        <plus-icon class="size-5" />
       </button>
     </headline>
   </teleport>
@@ -60,10 +60,10 @@
           <template v-slot:action="slotProps">
             <div class="flex justify-end space-x-2">
               <router-link :to="{ name: 'pageEdit', params: { id: slotProps.row.id }}" class="icon-link" data-tooltip="Bearbeiten">
-                <PencilSquareIcon class="w-5 h-5"/>
+                <PencilSquareIcon class="size-5"/>
               </router-link>
               <button class="icon-link" data-tooltip="Löschen" @click="del(slotProps.row.id)">
-                <TrashIcon class="w-5 h-5" />
+                <TrashIcon class="size-5" />
               </button>
             </div>
           </template>

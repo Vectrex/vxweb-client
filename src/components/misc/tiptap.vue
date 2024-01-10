@@ -98,29 +98,29 @@
   <div>
     <div class="flex justify-start items-center p-1 rounded-t bg-slate-200">
       <div class="flex px-1 space-x-1 border-r border-slate-500">
-        <button @click="editor.commands.undo()" :class="buttonClass()"><arrow-uturn-left-icon class="w-5 h-5" /></button>
-        <button @click="editor.commands.redo()" :class="buttonClass()"><arrow-uturn-right-icon class="w-5 h-5" /></button>
+        <button @click="editor.commands.undo()" :class="buttonClass()"><arrow-uturn-left-icon class="size-5" /></button>
+        <button @click="editor.commands.redo()" :class="buttonClass()"><arrow-uturn-right-icon class="size-5" /></button>
       </div>
       <div class="flex px-1 space-x-1 border-r border-slate-500">
         <button @click="editor.chain().focus().toggleBold().run()" :class="buttonClass('bold')"><strong class="block h-5">Ab</strong></button>
         <button @click="editor.chain().focus().toggleItalic().run()" :class="buttonClass('italic')"><em class="block h-5">Ab</em></button>
         <button @click="editor.commands.toggleBulletList()" :class="buttonClass()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"><path fill="none" d="M0 0h24v24H0z"/><path d="M8 4h13v2H8V4zM4.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 6.9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5"><path fill="none" d="M0 0h24v24H0z"/><path d="M8 4h13v2H8V4zM4.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 6.9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor"/></svg>
         </button>
         <button @click="editor.commands.toggleOrderedList()" :class="buttonClass()">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"><path fill="none" d="M0 0h24v24H0z"/><path d="M8 4h13v2H8V4zM5 3v3h1v1H3V6h1V4H3V3h2zM3 14v-2.5h2V11H3v-1h3v2.5H4v.5h2v1H3zm2 5.5H3v-1h2V18H3v-1h3v4H3v-1h2v-.5zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5"><path fill="none" d="M0 0h24v24H0z"/><path d="M8 4h13v2H8V4zM5 3v3h1v1H3V6h1V4H3V3h2zM3 14v-2.5h2V11H3v-1h3v2.5H4v.5h2v1H3zm2 5.5H3v-1h2V18H3v-1h3v4H3v-1h2v-.5zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor"/></svg>
         </button>
       </div>
       <div class="flex px-1 space-x-1 border-r border-slate-500">
         <button @click="pickLink" :class="buttonClass('link')">
-            <link-icon class="w-5 h-5" />
+            <link-icon class="size-5" />
         </button>
         <button @click="pickImage" :class="buttonClass('image')" v-if="!fileManagerDisable">
-          <photo-icon class="w-5 h-5" />
+          <photo-icon class="size-5" />
         </button>
       </div>
       <div class="flex px-1 space-x-1">
-        <button @click="showSrc = !showSrc" :class="['icon-link', showSrc ? 'bg-slate-400' : '']"><code-bracket-square-icon class="w-5 h-5" /></button>
+        <button @click="showSrc = !showSrc" :class="['icon-link', showSrc ? 'bg-slate-400' : '']"><code-bracket-square-icon class="size-5" /></button>
       </div>
     </div>
     <editor-content :editor="editor" class="w-full max-w-none prose"/>
@@ -130,7 +130,7 @@
       <template #title>
         <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
           <span class="text-xl font-bold text-white">{{ onlyImages ? 'Bilddatei selektieren...' : 'Zieladresse eingeben oder Datei wählen...' }}</span>
-          <a href="#" @click.prevent="showModal = false"><x-mark-icon class="w-5 h-5 text-white"/></a>
+          <a href="#" @click.prevent="showModal = false"><x-mark-icon class="size-5 text-white"/></a>
         </div>
       </template>
       <template #default>
@@ -140,9 +140,9 @@
               <input id="link-input" class="w-full form-input peer" v-model.trim="linkData.href" placeholder=" " />
               <label for="link-input" class="floating-label">Vollständige Zieladresse (https://...)</label>
             </div>
-            <button class="icon-link" @click="linkData.href = ''"><trash-icon class="w-5 h-5" /></button>
+            <button class="icon-link" @click="linkData.href = ''"><trash-icon class="size-5" /></button>
             <input type="checkbox" class="form-checkbox" id="set-target" v-model="linkData.target" /><label for="set-target">in eigenem Tab öffnen</label>
-            <button class="icon-link" @click="confirmLink"><check-icon class="w-5 h-5" /></button>
+            <button class="icon-link" @click="confirmLink"><check-icon class="size-5" /></button>
           </div>
           <div class="px-4">
             <tiptap-files :only-images="onlyImages" @pick-file="handlePick" />

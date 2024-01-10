@@ -260,7 +260,7 @@
               class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
               href="#" @click.stop="showAddActivities = !showAddActivities"
           >
-            <plus-icon class="w-5 h-5" />
+            <plus-icon class="size-5" />
           </button>
           <transition name="appear">
             <filemanager-add
@@ -282,7 +282,7 @@
 
       <div class="flex justify-center py-4 px-8 w-full rounded-r rounded-l bg-slate-200">
         <div class="flex items-center space-x-2" v-if="upload.progressing">
-          <button class="icon-link" data-tooltip="Abbrechen" @click="cancelUpload"><x-mark-icon class="w-5 h-5" /></button>
+          <button class="icon-link" data-tooltip="Abbrechen" @click="cancelUpload"><x-mark-icon class="size-5" /></button>
           <div class="flex flex-col items-center space-y-2">
             <div class="text-sm">{{ progress.file }}</div>
             <div class="w-64 h-2 rounded-full bg-slate-200">
@@ -338,7 +338,7 @@
                         data-tooltip="Umbenennen"
                         @click="toRename = slotProps.row"
                     >
-                      <pencil-square-icon class="w-5 h-5" />
+                      <pencil-square-icon class="size-5" />
                     </button>
                   </template>
                 </template>
@@ -359,7 +359,7 @@
                       data-tooltip="Umbenennen"
                       @click="toRename = slotProps.row"
                     >
-                      <pencil-square-icon class="w-5 h-5" />
+                      <pencil-square-icon class="size-5" />
                     </button>
                   </template>
                 </template>

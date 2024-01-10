@@ -5,6 +5,6 @@
 <template>
   <div class="flex fixed justify-between items-center px-4 h-16 bg-vxvue-500">
     <span class="text-xl font-bold text-white"><slot /></span>
-    <a href="#" @click.prevent="emit('cancel')"><x-mark-icon class="w-5 h-5 text-white"/></a>
+    <a href="#" @click.prevent="emit('cancel')"><x-mark-icon class="size-5 text-white"/></a>
   </div>
 </template>

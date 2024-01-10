@@ -31,7 +31,7 @@
 <template>
   <slick-list v-model:list="linkedFiles" lock-axis="y" @update:list="saveSort" useDragHandle>
     <slick-item v-for="(item, ndx) in linkedFiles" :key="item.id" :index="ndx" class="flex items-center py-2 space-x-4 w-full border-b last:border-none">
-      <drag-handle class="cursor-pointer"><bars4-icon class="w-5 h-5" /></drag-handle>
+      <drag-handle class="cursor-pointer"><bars4-icon class="size-5" /></drag-handle>
       <div :class="['w-1/4', { 'text-slate-400': item.hidden }]">{{ item.filename }}</div>
       <div class="flex justify-center items-center w-24">
         <img :src="item.src" alt="" v-if="item.isThumb && item.src" class="thumb">
@@ -39,10 +39,10 @@
       </div>
       <div class="flex justify-center items-center space-x-2 w-24">
         <button class="icon-link" data-tooltip="Verlinkung entfernen" @click="unlink(item)">
-          <link-icon class="w-5 h-5" />
+          <link-icon class="size-5" />
         </button>
         <button class="icon-link" :data-tooltip="item.hidden ? 'Anzeigen' : 'Verstecken'" @click="toggleVisibility(item)">
-          <component :is="item.hidden ? EyeIcon : EyeSlashIcon" class="w-5 h-5" />
+          <component :is="item.hidden ? EyeIcon : EyeSlashIcon" class="size-5" />
         </button>
       </div>
       <a class="w-1/2" :href="'#'+ item.folder.path" @click.prevent="emit('goto-folder', item.folder)">{{ item.folder.path }}</a>

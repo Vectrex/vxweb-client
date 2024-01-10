@@ -17,16 +17,16 @@
         :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'"
         @click="emit('move-selection')"
       >
-        <document-minus-icon class="w-5 h-5"/>
+        <document-minus-icon class="size-5"/>
         <play-icon class="w-3 h-3" />
-        <document-plus-icon class="w-5 h-5"/>
+        <document-plus-icon class="size-5"/>
       </button>
       <button
         class="icon-link tooltip"
         :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner löschen'"
         @click="confirmDelete"
       >
-        <trash-icon class="w-5 h-5" />
+        <trash-icon class="size-5" />
       </button>
     </div>
 </template>

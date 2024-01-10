@@ -1,12 +1,10 @@
 import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import EnvCaster from '@niku/vite-env-caster'
 
 export default defineConfig({
   plugins: [
-      vue(),
-      EnvCaster()
+      vue()
   ],
   resolve: {
     alias: {

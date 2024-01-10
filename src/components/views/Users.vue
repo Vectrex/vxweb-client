@@ -62,7 +62,7 @@
         class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
         @click="edit(null)"
       >
-        <plus-icon class="w-5 h-5" />
+        <plus-icon class="size-5" />
       </button>
     </headline>
   </teleport>
@@ -81,8 +81,8 @@
         >
           <template v-slot:action="slotProps">
             <div class="flex justify-end space-x-2" v-if="currentUser.username !== slotProps.row.username">
-              <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="w-5 h-5"/></a>
-              <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="w-5 h-5" /></a>
+              <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="size-5"/></a>
+              <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="size-5" /></a>
             </div>
           </template>
         </sortable>

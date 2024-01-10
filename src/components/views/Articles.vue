@@ -61,7 +61,7 @@
           class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
           @click="$router.push({ name: 'articleEdit' })"
       >
-        <plus-icon class="w-5 h-5" />
+        <plus-icon class="size-5" />
       </button>
     </headline>
   </teleport>
@@ -104,10 +104,10 @@
           <template v-slot:action="slotProps">
             <div class="flex justify-end items-center space-x-1">
               <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link tooltip" data-tooltip="Bearbeiten">
-                <pencil-square-icon class="w-5 h-5" />
+                <pencil-square-icon class="size-5" />
               </router-link>
               <button class="icon-link tooltip" data-tooltip="Löschen" @click="del(slotProps.row)">
-                <trash-icon class="w-5 h-5" />
+                <trash-icon class="size-5" />
               </button>
             </div>
           </template>
