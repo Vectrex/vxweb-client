@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "vite",
     "dev-remote": "vite --mode remote",
-    "build": "dotenv -- cross-var vite build --mode production --base=%VITE_PATH_PREFIX%",
+    "build": "dotenv -- cross-var vite build --mode production --base %VITE_PATH_PREFIX%",
     "serve": "vite preview"
   },
   "type": "module",
