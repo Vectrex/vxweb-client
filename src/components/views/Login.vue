@@ -1,6 +1,5 @@
 <script setup>
-  import { PasswordInput, Modal } from "vx-vue"
-  import SubmitButton from "@/components/misc/submit-button.vue"
+  import { Modal, PasswordInput, SubmitButton } from "vx-vue"
   import Logo from "@/components/misc/logo.vue"
   import { HomeIcon } from '@heroicons/vue/20/solid'
   import { XMarkIcon } from "@heroicons/vue/24/solid"
@@ -70,10 +69,10 @@
           <password-input v-model.trim="form.password" class="w-full" placeholder="Passwort" />
 
           <div class="flex justify-between items-center">
-            <submit-button :busy="busy" @submit="submit">Anmelden</submit-button>
+            <submit-button :busy="busy" @submit="submit" theme="success">Anmelden</submit-button>
             <a href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog" v-if="!disablePasswordReset">Passwort vergessen?</a>
             <span class="flex space-x-1" v-if="!getWindow().location.host.match(/^localhost/)">
-              <home-icon class="size-5"/>
+              <home-icon class="size-5" />
               <a :href="getWindow().location.protocol + '//' + getWindow().location.host" class="text-rose-600 hover:text-rose-500 link">
                 {{ getWindow().location.host }}
               </a>
@@ -93,7 +92,7 @@
         <div class="py-8 px-4 space-y-4 sm:px-10">
           <input v-model.trim="email" type="text" class="w-full form-input" placeholder="E-Mail" v-focus @keydown.enter="requestPassword" @keydown.esc="hideDialog" />
           <div class="flex justify-center">
-            <submit-button :busy="busy" @submit="requestPassword">Passwort anfordern</submit-button>
+            <submit-button :busy="busy" @submit="requestPassword" theme="success">Passwort anfordern</submit-button>
           </div>
         </div>
       </template>

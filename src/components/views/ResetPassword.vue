@@ -1,6 +1,5 @@
 <script setup>
-  import { PasswordInput } from "vx-vue"
-  import SubmitButton from "@/components/misc/submit-button.vue"
+  import { PasswordInput, SubmitButton } from "vx-vue"
   import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
@@ -38,7 +37,7 @@
           <label class="floating-label" for="new-password-repeat">Neues Passwort wiederholen</label>
         </div>
         <div class="flex justify-center">
-          <submit-button @click="submit">Neues Passwort bestätigen</submit-button>
+          <submit-button @click="submit" theme="success">Neues Passwort bestätigen</submit-button>
         </div>
       </template>
     </div>

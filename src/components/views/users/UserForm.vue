@@ -1,7 +1,6 @@
 <script setup>
-  import SubmitButton from "@/components/misc/submit-button.vue"
   import FormDialog from "@/components/views/shared/FormDialog.vue"
-  import { FormSelect, PasswordInput } from "vx-vue"
+  import { FormSelect, PasswordInput, SubmitButton } from "vx-vue"
   import { computed, ref, watch } from "vue"
   import { vxFetch } from "@/composables/vxFetch"
 
@@ -92,7 +91,7 @@
                   </template>
                 <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
               </div>
-              <submit-button :busy="busy" @submit="submit">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
+              <submit-button :busy="busy" @submit="submit" theme="success">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
           </div>
 
       </template>

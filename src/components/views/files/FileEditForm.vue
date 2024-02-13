@@ -1,7 +1,7 @@
 <script setup>
-  import SubmitButton from "@/components/misc/submit-button.vue"
   import FormDialog from "@/components/views/shared/FormDialog.vue"
   import Divider from "@/components/misc/divider.vue"
+  import { SubmitButton } from "vx-vue"
   import { formatFilesize } from '@/composables/formatFilesize'
   import { vxFetch } from "@/composables/vxFetch"
   import { computed, ref, watch } from "vue"
@@ -102,7 +102,7 @@
                   </div>
               </div>
               <div class="px-4">
-                  <submit-button :busy="busy" @submit="submit">Daten übernehmen</submit-button>
+                  <submit-button :busy="busy" @submit="submit" theme="success">Daten übernehmen</submit-button>
               </div>
           </div>
       </template>

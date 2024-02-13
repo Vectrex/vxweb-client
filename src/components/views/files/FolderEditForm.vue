@@ -1,5 +1,5 @@
 <script setup>
-  import SubmitButton from "@/components/misc/submit-button.vue"
+  import { SubmitButton } from "vx-vue"
   import FormDialog from "@/components/views/shared/FormDialog.vue"
   import { vxFetch } from "@/composables/vxFetch"
   import { computed, ref, watch } from "vue"
@@ -75,7 +75,7 @@
                   </label>
                   <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
               </div>
-              <submit-button :busy="busy" @submit="submit">Daten übernehmen</submit-button>
+              <submit-button :busy="busy" @submit="submit" theme="success">Daten übernehmen</submit-button>
           </div>
       </template>
   </form-dialog>

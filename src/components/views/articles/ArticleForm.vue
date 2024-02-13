@@ -1,7 +1,6 @@
 <script setup>
-  import { Datepicker, FormSelect, FormSwitch } from "vx-vue"
+  import { Datepicker, FormSelect, FormSwitch, SubmitButton } from "vx-vue"
   import Tiptap from "@/components/misc/tiptap.vue"
-  import SubmitButton from "@/components/misc/submit-button.vue"
   import { vxFetch } from "@/composables/vxFetch"
   import { useDateFormat } from "@vueuse/core"
   import { onMounted, ref } from "vue"
@@ -92,7 +91,7 @@
         />
       </div>
 
-      <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
+      <submit-button :busy="busy" @submit="submit" theme="success">Änderungen speichern</submit-button>
     </div>
   </div>
 </template>

@@ -1,7 +1,6 @@
 <script setup>
-  import { PasswordInput } from "vx-vue"
+  import { PasswordInput, SubmitButton } from "vx-vue"
   import Headline from "@/components/app/Headline.vue"
-  import SubmitButton from "@/components/misc/submit-button.vue"
   import Divider from "@/components/misc/divider.vue"
   import { onMounted, ref } from "vue"
   import { vxFetch } from "@/composables/vxFetch"
@@ -75,6 +74,6 @@
         </div>
       </template>
 
-    <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
+    <submit-button :busy="busy" @submit="submit" theme="success">Änderungen speichern</submit-button>
   </div>
 </template>

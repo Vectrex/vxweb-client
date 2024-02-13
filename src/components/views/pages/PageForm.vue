@@ -1,6 +1,6 @@
 <script setup>
-  import SubmitButton from "@/components/misc/submit-button.vue"
   import Tiptap from "@/components/misc/tiptap.vue"
+  import { SubmitButton } from "vx-vue"
   import { vxFetch } from "@/composables/vxFetch"
   import { ref, watch } from "vue"
 
@@ -70,6 +70,6 @@
           @open-file-manager="emit('openFileManager')"
       />
     </div>
-    <submit-button :busy="busy" @submit="submit">Änderungen speichern</submit-button>
+    <submit-button :busy="busy" @submit="submit" theme="success">Änderungen speichern</submit-button>
   </div>
 </template>
