@@ -11,16 +11,18 @@
   const doFetch = vxFetch(emit)
   const datepickerAttrs = {
     placeholder: 'dd.mm.yyyy',
-    class: "w-96 w-full",
+    class: "w-full",
     dayNames: 'So Mo Di Mi Do Fr Sa'.split(' '),
     startOfWeekIndex: 1,
     inputFormat: 'D.M.YYYY',
     outputFormat: 'D MMMM YYYY'
   }
+  const dateElements = [
+    { model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
+    { model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
+    { model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}}
+  ]
   const elements = [
-    { type: Datepicker, model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
-    { type: Datepicker, model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
-    { type: Datepicker, model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}},
     { type: FormSwitch, model: 'customflags', label: 'Markiert', attrs: { class: 'ml-2' } },
     { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { class: 'w-full', disabledLabel: '(Kategorie wählen)' } },
     { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
@@ -37,8 +39,8 @@
     if (props.id) {
       form.value = (await doFetch('article/' + props.id).json()).data.value || {}
 
-      elements.forEach(item => {
-        if(item.type === Datepicker && form.value[item.model]) {
+      dateElements.forEach(item => {
+        if(form.value[item.model]) {
           form.value[item.model] = new Date(form.value[item.model])
         }
       })
@@ -63,7 +65,18 @@
 </script>
 
 <template>
-  <div class="py-4 max-w-4xl">
+  <div class="py-4 max-w-4xl space-y-2">
+    <div class="grid grid-cols-3 gap-2">
+      <div v-for="element in dateElements" :key="element.model">
+        <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
+        <datepicker
+            :id="element.model"
+            v-model="form[element.model]"
+            v-bind="element.attrs"
+        />
+      </div>
+    </div>
+
     <div class="space-y-2">
       <div class="flex flex-wrap items-center" v-for="element in elements" :key="element.model">
         <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
