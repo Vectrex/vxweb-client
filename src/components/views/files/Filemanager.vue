@@ -51,6 +51,8 @@
   })
   const checkedFiles = computed(() => files.value.filter(({ checked }) => checked))
   const checkedFolders = computed(() => folders.value.filter(({ checked }) => checked))
+  const multiCheckValue = computed(() => !(checkedFiles.value.length + checkedFolders.value.length) ? false : (checkedFiles.value.length + checkedFolders.value.length === files.value.length + folders.value.length) ? true : undefined)
+
   const doFetch = vxFetch(emit)
   const readFolder = async () => {
     const response = (await doFetch(urlQueryCreate('folder/' + (props.folderId || '-') + '/read', props.requestParameters)).json()).data.value || {}
@@ -61,14 +63,6 @@
       currentFolderId.value = response.currentFolder?.key || null
       breadcrumbs.value = response.breadcrumbs || breadcrumbs.value
       limits.value = response.limits || limits.value
-    }
-  }
-  const setMultiCheckbox = itemCount => {
-    if (multiCheckbox.value) {
-      if (itemCount) {
-        multiCheckbox.value.checked = false
-      }
-      multiCheckbox.value.indeterminate = itemCount && itemCount !== files.value.length + folders.value.length
     }
   }
   const delSelection = async () => {
@@ -233,8 +227,6 @@
 
   onMounted(() => isMounted.value = true)
   watch(() => props.folderId,  v => { readFolder(v); currentFolderId.value = v }, { immediate: true })
-  watch(checkedFiles, v => setMultiCheckbox(checkedFolders.value.length + v.length))
-  watch(checkedFolders, v => setMultiCheckbox(checkedFiles.value.length + v.length))
 
   defineExpose({ delFile, delFolder, editFile, editFolder, moveFile })
 </script>
@@ -309,9 +301,11 @@
           >
             <template v-slot:checked-header>
               <input type="checkbox"
-                class="form-checkbox"
+                :checked="multiCheckValue"
+                :indeterminate="multiCheckValue === undefined"
                 @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked)"
                 ref="multiCheckbox"
+                class="form-checkbox"
               />
             </template>
 

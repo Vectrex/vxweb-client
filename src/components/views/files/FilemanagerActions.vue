@@ -6,7 +6,7 @@
   const props = defineProps({ files: Array, folders: Array })
   const emit = defineEmits(['delete-selection', 'move-selection'])
   const confirmDelete = () => {
-    instance.parent.refs.confirm.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?").then(() => emit('delete-selection')).catch(() => {})
+    instance.parent.refs.deleteRequest.open('Auswahl löschen', "Selektierte Dateien/Ordner wirklich löschen?").then(() => emit('delete-selection')).catch(() => {})
   }
 
 </script>
