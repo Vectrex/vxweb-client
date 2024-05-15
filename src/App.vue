@@ -8,7 +8,7 @@
   import { computed, ref } from "vue"
   import router from "@/router"
 
-  const sideBarExpanded = ref(true)
+  const sideBarExpanded = ref(false)
   const user = ref({})
   const toast = ref({})
   const isNotLoginView = computed(() => router.currentRoute.value.name !== undefined && ['login', 'reset-password'].indexOf(router.currentRoute.value.name) === -1)

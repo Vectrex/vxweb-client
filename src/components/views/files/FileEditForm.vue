@@ -102,7 +102,7 @@
                   </div>
               </div>
               <div class="px-4">
-                  <submit-button :busy="busy" @submit="submit" theme="success">Daten übernehmen</submit-button>
+                  <submit-button :busy="busy" @submit="submit" theme="success" class="button">Daten übernehmen</submit-button>
               </div>
           </div>
       </template>

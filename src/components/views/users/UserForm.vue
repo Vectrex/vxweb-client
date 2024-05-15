@@ -91,7 +91,7 @@
                   </template>
                 <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
               </div>
-              <submit-button :busy="busy" @submit="submit" theme="success">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
+              <submit-button :busy="busy" @submit="submit" theme="success" class="button">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
           </div>
 
       </template>

@@ -104,7 +104,7 @@
         />
       </div>
 
-      <submit-button :busy="busy" @submit="submit" theme="success">Änderungen speichern</submit-button>
+      <submit-button :busy="busy" @submit="submit" theme="success" class="button">Änderungen speichern</submit-button>
     </div>
   </div>
 </template>

@@ -69,7 +69,7 @@
           <password-input v-model.trim="form.password" class="w-full" placeholder="Passwort" />
 
           <div class="flex justify-between items-center">
-            <submit-button :busy="busy" @submit="submit" theme="success">Anmelden</submit-button>
+            <submit-button :busy="busy" @submit="submit" theme="success" class="button">Anmelden</submit-button>
             <a href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog" v-if="!disablePasswordReset">Passwort vergessen?</a>
             <span class="flex space-x-1" v-if="!getWindow().location.host.match(/^localhost/)">
               <home-icon class="size-5" />
@@ -85,14 +85,14 @@
       <template #title>
         <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
           <span class="text-xl font-bold text-white">Passwort vergessen?</span>
-          <a href="#" @click.prevent="hideDialog"><x-mark-icon class="size-5 text-white"/></a>
+          <a href="#" @click.prevent="hideDialog"><x-mark-icon class="size-5 text-white" /></a>
         </div>
       </template>
       <template #default>
         <div class="py-8 px-4 space-y-4 sm:px-10">
           <input v-model.trim="email" type="text" class="w-full form-input" placeholder="E-Mail" v-focus @keydown.enter="requestPassword" @keydown.esc="hideDialog" />
           <div class="flex justify-center">
-            <submit-button :busy="busy" @submit="requestPassword" theme="success">Passwort anfordern</submit-button>
+            <submit-button :busy="busy" @submit="requestPassword" theme="success" class="button">Passwort anfordern</submit-button>
           </div>
         </div>
       </template>

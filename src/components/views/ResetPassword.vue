@@ -37,7 +37,7 @@
           <label class="floating-label" for="new-password-repeat">Neues Passwort wiederholen</label>
         </div>
         <div class="flex justify-center">
-          <submit-button @click="submit" theme="success">Neues Passwort bestätigen</submit-button>
+          <submit-button @click="submit" theme="success" class="button">Neues Passwort bestätigen</submit-button>
         </div>
       </template>
     </div>

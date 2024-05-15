@@ -31,16 +31,7 @@
         @apply bg-vxvue-700 text-white;
     }
     .button {
-        @apply inline-flex items-center justify-center px-8 py-2 border border-transparent text-base font-medium rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2;
-    }
-    .button.success {
-        @apply bg-success-700 hover:bg-success-600 focus:ring-success-600 text-white
-    }
-    .button.alert {
-        @apply bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white
-    }
-    .button.cancel {
-        @apply bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800
+        @apply px-4 py-2 font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-2;
     }
     .disabled {
         @apply text-stone-700 !bg-stone-200 hover:!text-stone-700 hover:!bg-stone-300;
