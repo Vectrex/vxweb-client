@@ -53,7 +53,7 @@
 
   <modal :show="showSearch">
     <template #title>
-      <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
+      <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue">
         <div class="flex items-center space-x-2 w-full">
           <input
               class="w-1/2 form-input"

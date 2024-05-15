@@ -423,14 +423,14 @@
         ref="deleteRequest"
         header-class="text-white bg-error"
         :buttons="[
-            { label: 'Löschen!', value: true, class: 'button alert' },
-            { label: 'Abbrechen', value: false, class: 'button cancel' }
+            { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
+            { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
           ]"
     />
     <confirm
         ref="alert"
         header-class="text-white bg-error"
-        :buttons="{ label: 'Ok!', value: true, class: 'button cancel' }"
+        :buttons="{ label: 'Ok!', value: true, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }"
     />
   </teleport>
 

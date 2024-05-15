@@ -66,30 +66,30 @@
 
 :root {
     --vxvue-color: 0 137 204;
-    --vxvue-color-50: 240 249 255;
-    --vxvue-color-100: 224 242 254;
-    --vxvue-color-200: 185 231 254;
-    --vxvue-color-300: 124 213 253;
-    --vxvue-color-400: 54 192 250;
-    --vxvue-color-500: 12 169 235;
+    --vxvue-color-50: 240 250 255;
+    --vxvue-color-100: 219 243 255;
+    --vxvue-color-200: 184 231 255;
+    --vxvue-color-300: 133 214 255;
+    --vxvue-color-400: 77 195 255;
+    --vxvue-color-500: 0 167 250;
     --vxvue-color-600: var(--vxvue-color);
-    --vxvue-color-700: 1 107 163;
-    --vxvue-color-800: 6 90 134;
-    --vxvue-color-900: 11 75 111;
-    --vxvue-color-950: 7 48 74;
+    --vxvue-color-700: 0 122 184;
+    --vxvue-color-800: 0 99 148;
+    --vxvue-color-900: 0 75 112;
+    --vxvue-color-950: 0 51 77;
 
     --vxvue-highlight: 255 148 0;
-    --vxvue-highlight-50: 255 251 234;
-    --vxvue-highlight-100: 255 241 197;
-    --vxvue-highlight-200: 255 227 133;
-    --vxvue-highlight-300: 255 206 70;
-    --vxvue-highlight-400: 255 184 27;
-    --vxvue-highlight-500: var(--vxvue-highlight);
-    --vxvue-highlight-600: 226 109 0;
-    --vxvue-highlight-700: 187 73 2;
-    --vxvue-highlight-800: 152 56 8;
-    --vxvue-highlight-900: 124 47 11;
-    --vxvue-highlight-950: 72 22 0;
+    --vxvue-highlight-50: 255 247 235;
+    --vxvue-highlight-100: 255 236 209;
+    --vxvue-highlight-200: 255 213 153;
+    --vxvue-highlight-300: 255 185 87;
+    --vxvue-highlight-400: var(--vxvue-highlight);
+    --vxvue-highlight-500: 235 137 0;
+    --vxvue-highlight-600: 209 122 0;
+    --vxvue-highlight-700: 184 107 0;
+    --vxvue-highlight-800: 153 89 0;
+    --vxvue-highlight-900: 112 65 0;
+    --vxvue-highlight-950: 82 48 0;
 
     --error-color: 181 18 18;
     --error-color-50: 255 241 241;
@@ -130,18 +130,18 @@
     --info-color-900: 13 89 155;
     --info-color-950: 14 53 93;
 
-    --success-color: 32 184 64;
-    --success-color-50: 240 253 242;
-    --success-color-100: 220 252 226;
-    --success-color-200: 187 247 199;
-    --success-color-300: 134 239 155;
-    --success-color-400: 74 222 105;
+    --success-color: 29 169 60;
+    --success-color-50: 233 251 237;
+    --success-color-100: 203 246 212;
+    --success-color-200: 138 235 159;
+    --success-color-300: 42 218 80;
+    --success-color-400: 32 184 64;
     --success-color-500: var(--success-color);
-    --success-color-600: 22 163 52;
-    --success-color-700: 21 128 44;
-    --success-color-800: 22 101 40;
-    --success-color-900: 20 83 35;
-    --success-color-950: 5 46 16;
+    --success-color-600: 26 152 54;
+    --success-color-700: 23 130 46;
+    --success-color-800: 20 113 40;
+    --success-color-900: 14 83 29;
+    --success-color-950: 10 56 20;
 
     --header-height: 6rem;
 }
