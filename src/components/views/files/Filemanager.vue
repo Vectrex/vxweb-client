@@ -161,23 +161,24 @@
   }
   const handleUploads = async () => {
     let file = null, response = null
+
     while ((file = upload.value.files.shift()) !== undefined) {
-      if (limits.value.maxUploadSize && limits.value.maxUploadSize < file.size) {
-        await alert.value.open('Datei zu groß', "'" + file.name + "' übersteigt die maximale Uploadgröße.")
+      if (limits.value.maxUploadSize && limits.value.maxUploadSize < file.f.size) {
+        await alert.value.open('Datei zu groß', "'" + file.f.name + "' übersteigt die maximale Uploadgröße.")
         continue
       }
-      progress.value.file = file.name
+      progress.value.file = file.f.name
       try {
         response = await promisedXhr(
-            urlQueryCreate("file?folder=" + currentFolderId.value, props.requestParameters),
+            urlQueryCreate("file?folder=" + file.folderId, props.requestParameters),
             'POST',
             {
-              'Content-type': file.type || 'application/octet-stream',
-              'X-File-Name': file.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
-              'X-File-Size': file.size,
-              'X-File-Type': file.type
+              'Content-type': file.f.ftype || 'application/octet-stream',
+              'X-File-Name': file.f.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
+              'X-File-Size': file.f.size,
+              'X-File-Type': file.f.type
             },
-            file,
+            file.f,
             null,
             e => {
               progress.value.total = e.total
@@ -188,7 +189,7 @@
         if (response.status >= 400) {
           await router.replace({ name: 'login' })
         }
-        else if(response.files) {
+        else if(response.files && currentFolderId.value === file.folderId) {
           files.value = response.files
         }
       } catch (err) {
@@ -208,10 +209,13 @@
       emit('response-received', { success: true, message: response.message || 'File upload successful', _method: 'uploadFiles' })
     }
   }
-  const uploadDraggedFiles = e  => { indicateDrag.value = false; uploadInputFiles(e.dataTransfer.files || []) }
+  const uploadDraggedFiles = e  => {
+    indicateDrag.value = false
+    uploadInputFiles(e.dataTransfer.files || [])
+  }
   const uploadInputFiles = files => {
     showAddActivities.value = false
-    upload.value.files.push(...files)
+    Array.from(files).forEach(file => upload.value.files.push({ f: file, folderId: currentFolderId.value }))
     if (!upload.value.progressing) {
       upload.value.progressing = true
       progress.value.loaded = 0
