@@ -1,6 +1,6 @@
 import { createFetch } from "@vueuse/core";
 
-export const vxFetch = (emit = null) => { return createFetch({
+export const vxFetch = (emit = null) => createFetch({
     baseUrl: import.meta.env.VITE_API_ROOT || ('//' + window.location.host + '/admin/'),
     options: {
         beforeFetch ({ options }) {
@@ -26,4 +26,4 @@ export const vxFetch = (emit = null) => { return createFetch({
     fetchOptions: {
         mode: 'cors'
     }
-})}
+})
