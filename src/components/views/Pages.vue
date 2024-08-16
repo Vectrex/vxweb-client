@@ -59,10 +59,10 @@
         >
           <template v-slot:action="slotProps">
             <div class="flex justify-end space-x-2">
-              <router-link :to="{ name: 'pageEdit', params: { id: slotProps.row.id }}" class="icon-link" data-tooltip="Bearbeiten">
+              <router-link :to="{ name: 'pageEdit', params: { id: slotProps.row.id }}" class="icon-link">
                 <PencilSquareIcon class="size-5"/>
               </router-link>
-              <button class="icon-link" data-tooltip="Löschen" @click="del(slotProps.row.id)">
+              <button class="icon-link" @click="del(slotProps.row.id)">
                 <TrashIcon class="size-5" />
               </button>
             </div>

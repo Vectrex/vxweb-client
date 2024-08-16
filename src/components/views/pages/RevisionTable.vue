@@ -25,13 +25,13 @@
         <tr v-for="(revision, ndx) in sortedRevisions" :key="revision.id" :class="ndx % 2 ? 'bg-slate-200' : ''">
           <td class="py-2 px-6">{{ useDateFormat(revision.firstCreated, 'YYYY-MM-DD HH:mm:ss').value }}</td>
           <td class="py-2 px-6">
-            <button class="icon-link tooltip" data-tooltip="Ansicht" @click="emit('load-revision', revision)"><eye-icon class="size-5" /></button>
+            <button class="icon-link" @click="emit('load-revision', revision)"><eye-icon class="size-5" /></button>
           </td>
           <td class="py-2 px-6 text-center">
             <form-switch @update:model-value="emit('activate-revision', revision)" :model-value="revision.active" :disabled="revision.active" />
           </td>
           <td class="py-2 px-6 text-right">
-            <button class="icon-link tooltip" data-tooltip="Löschen" @click="emit('delete-revision', revision)" v-if="!revision.active"><trash-icon class="size-5" /></button>
+            <button class="icon-link" @click="emit('delete-revision', revision)" v-if="!revision.active"><trash-icon class="size-5" /></button>
           </td>
         </tr>
       </tbody>

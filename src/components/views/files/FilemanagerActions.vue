@@ -13,8 +13,7 @@
 <template>
     <div class="flex items-center space-x-2">
       <button
-        class="flex items-center icon-link tooltip"
-        :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner verschieben'"
+        class="flex items-center icon-link"
         @click="emit('move-selection')"
       >
         <document-minus-icon class="size-5"/>
@@ -22,8 +21,7 @@
         <document-plus-icon class="size-5"/>
       </button>
       <button
-        class="icon-link tooltip"
-        :data-tooltip="files.length + folders.length + ' gewählte Dateien/Ordner löschen'"
+        class="icon-link"
         @click="confirmDelete"
       >
         <trash-icon class="size-5" />

@@ -278,7 +278,7 @@
 
       <div class="flex justify-center py-4 px-8 w-full rounded-r rounded-l bg-slate-200">
         <div class="flex items-center space-x-2" v-if="upload.progressing">
-          <button class="icon-link" data-tooltip="Abbrechen" @click="cancelUpload"><x-mark-icon class="size-5" /></button>
+          <button class="icon-link" @click="cancelUpload"><x-mark-icon class="size-5" /></button>
           <div class="flex flex-col items-center space-y-2">
             <div class="text-sm">{{ progress.file }}</div>
             <div class="w-64 h-2 rounded-full bg-slate-200">
@@ -332,8 +332,7 @@
                   <template v-else>
                     <a :href="'#' + slotProps.row.id" @click.prevent="emit('update:folder-id', slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
                     <button
-                        class="opacity-0 transition-opacity group-hover:opacity-100 icon-link tooltip"
-                        data-tooltip="Umbenennen"
+                        class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
                         @click="toRename = slotProps.row"
                     >
                       <pencil-square-icon class="size-5" />
@@ -353,8 +352,7 @@
                   <template v-else>
                     <span>{{ slotProps.row.name }}</span>
                     <button
-                      class="opacity-0 transition-opacity group-hover:opacity-100 icon-link tooltip"
-                      data-tooltip="Umbenennen"
+                      class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
                       @click="toRename = slotProps.row"
                     >
                       <pencil-square-icon class="size-5" />

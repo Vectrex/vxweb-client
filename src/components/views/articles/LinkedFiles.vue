@@ -38,10 +38,10 @@
         <div class="overflow-hidden whitespace-nowrap overflow-ellipsis" v-else>{{ item.type }}</div>
       </div>
       <div class="flex justify-center items-center space-x-2 w-24">
-        <button class="icon-link" data-tooltip="Verlinkung entfernen" @click="unlink(item)">
+        <button class="icon-link" @click="unlink(item)">
           <link-icon class="size-5" />
         </button>
-        <button class="icon-link" :data-tooltip="item.hidden ? 'Anzeigen' : 'Verstecken'" @click="toggleVisibility(item)">
+        <button class="icon-link" @click="toggleVisibility(item)">
           <component :is="item.hidden ? EyeIcon : EyeSlashIcon" class="size-5" />
         </button>
       </div>
