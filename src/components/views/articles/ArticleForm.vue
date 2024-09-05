@@ -36,14 +36,12 @@
   const errors = ref({})
   onMounted(async ()  => {
     options.value.articlecategoriesid = (await doFetch('article/categories').json()).data.value || []
-    if (props.id) {
-      form.value = (await doFetch('article/' + props.id).json()).data.value || {}
 
-      dateElements.forEach(item => {
-        if(form.value[item.model]) {
-          form.value[item.model] = new Date(form.value[item.model])
-        }
-      })
+    if (props.id) {
+      const data = (await doFetch('article/' + props.id).json()).data.value || {}
+      elements.forEach(item => data[item.model] = item.type === FormSwitch ? Boolean(data[item.model]) : data[item.model])
+      form.value = data
+      dateElements.forEach(item => form.value[item.model] = form.value[item.model] ? new Date(form.value[item.model]) : null)
     }
   })
   const submit = async () => {
