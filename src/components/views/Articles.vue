@@ -27,7 +27,7 @@
   const filter = ref({ cat: 0, title: '' })
   const filteredArticles = computed(() => {
     const titleFilter = filter.value.title.toLowerCase()
-    return articles.value.filter(item => (!filter.value.cat || filter.value.cat === item.catId) && (!titleFilter || item.title.toLowerCase().indexOf(titleFilter) !== -1))
+    return articles.value.filter(item => (!filter.value.cat || filter.value.cat === item.catId) && (!titleFilter || item.title.toLowerCase().includes(titleFilter)))
   })
   const deleteRequest = ref(null)
   const del = article => {

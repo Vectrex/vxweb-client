@@ -11,7 +11,7 @@
   watch (() => props.breadcrumbs, v => {
     if (
         v.length >= items.value.length ||
-        items.value.map(item => item.id).join().indexOf(v.map(item => item.id).join()) !== 0
+        items.value.map(item => item.id).join().indexOf(v.map(item => item.id).join())
     ) {
       items.value = v
     }
@@ -45,7 +45,7 @@
               {
                 'rounded-l !border-l-2': ndx === 0,
                 'rounded-r !border-r-2': ndx === items.length -1,
-                'bg-vxvue-500 !text-white font-bold': breadcrumb.id === currentFolder
+                'bg-vxvue-500 !text-white': breadcrumb.id === currentFolder
               }
             ]"
             :key="ndx"

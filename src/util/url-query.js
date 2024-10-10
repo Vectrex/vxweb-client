@@ -1,5 +1,5 @@
 function urlQueryCreate (url, query = {}) {
-    return url + (url.indexOf('?') !== -1 ? '&' : '?') + new URLSearchParams(query).toString();
+    return url + (url.includes('?') ? '&' : '?') + new URLSearchParams(query).toString();
 }
 
 /* @see https://stackoverflow.com/questions/8648892/how-to-convert-url-parameters-to-a-javascript-object */

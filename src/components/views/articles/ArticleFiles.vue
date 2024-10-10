@@ -44,7 +44,7 @@
   }
   const handleReceivedResponse = e => {
     emit('notify', e)
-    if (['uploadFiles', 'delFile', 'delFolder', 'delSelection'].indexOf(e._method) !== -1) {
+    if (['uploadFiles', 'delFile', 'delFolder', 'delSelection'].includes(e._method)) {
       emit('update-linked')
     }
   }

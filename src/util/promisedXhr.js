@@ -10,10 +10,10 @@ const promisedXhr = async (
     const baseUrl = import.meta.env.VITE_API_ROOT || ('//' + window.location.host + '/admin/')
     const headerKeys = Object.keys(headers).map(key => key.toLowerCase());
 
-    if (headerKeys.indexOf('x-csrf-token') === -1 && document.querySelector('meta[name="csrf-token"]')) {
+    if (!headerKeys.includes('x-csrf-token') && document.querySelector('meta[name="csrf-token"]')) {
         headers['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
     }
-    if (headerKeys.indexOf('content-type') === -1) {
+    if (!headerKeys.includes('content-type')) {
         headers['Content-Type'] = 'application/x-www-form-urlencoded';
     }
 

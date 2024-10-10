@@ -79,7 +79,7 @@
       <div class="flex flex-wrap items-center" v-for="element in elements" :key="element.model">
         <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
         <input
-          v-if="['text', 'number'].indexOf(element.type) !== -1"
+          v-if="['text', 'number'].includes(element.type)"
           :id="element.model"
           v-model="form[element.model]"
           :type="element.type"
