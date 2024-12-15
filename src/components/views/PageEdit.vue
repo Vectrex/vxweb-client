@@ -69,7 +69,7 @@
 </script>
 
 <template>
-  <teleport to="#tools">
+  <teleport defer to="#tools">
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
   <div class="flex justify-start pb-4 space-x-4 w-full">

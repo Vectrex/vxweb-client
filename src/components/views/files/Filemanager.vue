@@ -24,7 +24,6 @@
       requestParameters: { type: Object, default: {} },
       isModal: Boolean
   })
-  const isMounted = ref(false)
   const limits = ref({})
   const currentFolderId = ref(null)
   const parentId = ref(null)
@@ -229,7 +228,6 @@
     }
   }
 
-  onMounted(() => isMounted.value = true)
   watch(() => props.folderId,  v => { readFolder(v); currentFolderId.value = v }, { immediate: true })
 
   defineExpose({ delFile, delFolder, editFile, editFolder, moveFile })
@@ -438,7 +436,6 @@
 
   <filemanager-search
       v-if="!isModal"
-      :is-mounted="isMounted"
       @folder-picked="emit('update:folder-id', $event.id)"
       @fetch-error="emit('fetch-error', $event)"
   />

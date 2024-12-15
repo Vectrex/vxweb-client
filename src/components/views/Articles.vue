@@ -55,7 +55,7 @@
 </script>
 
 <template>
-  <teleport to="#tools">
+  <teleport defer to="#tools">
     <headline><span>Artikel</span>
       <button
           class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"

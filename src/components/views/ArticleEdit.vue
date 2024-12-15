@@ -34,7 +34,7 @@
 </script>
 
 <template>
-  <teleport to="#tools">
+  <teleport defer to="#tools">
     <headline><span>Artikel {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
 

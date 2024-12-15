@@ -11,7 +11,8 @@ const routes = [
         path: '/',
         component: lazyLoad('Login'),
         meta: {
-            noAuth: true
+            noAuth: true,
+            layout: 'LoginLayout',
         }
     },
     {

@@ -34,7 +34,7 @@
 </script>
 
 <template>
-  <teleport to="#tools">
+  <teleport defer to="#tools">
     <headline>
       <span>{{ $route.meta?.heading }}</span>
       <button

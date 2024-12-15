@@ -8,7 +8,6 @@
 
   const emit = defineEmits(['folder-picked','fetch-error'])
   const props = defineProps({
-    isMounted: Boolean,
     placeholder: { type: String, default: 'Datei/Verzeichnis suchen...' },
     minLength: { type: Number, default: 3 }
   })
@@ -47,7 +46,7 @@
 </script>
 
 <template>
-  <teleport to="#search-input" v-if="isMounted">
+  <teleport defer to="#search-input">
     <button class="flex items-center icon-link" @click="showSearch = !showSearch"><magnifying-glass-icon class="size-5" /> Suchen...</button>
   </teleport>
 
