@@ -6,7 +6,7 @@
   import router from "@/router"
   import { ref } from "vue"
 
-  const props = defineProps({ folderId: [String, Number] })
+  const props = defineProps({ folderId: { type: [String, Number], default: null }})
   const emit = defineEmits(['notify', 'fetch-error'])
   const fm = ref(null)
   const cols = [
@@ -39,6 +39,7 @@
   </teleport>
 
   <filemanager
+    ref="fm"
     :columns="cols"
     :init-sort="getSort()"
     :folder-id="folderId"
@@ -46,9 +47,8 @@
     @response-received="emit('notify', $event)"
     @fetch-error="emit('fetch-error', $event)"
     @after-sort="storeSort"
-    ref="fm"
   >
-    <template v-slot:action="slotProps">
+    <template #action="slotProps">
       <div class="flex justify-end items-center space-x-1">
         <template v-if="slotProps.row.isFolder">
           <button class="icon-link" @click="fm.editFolder(slotProps.row)">
@@ -63,9 +63,9 @@
             <pencil-square-icon class="size-5" />
           </button>
           <button class="flex items-center icon-link" @click="fm.moveFile(slotProps.row)">
-            <document-minus-icon class="size-5"/>
+            <document-minus-icon class="size-5" />
             <play-icon class="w-3 h-3" />
-            <document-plus-icon class="size-5"/>
+            <document-plus-icon class="size-5" />
           </button>
           <button class="icon-link" @click="fm.delFile(slotProps.row)">
             <trash-icon class="size-5" />

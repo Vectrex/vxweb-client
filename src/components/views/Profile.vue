@@ -40,40 +40,44 @@
 
   <div class="pb-4 space-y-4">
     <div class="space-y-4">
-        <div v-for="(field, ndx) in fields" :key="ndx">
-          <label :for="field.model" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
-          <div>
-            <input
-                class="w-96 form-input"
-                v-if="!field.type"
-                :id="field.model"
-                v-model.trim="form[field.model]"
-            />
-            <component :is="field.type"
-                v-else
-                :id="field.model"
-                v-model.trim="form[field.model]"
-                class="w-96"
-            />
-            <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
-          </div>
+      <div v-for="(field, ndx) in fields" :key="ndx">
+        <label :for="field.model" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
+        <div>
+          <input
+            v-if="!field.type"
+            :id="field.model"
+            v-model.trim="form[field.model]"
+            class="w-96 form-input"
+          >
+          <component
+            :is="field.type"
+            v-else
+            :id="field.model"
+            v-model.trim="form[field.model]"
+            class="w-96"
+          />
+          <p v-if="errors[field.model]" class="text-sm text-error">
+            {{ errors[field.model] }}
+          </p>
         </div>
       </div>
+    </div>
 
-      <template v-if="notifications.length">
+    <template v-if="notifications.length">
+      <divider>Benachrichtigungen</divider>
 
-        <divider>Benachrichtigungen</divider>
-
-        <div class="space-y-4">
-          <div class="space-x-2" v-for="notification in notifications">
-            <label class="space-x-2">
-              <input v-bind:value="notification.alias" type="checkbox" class="form-checkbox" v-model="form.notifications" />
-              <span>{{ notification.label }}</span>
-            </label>
-          </div>
+      <div class="space-y-4">
+        <div v-for="notification in notifications" :key="notification.alias" class="space-x-2">
+          <label class="space-x-2">
+            <input v-model="form.notifications" :value="notification.alias" type="checkbox" class="form-checkbox">
+            <span>{{ notification.label }}</span>
+          </label>
         </div>
-      </template>
+      </div>
+    </template>
 
-    <submit-button :busy="busy" @submit="submit" theme="success" class="button">Änderungen speichern</submit-button>
+    <submit-button :busy="busy" theme="success" class="button" @submit="submit">
+      Änderungen speichern
+    </submit-button>
   </div>
 </template>

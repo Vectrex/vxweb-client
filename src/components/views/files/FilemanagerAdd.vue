@@ -26,10 +26,10 @@
 
 <template>
   <div
-      class="absolute left-0 z-10 py-1 mt-2 bg-white rounded-sm ring-1 ring-black/5 shadow-lg origin-top-right focus:outline-hidden"
-      role="menu"
-      aria-orientation="vertical"
-      ref="container"
+    ref="container"
+    class="absolute left-0 z-10 py-1 mt-2 bg-white rounded-sm ring-1 ring-black/5 shadow-lg origin-top-right focus:outline-hidden"
+    role="menu"
+    aria-orientation="vertical"
   >
     <input
       v-if="showAddFolderInput"
@@ -39,11 +39,11 @@
       @keydown.esc="showAddFolderInput = false"
       @blur="showAddFolderInput = false"
       @click.stop
-    />
+    >
     <button
-        v-else
-        @click.stop="showAddFolderInput = true"
-        class="flex items-center py-2 px-4 space-x-1 text-sm text-gray-700 hover:bg-gray-100"
+      v-else
+      class="flex items-center py-2 px-4 space-x-1 text-sm text-gray-700 hover:bg-gray-100"
+      @click.stop="showAddFolderInput = true"
     >
       <folder-plus-icon class="size-5" />
       <span class="">Verzeichnis&nbsp;erstellen</span>
@@ -55,6 +55,12 @@
       <document-arrow-up-icon class="size-5" />
       <span>Datei hochladen</span>
     </label>
-    <input type="file" id="file_upload" class="hidden" :multiple="multiple" @change="fileChanged" />
+    <input
+      id="file_upload"
+      type="file"
+      class="hidden"
+      :multiple="multiple"
+      @change="fileChanged"
+    >
   </div>
 </template>

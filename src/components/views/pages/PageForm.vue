@@ -5,7 +5,10 @@
   import { ref, watch } from "vue"
 
   const emit = defineEmits(['response-received', 'open-file-manager', 'fetch-error'])
-  const props = defineProps({ initData: Object, id: [String, Number] })
+  const props = defineProps({
+    initData: { type: Object, default: () => ({}) },
+    id: { type: [Number, String], default: null }
+  })
   const form = ref({})
   const errors = ref({})
   const options = ref({})
@@ -31,45 +34,51 @@
   <div class="space-y-2">
     <div class="flex flex-wrap items-center">
       <label
-          for="alias-input"
-          :class="['required', { 'text-error': errors.alias }]"
+        for="alias-input"
+        :class="['required', { 'text-error': errors.alias }]"
       >Eindeutiger Name</label>
-      <input id="alias-input"
-           :value="form.alias"
-           @input="form.alias = $event.target.value.toUpperCase()"
-           class="w-full form-input"
-           :disabled="id" maxlength="64"
+      <input
+        id="alias-input"
+        :value="form.alias"
+        class="w-full form-input"
+        :disabled="id"
+        maxlength="64"
+        @input="form.alias = $event.target.value.toUpperCase()"
       >
-      <p v-if="errors.alias" class="text-sm text-error">{{ errors.alias }}</p>
+      <p v-if="errors.alias" class="text-sm text-error">
+        {{ errors.alias }}
+      </p>
     </div>
 
-    <div class="flex flex-wrap items-center" v-for="element in elements" :key="element.model">
+    <div v-for="element in elements" :key="element.model" class="flex flex-wrap items-center">
       <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
       <input
-          v-if="['text', 'number'].includes(element.type)"
-          :id="element.model"
-          v-model="form[element.model]"
-          :type="element.type"
-          class="w-full form-input"
-          v-bind="element.attrs"
-      />
+        v-if="['text', 'number'].includes(element.type)"
+        :id="element.model"
+        v-model="form[element.model]"
+        :type="element.type"
+        class="w-full form-input"
+        v-bind="element.attrs"
+      >
       <textarea
-          v-else-if="element.type === 'textarea'"
-          :id="element.model"
-          v-model="form[element.model]"
-          class="w-full form-textarea"
+        v-else-if="element.type === 'textarea'"
+        :id="element.model"
+        v-model="form[element.model]"
+        class="w-full form-textarea"
       />
     </div>
     <div class="flex flex-wrap items-center">
       <label for="markup" :class="['required', { 'text-error': errors.markup }]">Inhalt</label>
       <tiptap
-          v-model="form.markup"
-          ref="tiptap"
-          id="markup"
-          class="w-full"
-          @open-file-manager="emit('openFileManager')"
+        id="markup"
+        ref="tiptap"
+        v-model="form.markup"
+        class="w-full"
+        @open-file-manager="emit('open-file-manager')"
       />
     </div>
-    <submit-button :busy="busy" @submit="submit" theme="success" class="button">Änderungen speichern</submit-button>
+    <submit-button :busy="busy" theme="success" class="button" @submit="submit">
+      Änderungen speichern
+    </submit-button>
   </div>
 </template>

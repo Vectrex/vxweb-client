@@ -20,8 +20,8 @@
   const props = defineProps({
       columns: { type: Array, required: true },
       folderId: { type: [Number, String], default: '' },
-      initSort: Object,
-      requestParameters: { type: Object, default: {} },
+      initSort: { type: Object, default: () => ({}) },
+      requestParameters: { type: Object, default: () => ({}) },
       isModal: Boolean
   })
   const limits = ref({})
@@ -235,103 +235,109 @@
 
 <template>
   <div
-      v-cloak
-      @drop.prevent.stop="uploadDraggedFiles"
-      @dragover.prevent.stop="indicateDrag = true"
-      @dragleave.prevent.stop="indicateDrag = false"
-      :class="{'border-2 border-dotted border-vxvue-alt -m-[2px]': indicateDrag }"
+    v-cloak
+    :class="{'border-2 border-dotted border-vxvue-alt -m-[2px]': indicateDrag }"
+    @drop.prevent.stop="uploadDraggedFiles"
+    @dragover.prevent.stop="indicateDrag = true"
+    @dragleave.prevent.stop="indicateDrag = false"
   >
     <div class="flex items-center pb-4 space-x-4 h-16">
       <div class="flex items-center space-x-4">
         <filemanager-breadcrumbs
-            :breadcrumbs="breadcrumbs"
-            :current-folder="currentFolderId"
-            :folders="folders"
-            @breadcrumb-clicked="emit('update:folder-id', $event.id)"
+          :breadcrumbs="breadcrumbs"
+          :current-folder="currentFolderId"
+          :folders="folders"
+          @breadcrumb-clicked="emit('update:folder-id', $event.id)"
         />
         <div class="relative">
           <button
-              class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
-              href="#" @click.stop="showAddActivities = !showAddActivities"
+            class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
+            href="#"
+            @click.stop="showAddActivities = !showAddActivities"
           >
             <plus-icon class="size-5" />
           </button>
           <transition name="appear">
             <filemanager-add
-                v-if="showAddActivities"
-                @upload="uploadInputFiles"
-                @create-folder="createFolder"
-                @close="showAddActivities = false"
+              v-if="showAddActivities"
+              @upload="uploadInputFiles"
+              @create-folder="createFolder"
+              @close="showAddActivities = false"
             />
           </transition>
         </div>
         <filemanager-actions
-            @delete-selection="delSelection"
-            @move-selection="moveSelection"
-            :files="checkedFiles"
-            :folders="checkedFolders"
-            v-if="checkedFolders.length || checkedFiles.length"
+          v-if="checkedFolders.length || checkedFiles.length"
+          :files="checkedFiles"
+          :folders="checkedFolders"
+          @delete-selection="delSelection"
+          @move-selection="moveSelection"
         />
       </div>
 
       <div class="flex justify-center py-4 px-8 w-full rounded-r rounded-l bg-slate-200">
-        <div class="flex items-center space-x-2" v-if="upload.progressing">
-          <button class="icon-link" @click="cancelUpload"><x-mark-icon class="size-5" /></button>
+        <div v-if="upload.progressing" class="flex items-center space-x-2">
+          <button class="icon-link" @click="cancelUpload">
+            <x-mark-icon class="size-5" />
+          </button>
           <div class="flex flex-col items-center space-y-2">
-            <div class="text-sm">{{ progress.file }}</div>
+            <div class="text-sm">
+              {{ progress.file }}
+            </div>
             <div class="w-64 h-2 rounded-full bg-slate-200">
               <div class="h-full rounded-full bg-vxvue-500" :style="{ width: (100 * progress.loaded / (progress.total || 1)) + '%' }" />
             </div>
           </div>
         </div>
-        <strong class="text-center text-primary d-block col-12" v-else>Dateien zum Upload hierher ziehen</strong>
+        <strong v-else class="text-center text-primary d-block col-12">Dateien zum Upload hierher ziehen</strong>
       </div>
 
-      <div id="search-input" v-if="!isModal" />
+      <div v-if="!isModal" id="search-input" />
     </div>
 
     <div class="grid">
       <div class="overflow-hidden shadow-sm ring-1 ring-black/5 rounded-sm">
         <div class="overflow-x-auto">
           <sortable
-              :rows="directoryEntries"
-              :columns="columns"
-              :sort-prop="initSort.prop"
-              :sort-direction="initSort.dir"
-              @after-sort="emit('after-sort', $event)"
-              ref="sortable"
+            ref="sortable"
+            :rows="directoryEntries"
+            :columns="columns"
+            :sort-prop="initSort.prop"
+            :sort-direction="initSort.dir"
+            @after-sort="emit('after-sort', $event)"
           >
-            <template v-slot:checked-header>
-              <input type="checkbox"
+            <template #checked-header>
+              <input
+                ref="multiCheckbox"
+                type="checkbox"
                 :checked="multiCheckValue"
                 :indeterminate="multiCheckValue === undefined"
-                @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked)"
-                ref="multiCheckbox"
                 class="form-checkbox"
-              />
+                @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked)"
+              >
             </template>
 
-            <template v-slot:checked="slotProps">
-              <input type="checkbox" class="form-checkbox" v-model="slotProps.row.checked" />
+            <template #checked="slotProps">
+              <input v-model="slotProps.row.checked" type="checkbox" class="form-checkbox">
             </template>
 
-            <template v-slot:name="slotProps">
+            <template #name="slotProps">
               <div class="flex items-center space-x-1 group">
                 <template v-if="slotProps.row.isFolder">
                   <input
-                      v-if="slotProps.row === toRename"
-                      v-focus
-                      class="form-input"
-                      :value="slotProps.row.name"
-                      @keydown.enter="rename($event, 'folder')"
-                      @keydown.esc="toRename = null"
-                      @blur="toRename = null"
+                    v-if="slotProps.row === toRename"
+                    v-focus
+                    class="form-input"
+                    :value="slotProps.row.name"
+                    @keydown.enter="rename($event, 'folder')"
+                    @keydown.esc="toRename = null"
+                    @blur="toRename = null"
                   >
                   <template v-else>
-                    <a :href="'#' + slotProps.row.id" @click.prevent="emit('update:folder-id', slotProps.row.id)" class="link">{{ slotProps.row.name }}</a>
+                    <a :href="'#' + slotProps.row.id" class="link" @click.prevent="emit('update:folder-id', slotProps.row.id)">{{ slotProps.row.name }}</a>
                     <button
-                        class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
-                        @click="toRename = slotProps.row"
+                      class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
+                      @click="toRename = slotProps.row"
                     >
                       <pencil-square-icon class="size-5" />
                     </button>
@@ -339,13 +345,13 @@
                 </template>
                 <template v-else>
                   <input
-                      v-if="slotProps.row === toRename"
-                      v-focus
-                      class="form-input"
-                      :value="slotProps.row.name"
-                      @keydown.enter="rename($event, 'file')"
-                      @keydown.esc="toRename = null"
-                      @blur="toRename = null"
+                    v-if="slotProps.row === toRename"
+                    v-focus
+                    class="form-input"
+                    :value="slotProps.row.name"
+                    @keydown.enter="rename($event, 'file')"
+                    @keydown.esc="toRename = null"
+                    @blur="toRename = null"
                   >
                   <template v-else>
                     <span>{{ slotProps.row.name }}</span>
@@ -360,83 +366,84 @@
               </div>
             </template>
 
-            <template v-slot:size="slotProps">
-              <template v-if="!slotProps.row.isFolder">{{ formatFilesize(slotProps.row.size, ',').formatted.value }}</template>
+            <template #size="slotProps">
+              <template v-if="!slotProps.row.isFolder">
+                {{ formatFilesize(slotProps.row.size, ',').formatted.value }}
+              </template>
             </template>
 
-            <template v-slot:type="slotProps">
-              <img :src="slotProps.row.src" alt="" v-if="slotProps.row.image" class="thumb">
+            <template #type="slotProps">
+              <img v-if="slotProps.row.image" :src="slotProps.row.src" alt="" class="thumb">
               <span v-else>{{ slotProps.row.type }}</span>
             </template>
 
-            <template v-for="(_, name) in $slots" v-slot:[name]="slotData">
-              <slot :name="name" v-bind="slotData"/>
+            <template v-for="(_, name) in $slots" #[name]="slotData">
+              <slot :name="name" v-bind="slotData" />
             </template>
           </sortable>
         </div>
       </div>
     </div>
-
   </div>
 
   <teleport to="body">
     <transition name="fade">
       <div
-        class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
         v-if="formShown"
+        class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
         @click.stop="formShown = null"
       />
     </transition>
 
     <transition name="slide-from-right">
       <folder-edit-form
-        :id="pickedId"
         v-if="formShown === 'editFolder'"
+        :id="pickedId"
+        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
         @cancel="formShown = null"
         @response-received="emit('response-received', $event)"
         @fetch-error="emit('fetch-error', $event)"
-        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
       />
     </transition>
 
     <transition name="slide-from-right">
       <file-edit-form
-        :id="pickedId"
         v-if="formShown === 'editFile'"
+        :id="pickedId"
+        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
         @cancel="formShown = null"
         @response-received="emit('response-received', $event)"
         @fetch-error="emit('fetch-error', $event)"
-        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
       />
     </transition>
 
     <transition name="slide-from-right">
       <folder-tree
         v-if="formShown === 'folderTree'"
-        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
         ref="folderTree"
+        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
         @fetch-error="emit('fetch-error', $event)"
       />
     </transition>
 
     <confirm
-        ref="deleteRequest"
-        header-class="text-white bg-error"
-        :buttons="[
-            { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
-            { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
-          ]"
+      ref="deleteRequest"
+      header-class="text-white bg-error"
+      :buttons="[
+        { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
+        { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
+      ]"
     />
     <confirm
-        ref="alert"
-        header-class="text-white bg-error"
-        :buttons="{ label: 'Ok!', value: true, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }"
+      ref="alert"
+      header-class="text-white bg-error"
+      :buttons="{ label: 'Ok!', value: true, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }"
     />
   </teleport>
 
   <filemanager-search
-      v-if="!isModal"
-      @folder-picked="emit('update:folder-id', $event.id)"
-      @fetch-error="emit('fetch-error', $event)"
+    v-if="!isModal"
+    @folder-picked="emit('update:folder-id', $event.id)"
+    @fetch-error="emit('fetch-error', $event)"
   />
 </template>

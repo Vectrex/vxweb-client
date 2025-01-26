@@ -55,45 +55,51 @@
 </script>
 <template>
   <form-dialog @cancel="emit('cancel')">
-      <template #title>Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}</template>
-      <template #content>
-          <div class="px-4 pt-20 pb-4 space-y-4">
-              <div v-for="(field, ndx) in fields" :key="ndx" class="relative">
-                  <template v-if="!field.type">
-                    <input
-                      :id="field.model"
-                      v-model.trim="form[field.model]"
-                      class="w-full form-input peer"
-                      placeholder=" "
-                    />
-                    <label
-                      :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
-                      :for="field.model"
-                    >
-                      {{ field.label }}
-                    </label>
-                  </template>
-                  <template v-else>
-                    <component :is="field.type"
-                       :id="field.model"
-                       v-model.trim="form[field.model]"
-                       :options="options[field.model]"
-                       class="w-full"
-                       placeholder=" "
-                    >
-                      <label
-                        :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
-                        :for="field.model"
-                      >
-                        {{ field.label }}
-                      </label>
-                    </component>
-                  </template>
-                <p v-if="errors[field.model]" class="text-sm text-error">{{ errors[field.model] }}</p>
-              </div>
-              <submit-button :busy="busy" @submit="submit" theme="success" class="button">{{ form.id ? 'Daten übernehmen' : 'User anlegen' }}</submit-button>
-          </div>
-
-      </template>
+    <template #title>
+      Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}
+    </template>
+    <template #content>
+      <div class="px-4 pt-20 pb-4 space-y-4">
+        <div v-for="(field, ndx) in fields" :key="ndx" class="relative">
+          <template v-if="!field.type">
+            <input
+              :id="field.model"
+              v-model.trim="form[field.model]"
+              class="w-full form-input peer"
+              placeholder=" "
+            >
+            <label
+              :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
+              :for="field.model"
+            >
+              {{ field.label }}
+            </label>
+          </template>
+          <template v-else>
+            <component
+              :is="field.type"
+              :id="field.model"
+              v-model.trim="form[field.model]"
+              :options="options[field.model]"
+              class="w-full"
+              placeholder=" "
+            >
+              <label
+                :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
+                :for="field.model"
+              >
+                {{ field.label }}
+              </label>
+            </component>
+          </template>
+          <p v-if="errors[field.model]" class="text-sm text-error">
+            {{ errors[field.model] }}
+          </p>
+        </div>
+        <submit-button :busy="busy" theme="success" class="button" @submit="submit">
+          {{ form.id ? 'Daten übernehmen' : 'User anlegen' }}
+        </submit-button>
+      </div>
+    </template>
   </form-dialog>
 </template>

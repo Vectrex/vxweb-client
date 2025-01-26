@@ -47,7 +47,9 @@
 
 <template>
   <teleport defer to="#search-input">
-    <button class="flex items-center icon-link" @click="showSearch = !showSearch"><magnifying-glass-icon class="size-5" /> Suchen...</button>
+    <button class="flex items-center icon-link" @click="showSearch = !showSearch">
+      <magnifying-glass-icon class="size-5" /> Suchen...
+    </button>
   </teleport>
 
   <modal :show="showSearch">
@@ -55,17 +57,17 @@
       <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue">
         <div class="flex items-center space-x-2 w-full">
           <input
-              class="w-1/2 form-input"
-              :value="modelValue"
-              :placeholder="placeholder"
-              @keydown.esc="handleEsc"
-              @input="handleInput"
-              @focus="handleInput"
-              v-focus
-          />
-          <spinner class="size-5 text-vxvue" v-if="busy" />
+            v-focus
+            class="w-1/2 form-input"
+            :value="modelValue"
+            :placeholder="placeholder"
+            @keydown.esc="handleEsc"
+            @input="handleInput"
+            @focus="handleInput"
+          >
+          <spinner v-if="busy" class="size-5 text-vxvue" />
         </div>
-        <a href="#" @click.prevent="handleEsc"><x-mark-icon class="size-5 text-white"/></a>
+        <a href="#" @click.prevent="handleEsc"><x-mark-icon class="size-5 text-white" /></a>
       </div>
     </template>
 
@@ -75,26 +77,29 @@
           <div class="flex items-center space-x-2">
             <folder-icon class="size-5" />
             <a
-                :href="'#' + folder.path"
-                @click.prevent="pickFolder(folder)"
+              :href="'#' + folder.path"
+              @click.prevent="pickFolder(folder)"
             >{{ folder.name }}</a>
           </div>
         </div>
-        <div class="flex justify-center py-2" v-if="files.length && folders.length">
+        <div v-if="files.length && folders.length" class="flex justify-center py-2">
           <ellipsis-horizontal-icon class="size-5 text-slate-700" />
         </div>
         <div v-for="(file, ndx) in (files || [])" :key="file.id" :class="['px-4 py-2', { 'bg-slate-100': ndx % 2 }]">
           <div class="flex items-center space-x-2">
-            <div class="w-1/2"><div>{{ file.name }}</div><div class="text-sm text-slate-700">{{ file.type }}</div></div>
+            <div class="w-1/2">
+              <div>{{ file.name }}</div><div class="text-sm text-slate-700">
+                {{ file.type }}
+              </div>
+            </div>
             <div class="flex items-center space-x-2 w-1/2">
               <folder-icon class="size-5" />
               <a
-                  :href="'/' + file.folder.path"
-                  @click.prevent="pickFolder(file.folder)"
+                :href="'/' + file.folder.path"
+                @click.prevent="pickFolder(file.folder)"
               >{{ file.folder.path }}</a>
             </div>
           </div>
-
         </div>
       </div>
     </template>

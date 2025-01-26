@@ -4,7 +4,7 @@
   import { getSort, storeSort } from "@/util/storeSort"
   import { ref } from "vue"
 
-  const props = defineProps({ folderId: [String, Number], onlyImages: Boolean })
+  const props = defineProps({ folderId: { type: [String, Number], default: null }, onlyImages: Boolean })
   const emit = defineEmits(['notify', 'pickFile'])
   const currentFolder = ref('')
   const cols = [
@@ -30,15 +30,15 @@
 
 <template>
   <filemanager
-      :columns="cols"
-      :init-sort="getSort()"
-      @response-received="emit('notify', $event)"
-      @after-sort="storeSort"
-      :is-modal="true"
-      :folder-id="currentFolder"
-      @update:folder-id="currentFolder = $event"
+    :columns="cols"
+    :init-sort="getSort()"
+    :is-modal="true"
+    :folder-id="currentFolder"
+    @response-received="emit('notify', $event)"
+    @after-sort="storeSort"
+    @update:folder-id="currentFolder = $event"
   >
-    <template v-slot:action="slotProps">
+    <template #action="slotProps">
       <div class="flex justify-end items-center space-x-1">
         <template v-if="!slotProps.row.isFolder && (!onlyImages || slotProps.row.image)">
           <button class="icon-link" @click="emit('pickFile', slotProps.row)">

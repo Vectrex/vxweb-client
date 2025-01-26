@@ -7,7 +7,7 @@
   import router from "@/router"
 
   const emit = defineEmits(['response-received', 'fetch-error'])
-  const props = defineProps({ id: [Number, String]})
+  const props = defineProps({ id: { type: [String, Number], default: null }})
   const doFetch = vxFetch(emit)
   const datepickerAttrs = {
     placeholder: 'dd.mm.yyyy',
@@ -68,15 +68,15 @@
       <div v-for="element in dateElements" :key="element.model">
         <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
         <datepicker
-            :id="element.model"
-            v-model="form[element.model]"
-            v-bind="element.attrs"
+          :id="element.model"
+          v-model="form[element.model]"
+          v-bind="element.attrs"
         />
       </div>
     </div>
 
     <div class="space-y-2">
-      <div class="flex flex-wrap items-center" v-for="element in elements" :key="element.model">
+      <div v-for="element in elements" :key="element.model" class="flex flex-wrap items-center">
         <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
         <input
           v-if="['text', 'number'].includes(element.type)"
@@ -85,24 +85,26 @@
           :type="element.type"
           class="w-full form-input"
           v-bind="element.attrs"
-        />
+        >
         <textarea
-            v-else-if="element.type === 'textarea'"
-            :id="element.model"
-            v-model="form[element.model]"
-            class="w-full form-textarea"
+          v-else-if="element.type === 'textarea'"
+          :id="element.model"
+          v-model="form[element.model]"
+          class="w-full form-textarea"
         />
         <component
-          v-else
           :is="element.type"
+          v-else
           :id="element.model"
-          :options="options[element.model] || []"
           v-model="form[element.model]"
+          :options="options[element.model] || []"
           v-bind="element.attrs"
         />
       </div>
 
-      <submit-button :busy="busy" @submit="submit" theme="success" class="button">Änderungen speichern</submit-button>
+      <submit-button :busy="busy" theme="success" class="button" @submit="submit">
+        Änderungen speichern
+      </submit-button>
     </div>
   </div>
 </template>

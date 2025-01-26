@@ -6,7 +6,7 @@
   import { ref } from "vue"
 
   const emit = defineEmits(["authenticate"])
-  const props = defineProps({ user: Object })
+  const props = defineProps({ user: { type: Object, default: () => ({}) }})
 
   const sideBarExpanded = ref(false)
 </script>
@@ -16,21 +16,25 @@
     <div :class="['min-h-screen flex flex-col transition-all duration-100 shrink-0', sideBarExpanded ? 'w-72' : 'w-16']">
       <div class="flex overflow-y-auto flex-col grow bg-vxvue">
         <div class="flex items-end pr-2 pb-2 pl-4 space-x-2 h-24 bg-vxvue-600">
-          <button @click="sideBarExpanded = !sideBarExpanded"><bars3-icon class="shrink-0 w-8 h-8 text-white" /></button>
-          <logo class="w-44 text-white" v-if="sideBarExpanded" />
+          <button @click="sideBarExpanded = !sideBarExpanded">
+            <bars3-icon class="shrink-0 w-8 h-8 text-white" />
+          </button>
+          <logo v-if="sideBarExpanded" class="w-44 text-white" />
         </div>
         <div class="flex flex-col flex-1">
           <main-menu class="flex-1 py-6 px-2 space-y-1" :expanded="sideBarExpanded" />
         </div>
         <div class="p-4 h-32 border-t border-t-white">
-          <account-info @authenticate="emit('authenticate', $event)" :user="user" :expanded="sideBarExpanded" />
+          <account-info :user="user" :expanded="sideBarExpanded" @authenticate="emit('authenticate', $event)" />
         </div>
       </div>
     </div>
 
     <div class="flex flex-col flex-1 min-h-screen">
       <div class="flex flex-1 items-end px-8 pb-2 h-24 bg-white border-b shadow-sm border-slate-500/10">
-        <div class="flex justify-start items-center w-full text-vxvue-700"><div id="tools" /></div>
+        <div class="flex justify-start items-center w-full text-vxvue-700">
+          <div id="tools" />
+        </div>
       </div>
 
       <div class="overflow-hidden h-[calc(100vh-var(--header-height))]">

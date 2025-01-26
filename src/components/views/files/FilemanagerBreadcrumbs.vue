@@ -2,9 +2,9 @@
   import { ref, watch } from "vue"
 
   const props = defineProps({
-    breadcrumbs: Array,
-    folders: Array,
-    currentFolder: [Number, String]
+    breadcrumbs: { type: Array, default: () => [] },
+    folders:  { type: Array, default: () => [] },
+    currentFolder: { type: [Number, String], default: null }
   })
   const emit = defineEmits(['breadcrumb-clicked'])
   const items = ref([])
@@ -38,18 +38,19 @@
 </script>
 
 <template>
-    <span class="flex items-center">
-        <button
-            v-for="(breadcrumb, ndx) in items"
-            :class="['border-t-2 border-b-2 border-l border-r px-4 py-2 border-vxvue-500 text-vxvue-500',
-              {
-                'rounded-l border-l-2!': ndx === 0,
-                'rounded-r border-r-2!': ndx === items.length -1,
-                'bg-vxvue-500 text-white!': breadcrumb.id === currentFolder
-              }
-            ]"
-            :key="ndx"
-            @click="emit('breadcrumb-clicked', breadcrumb)">{{ breadcrumb.name }}
-        </button>
-    </span>
+  <span class="flex items-center">
+    <button
+      v-for="(breadcrumb, ndx) in items"
+      :key="ndx"
+      :class="['border-t-2 border-b-2 border-l border-r px-4 py-2 border-vxvue-500 text-vxvue-500',
+               {
+                 'rounded-l border-l-2!': ndx === 0,
+                 'rounded-r border-r-2!': ndx === items.length -1,
+                 'bg-vxvue-500 text-white!': breadcrumb.id === currentFolder
+               }
+      ]"
+      @click="emit('breadcrumb-clicked', breadcrumb)"
+    >{{ breadcrumb.name }}
+    </button>
+  </span>
 </template>

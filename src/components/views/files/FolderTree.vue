@@ -34,11 +34,13 @@
 
 <template>
   <div>
-    <form-title @cancel="resolve(false)" class="w-sidebar">Zielordner wählen</form-title>
+    <form-title class="w-sidebar" @cancel="resolve(false)">
+      Zielordner wählen
+    </form-title>
     <div class="overflow-hidden h-[calc(100vh-var(--header-height))]">
       <div class="overflow-y-auto h-full">
         <div class="px-4 pt-20 pb-4">
-          <simple-tree :branch="root" @update:modelValue="resolve($event)" :model-value="selectedFolder" />
+          <simple-tree :branch="root" :model-value="selectedFolder" @update:model-value="resolve($event)" />
         </div>
       </div>
     </div>

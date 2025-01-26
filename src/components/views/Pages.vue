@@ -38,8 +38,8 @@
     <headline>
       <span>{{ $route.meta?.heading }}</span>
       <button
-          class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
-          @click="$router.push({ name: 'pageEdit' })"
+        class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
+        @click="$router.push({ name: 'pageEdit' })"
       >
         <plus-icon class="size-5" />
       </button>
@@ -50,17 +50,17 @@
     <div class="overflow-hidden shadow-sm ring-1 ring-black/5 rounded-sm">
       <div class="overflow-x-auto">
         <sortable
-            :rows="pages"
-            :columns="cols"
-            :sort-prop="getSort().prop"
-            :sort-direction="getSort().dir"
-            key-property="id"
-            @after-sort="storeSort"
+          :rows="pages"
+          :columns="cols"
+          :sort-prop="getSort().prop"
+          :sort-direction="getSort().dir"
+          key-property="id"
+          @after-sort="storeSort"
         >
-          <template v-slot:action="slotProps">
+          <template #action="slotProps">
             <div class="flex justify-end space-x-2">
               <router-link :to="{ name: 'pageEdit', params: { id: slotProps.row.id }}" class="icon-link">
-                <PencilSquareIcon class="size-5"/>
+                <PencilSquareIcon class="size-5" />
               </router-link>
               <button class="icon-link" @click="del(slotProps.row.id)">
                 <TrashIcon class="size-5" />
@@ -74,12 +74,12 @@
 
   <teleport to="body">
     <confirm
-        ref="deleteRequest"
-        header-class="text-white bg-error"
-        :buttons="[
-            { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
-            { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
-          ]"
+      ref="deleteRequest"
+      header-class="text-white bg-error"
+      :buttons="[
+        { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
+        { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
+      ]"
     />
   </teleport>
 </template>

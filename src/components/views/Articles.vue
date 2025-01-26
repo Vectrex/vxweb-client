@@ -56,10 +56,11 @@
 
 <template>
   <teleport defer to="#tools">
-    <headline><span>Artikel</span>
+    <headline>
+      <span>Artikel</span>
       <button
-          class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
-          @click="$router.push({ name: 'articleEdit' })"
+        class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
+        @click="$router.push({ name: 'articleEdit' })"
       >
         <plus-icon class="size-5" />
       </button>
@@ -69,20 +70,19 @@
   <div class="flex justify-between items-center h-16">
     <filter-form v-model="filter" :options="{ categories: [ { key: 0, label: '(Alle Kategorien)' }, ...categories ] }" />
     <pagination
-        class="w-1/4"
-        v-model:page="paginated.page"
-        :total="filteredArticles.length"
-        :per-page="paginated.entriesPerPage"
-        next-text=""
-        prev-text=""
-        marker-position="below"
+      v-model:page="paginated.page"
+      class="w-1/4"
+      :total="filteredArticles.length"
+      :per-page="paginated.entriesPerPage"
+      next-text=""
+      prev-text=""
+      marker-position="below"
     />
   </div>
 
   <div class="grid">
     <div class="overflow-hidden shadow-sm ring-1 ring-black/5 rounded-sm">
       <div class="overflow-x-auto">
-
         <sortable
           :rows="filteredArticles"
           :columns="cols"
@@ -92,16 +92,16 @@
           :count="paginated.entriesPerPage"
           @after-sort="storeSort"
         >
-          <template v-slot:catId="slotProps">
+          <template #catId="slotProps">
             {{ categories.find(c => c.id === slotProps.row.catId).label }}
           </template>
-          <template v-slot:pub="slotProps">
+          <template #pub="slotProps">
             <form-switch :model-value="slotProps.row.pub" @update:model-value="publish(slotProps.row)" />
           </template>
-          <template v-slot:marked="slotProps">
+          <template #marked="slotProps">
             <input type="checkbox" class="form-checkbox text-slate-500" disabled="disabled" :checked="slotProps.row.marked">
           </template>
-          <template v-slot:action="slotProps">
+          <template #action="slotProps">
             <div class="flex justify-end items-center space-x-1">
               <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link">
                 <pencil-square-icon class="size-5" />
@@ -117,11 +117,11 @@
   </div>
 
   <confirm
-      ref="deleteRequest"
-      header-class="text-white bg-error"
-      :buttons="[
-          { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
-          { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
-      ]"
+    ref="deleteRequest"
+    header-class="text-white bg-error"
+    :buttons="[
+      { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
+      { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
+    ]"
   />
 </template>

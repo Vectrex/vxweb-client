@@ -57,7 +57,8 @@
 </script>
 <template>
   <teleport defer to="#tools">
-    <headline><span>Benutzer</span>
+    <headline>
+      <span>Benutzer</span>
       <button
         class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
         @click="edit(null)"
@@ -71,17 +72,17 @@
     <div class="overflow-hidden shadow-sm ring-1 ring-black/5 rounded-sm">
       <div class="overflow-x-auto">
         <sortable
-            :rows="users"
-            :columns="cols"
-            :sort-prop="getSort().prop"
-            :sort-direction="getSort().dir"
-            class="w-full"
-            key-property="id"
-            @after-sort="storeSort"
+          :rows="users"
+          :columns="cols"
+          :sort-prop="getSort().prop"
+          :sort-direction="getSort().dir"
+          class="w-full"
+          key-property="id"
+          @after-sort="storeSort"
         >
-          <template v-slot:action="slotProps">
-            <div class="flex justify-end space-x-2" v-if="currentUser.username !== slotProps.row.username">
-              <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="size-5"/></a>
+          <template #action="slotProps">
+            <div v-if="currentUser.username !== slotProps.row.username" class="flex justify-end space-x-2">
+              <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="size-5" /></a>
               <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="size-5" /></a>
             </div>
           </template>
@@ -93,32 +94,32 @@
   <teleport to="body">
     <transition name="fade">
       <div
-          class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
-          v-if="formShown"
-          @click.stop="formShown = false"
+        v-if="formShown"
+        class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
+        @click.stop="formShown = false"
       />
     </transition>
     <transition name="slide-from-right">
       <user-form
-          v-if="formShown"
-          @cancel="formShown = false"
-          @response-received="handleResponse"
-          @fetch-error="emit('fetch-error', $event)"
-          :id="editData.id"
-          :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
-          class="fixed right-0 bottom-0 top-24 z-20 bg-white shadow-lg shadow-gray w-sidebar"
+        v-if="formShown"
+        :id="editData.id"
+        :title="editData.id ? 'Benutzer bearbeiten' : 'Benutzer anlegen'"
+        class="fixed right-0 bottom-0 top-24 z-20 bg-white shadow-lg shadow-gray w-sidebar"
+        @cancel="formShown = false"
+        @response-received="handleResponse"
+        @fetch-error="emit('fetch-error', $event)"
       />
     </transition>
   </teleport>
 
   <teleport to="body">
     <confirm
-        ref="deleteRequest"
-        header-class="text-white bg-error"
-        :buttons="[
-            { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
-            { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
-          ]"
+      ref="deleteRequest"
+      header-class="text-white bg-error"
+      :buttons="[
+        { label: 'Löschen!', value: true, class: 'button bg-error-700 hover:bg-error-600 focus:ring-error-600 text-white' },
+        { label: 'Abbrechen', value: false, class: 'button bg-slate-300 hover:bg-slate-200 focus:ring-slate-200 text-slate-800' }
+      ]"
     />
   </teleport>
 </template>

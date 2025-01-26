@@ -6,7 +6,7 @@
   import router from "@/router"
   import { onMounted, ref } from "vue"
 
-  const props = defineProps({ id: [Number, String] })
+  const props = defineProps({ id: { type: [String, Number], default: null }})
   const emit = defineEmits(['notify', 'fetch-error'])
   const form = ref({})
   const revisions = ref([])
@@ -74,18 +74,19 @@
   </teleport>
   <div class="flex justify-start pb-4 space-x-4 w-full">
     <page-form
-        :init-data="form"
-        :id="id"
-        class="w-full"
-        @response-received="handleFormResponse"
-        @fetch-error="emit('fetch-error', $event)"
+      :id="id"
+      :init-data="form"
+      class="w-full"
+      @response-received="handleFormResponse"
+      @fetch-error="emit('fetch-error', $event)"
     />
     <div class="w-1/3 shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
       <revision-table
-          :revisions="revisions" class="overflow-y-auto w-full h-full"
-          @activate-revision="activateRevision"
-          @delete-revision="deleteRevision"
-          @load-revision="loadRevision"
+        :revisions="revisions"
+        class="overflow-y-auto w-full h-full"
+        @activate-revision="activateRevision"
+        @delete-revision="deleteRevision"
+        @load-revision="loadRevision"
       />
     </div>
   </div>

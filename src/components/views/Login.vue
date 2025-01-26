@@ -55,23 +55,23 @@
 
 <template>
   <div class="flex flex-col justify-center py-12 min-h-screen sm:px-6 lg:px-8 bg-slate-200">
-
     <transition name="appear" appear>
       <div class="mt-8 ring-1 ring-black/5 shadow-sm sm:mx-auto sm:w-full sm:max-w-xl" @keydown.enter="submit">
-
         <div class="flex items-baseline px-10 pt-16 pb-0 space-x-2 text-white rounded-t bg-vxvue">
           <logo class="w-1/2" />
           <span class="text-2xl">Administration</span>
         </div>
 
         <div class="py-8 px-4 space-y-4 bg-white sm:px-10">
-          <input v-model.trim="form.username" type="text" class="w-full form-input" placeholder="Username" />
+          <input v-model.trim="form.username" type="text" class="w-full form-input" placeholder="Username">
           <password-input v-model.trim="form.password" class="w-full" placeholder="Passwort" />
 
           <div class="flex justify-between items-center">
-            <submit-button :busy="busy" @submit="submit" theme="success" class="button">Anmelden</submit-button>
-            <a href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog" v-if="!disablePasswordReset">Passwort vergessen?</a>
-            <span class="flex space-x-1" v-if="!getWindow().location.host.match(/^localhost/)">
+            <submit-button :busy="busy" theme="success" class="button" @submit="submit">
+              Anmelden
+            </submit-button>
+            <a v-if="!disablePasswordReset" href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog">Passwort vergessen?</a>
+            <span v-if="!getWindow().location.host.match(/^localhost/)" class="flex space-x-1">
               <home-icon class="size-5" />
               <a :href="getWindow().location.protocol + '//' + getWindow().location.host" class="text-rose-600 hover:text-rose-500 link">
                 {{ getWindow().location.host }}
@@ -90,9 +90,19 @@
       </template>
       <template #default>
         <div class="py-8 px-4 space-y-4 sm:px-10">
-          <input v-model.trim="email" type="text" class="w-full form-input" placeholder="E-Mail" v-focus @keydown.enter="requestPassword" @keydown.esc="hideDialog" />
+          <input
+            v-model.trim="email"
+            v-focus
+            type="text"
+            class="w-full form-input"
+            placeholder="E-Mail"
+            @keydown.enter="requestPassword"
+            @keydown.esc="hideDialog"
+          >
           <div class="flex justify-center">
-            <submit-button :busy="busy" @submit="requestPassword" theme="success" class="button">Passwort anfordern</submit-button>
+            <submit-button :busy="busy" theme="success" class="button" @submit="requestPassword">
+              Passwort anfordern
+            </submit-button>
           </div>
         </div>
       </template>

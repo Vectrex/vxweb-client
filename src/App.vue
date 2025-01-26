@@ -48,11 +48,11 @@
   </component>
 
   <message-toast
-      :active="toast.active"
-      :class="toast.css"
-      :message="toast.message"
-      :timeout="toast.timeout"
-      @close="toast.active = false"
-      @timeout="toast.active = false"
+    :active="toast.active"
+    :class="toast.css"
+    :message="toast.message"
+    :timeout="toast.timeout"
+    @close="toast.active = false"
+    @timeout="toast.active = false"
   />
 </template>

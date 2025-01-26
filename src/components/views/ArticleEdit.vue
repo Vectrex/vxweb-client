@@ -9,7 +9,11 @@
   import { computed, onMounted, ref } from "vue"
 
   const emit = defineEmits(['notify', 'fetch-error'])
-  const props = defineProps({ id: [String, Number], sectionId: [String, Number], section: [String, Number] })
+  const props = defineProps({
+    id: { type: [String, Number], default: null },
+    sectionId: { type: [String, Number], default: null },
+    section: { type: [String, Number], default: null }
+  })
   const tabsItems = ref({ items: [
       { section: 'edit', name: 'Artikel' },
       { section: 'files', name: 'Verlinkte Dateien', badge: null },
@@ -47,26 +51,26 @@
   </div>
   <div v-if="activeTab === 'edit'">
     <article-form
-        :id="id"
-        @response-received="emit('notify', $event)"
-        @fetch-error="emit('fetch-error', $event)"
+      :id="id"
+      @response-received="emit('notify', $event)"
+      @fetch-error="emit('fetch-error', $event)"
     />
   </div>
   <div v-if="activeTab === 'files' && id">
     <article-files
-        :article-id="id"
-        :selected-folder="$route.params.sectionId"
-        @update-linked="getLinkedFiles"
-        @notify="emit('notify', $event)"
-        @fetch-error="emit('fetch-error', $event)"
+      :article-id="id"
+      :selected-folder="$route.params.sectionId"
+      @update-linked="getLinkedFiles"
+      @notify="emit('notify', $event)"
+      @fetch-error="emit('fetch-error', $event)"
     />
   </div>
   <div v-if="activeTab === 'sort' && id">
     <linked-files
-        :article-id="id"
-        @update-linked="getLinkedFiles"
-        @goto-folder="router.push( { name: 'articleEdit', params: { id: id, section: 'files', sectionId: $event.id }})"
-        @fetch-error="emit('fetch-error', $event)"
+      :article-id="id"
+      @update-linked="getLinkedFiles"
+      @goto-folder="router.push( { name: 'articleEdit', params: { id: id, section: 'files', sectionId: $event.id }})"
+      @fetch-error="emit('fetch-error', $event)"
     />
   </div>
 </template>
