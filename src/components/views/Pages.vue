@@ -38,7 +38,7 @@
     <headline>
       <span>{{ $route.meta?.heading }}</span>
       <button
-          class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
+          class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
           @click="$router.push({ name: 'pageEdit' })"
       >
         <plus-icon class="size-5" />
@@ -47,7 +47,7 @@
   </teleport>
 
   <div class="grid">
-    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded">
+    <div class="overflow-hidden shadow-sm ring-1 ring-black/5 rounded-sm">
       <div class="overflow-x-auto">
         <sortable
             :rows="pages"

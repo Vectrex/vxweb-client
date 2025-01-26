@@ -136,7 +136,7 @@
       <template #default>
         <div class="space-y-4 py-4">
           <div class="flex items-center px-4 space-x-2" v-if="!onlyImages">
-            <div class="relative flex-grow">
+            <div class="relative grow">
               <input id="link-input" class="w-full form-input peer" v-model.trim="linkData.href" placeholder=" " />
               <label for="link-input" class="floating-label">Vollständige Zieladresse (https://...)</label>
             </div>

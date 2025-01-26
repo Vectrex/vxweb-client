@@ -251,7 +251,7 @@
         />
         <div class="relative">
           <button
-              class="icon-link !text-vxvue-700 border-transparent !hover:border-vxvue-700"
+              class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
               href="#" @click.stop="showAddActivities = !showAddActivities"
           >
             <plus-icon class="size-5" />
@@ -291,7 +291,7 @@
     </div>
 
     <div class="grid">
-      <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded">
+      <div class="overflow-hidden shadow-sm ring-1 ring-black/5 rounded-sm">
         <div class="overflow-x-auto">
           <sortable
               :rows="directoryEntries"
@@ -382,7 +382,7 @@
   <teleport to="body">
     <transition name="fade">
       <div
-        class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-sm"
+        class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
         v-if="formShown"
         @click.stop="formShown = null"
       />

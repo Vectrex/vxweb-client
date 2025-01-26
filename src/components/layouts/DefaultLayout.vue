@@ -13,10 +13,10 @@
 
 <template>
   <div class="flex w-full">
-    <div :class="['min-h-screen flex flex-col transition-all duration-100 flex-shrink-0', sideBarExpanded ? 'w-72' : 'w-16']">
-      <div class="flex overflow-y-auto flex-col flex-grow bg-vxvue">
+    <div :class="['min-h-screen flex flex-col transition-all duration-100 shrink-0', sideBarExpanded ? 'w-72' : 'w-16']">
+      <div class="flex overflow-y-auto flex-col grow bg-vxvue">
         <div class="flex items-end pr-2 pb-2 pl-4 space-x-2 h-24 bg-vxvue-600">
-          <button @click="sideBarExpanded = !sideBarExpanded"><bars3-icon class="flex-shrink-0 w-8 h-8 text-white" /></button>
+          <button @click="sideBarExpanded = !sideBarExpanded"><bars3-icon class="shrink-0 w-8 h-8 text-white" /></button>
           <logo class="w-44 text-white" v-if="sideBarExpanded" />
         </div>
         <div class="flex flex-col flex-1">
@@ -29,7 +29,7 @@
     </div>
 
     <div class="flex flex-col flex-1 min-h-screen">
-      <div class="flex flex-1 items-end px-8 pb-2 h-24 bg-white border-b shadow border-slate-500/10">
+      <div class="flex flex-1 items-end px-8 pb-2 h-24 bg-white border-b shadow-sm border-slate-500/10">
         <div class="flex justify-start items-center w-full text-vxvue-700"><div id="tools" /></div>
       </div>
 

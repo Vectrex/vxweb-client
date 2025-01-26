@@ -57,7 +57,7 @@
   <div class="flex flex-col justify-center py-12 min-h-screen sm:px-6 lg:px-8 bg-slate-200">
 
     <transition name="appear" appear>
-      <div class="mt-8 ring-1 ring-black ring-opacity-5 shadow sm:mx-auto sm:w-full sm:max-w-xl" @keydown.enter="submit">
+      <div class="mt-8 ring-1 ring-black/5 shadow-sm sm:mx-auto sm:w-full sm:max-w-xl" @keydown.enter="submit">
 
         <div class="flex items-baseline px-10 pt-16 pb-0 space-x-2 text-white rounded-t bg-vxvue">
           <logo class="w-1/2" />

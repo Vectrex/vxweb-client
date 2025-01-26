@@ -35,7 +35,7 @@
       <div :class="['w-1/4', { 'text-slate-400': item.hidden }]">{{ item.filename }}</div>
       <div class="flex justify-center items-center w-24">
         <img :src="item.src" alt="" v-if="item.isThumb && item.src" class="thumb">
-        <div class="overflow-hidden whitespace-nowrap overflow-ellipsis" v-else>{{ item.type }}</div>
+        <div class="overflow-hidden whitespace-nowrap text-ellipsis" v-else>{{ item.type }}</div>
       </div>
       <div class="flex justify-center items-center space-x-2 w-24">
         <button class="icon-link" @click="unlink(item)">

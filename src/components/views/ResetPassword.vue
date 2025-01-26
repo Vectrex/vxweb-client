@@ -22,7 +22,7 @@
 
 <template>
   <div class="flex flex-col justify-center py-12 min-h-screen sm:px-6 lg:px-8 bg-slate-200">
-    <div class="p-8 ring-1 ring-black ring-opacity-5 shadow sm:mx-auto sm:w-full sm:max-w-md bg-white flex flex-col space-y-4">
+    <div class="p-8 ring-1 ring-black/5 shadow-sm sm:mx-auto sm:w-full sm:max-w-md bg-white flex flex-col space-y-4">
       <template v-if="success">
         <div class="text-success font-bold text-center">Das Passwort wurde erfolgreich neu gesetzt.</div>
         <div class="text-center"><router-link :to="{ name: 'login' }" class="link">Zum Login...</router-link></div>

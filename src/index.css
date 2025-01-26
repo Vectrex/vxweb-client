@@ -1,6 +1,139 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  --color-vxvue-50: rgb(var(--vxvue-color-50));
+  --color-vxvue-100: rgb(var(--vxvue-color-100));
+  --color-vxvue-200: rgb(var(--vxvue-color-200));
+  --color-vxvue-300: rgb(var(--vxvue-color-300));
+  --color-vxvue-400: rgb(var(--vxvue-color-400));
+  --color-vxvue-500: rgb(var(--vxvue-color-500));
+  --color-vxvue-600: rgb(var(--vxvue-color-600));
+  --color-vxvue-700: rgb(var(--vxvue-color-700));
+  --color-vxvue-800: rgb(var(--vxvue-color-800));
+  --color-vxvue-900: rgb(var(--vxvue-color-900));
+  --color-vxvue-950: rgb(var(--vxvue-color-950));
+  --color-vxvue: rgb(var(--vxvue-color));
+
+  --color-vxvue-alt-50: rgb(var(--vxvue-highlight-50));
+  --color-vxvue-alt-100: rgb(var(--vxvue-highlight-100));
+  --color-vxvue-alt-200: rgb(var(--vxvue-highlight-200));
+  --color-vxvue-alt-300: rgb(var(--vxvue-highlight-300));
+  --color-vxvue-alt-400: rgb(var(--vxvue-highlight-400));
+  --color-vxvue-alt-500: rgb(var(--vxvue-highlight-500));
+  --color-vxvue-alt-600: rgb(var(--vxvue-highlight-600));
+  --color-vxvue-alt-700: rgb(var(--vxvue-highlight-700));
+  --color-vxvue-alt-800: rgb(var(--vxvue-highlight-800));
+  --color-vxvue-alt-900: rgb(var(--vxvue-highlight-900));
+  --color-vxvue-alt-950: rgb(var(--vxvue-highlight-950));
+  --color-vxvue-alt: rgb(var(--vxvue-highlight));
+
+  --color-success-50: rgb(var(--success-color-50));
+  --color-success-100: rgb(var(--success-color-100));
+  --color-success-200: rgb(var(--success-color-200));
+  --color-success-300: rgb(var(--success-color-300));
+  --color-success-400: rgb(var(--success-color-400));
+  --color-success-500: rgb(var(--success-color-500));
+  --color-success-600: rgb(var(--success-color-600));
+  --color-success-700: rgb(var(--success-color-700));
+  --color-success-800: rgb(var(--success-color-800));
+  --color-success-900: rgb(var(--success-color-900));
+  --color-success-950: rgb(var(--success-color-950));
+  --color-success: rgb(var(--success-color));
+
+  --color-error-50: rgb(var(--error-color-50));
+  --color-error-100: rgb(var(--error-color-100));
+  --color-error-200: rgb(var(--error-color-200));
+  --color-error-300: rgb(var(--error-color-300));
+  --color-error-400: rgb(var(--error-color-400));
+  --color-error-500: rgb(var(--error-color-500));
+  --color-error-600: rgb(var(--error-color-600));
+  --color-error-700: rgb(var(--error-color-700));
+  --color-error-800: rgb(var(--error-color-800));
+  --color-error-900: rgb(var(--error-color-900));
+  --color-error-950: rgb(var(--error-color-950));
+  --color-error: rgb(var(--error-color));
+
+  --color-warn-50: rgb(var(--warn-color-50));
+  --color-warn-100: rgb(var(--warn-color-100));
+  --color-warn-200: rgb(var(--warn-color-200));
+  --color-warn-300: rgb(var(--warn-color-300));
+  --color-warn-400: rgb(var(--warn-color-400));
+  --color-warn-500: rgb(var(--warn-color-500));
+  --color-warn-600: rgb(var(--warn-color-600));
+  --color-warn-700: rgb(var(--warn-color-700));
+  --color-warn-800: rgb(var(--warn-color-800));
+  --color-warn-900: rgb(var(--warn-color-900));
+  --color-warn-950: rgb(var(--warn-color-950));
+  --color-warn: rgb(var(--warn-color));
+
+  --color-info-50: rgb(var(--info-color-50));
+  --color-info-100: rgb(var(--info-color-100));
+  --color-info-200: rgb(var(--info-color-200));
+  --color-info-300: rgb(var(--info-color-300));
+  --color-info-400: rgb(var(--info-color-400));
+  --color-info-500: rgb(var(--info-color-500));
+  --color-info-600: rgb(var(--info-color-600));
+  --color-info-700: rgb(var(--info-color-700));
+  --color-info-800: rgb(var(--info-color-800));
+  --color-info-900: rgb(var(--info-color-900));
+  --color-info-950: rgb(var(--info-color-950));
+  --color-info: rgb(var(--info-color));
+
+  --spacing-sidebar: 32rem;
+}
+
+@utility autocomplete-item {
+  &[aria-selected='true'] {
+    @apply bg-vxvue-700 text-white;
+  }
+}
+
+@utility button {
+  @apply px-4 py-2 font-medium rounded-sm focus:outline-hidden focus:ring-2 focus:ring-offset-2;
+}
+
+@utility disabled {
+  @apply text-stone-700 bg-stone-200! hover:text-stone-700! hover:bg-stone-300!;
+}
+
+@utility chip {
+  @apply rounded-l-full rounded-r-full bg-stone-300 py-1 px-4;
+}
+
+@utility icon-link {
+  @apply text-vxvue-700 border-2 border-transparent p-1 rounded-sm hover:text-vxvue-500 hover:border-vxvue-500 transition duration-300;
+}
+
+@utility required {
+  &label {
+    @apply font-bold;
+  }
+}
+
+@utility form-input {
+  @apply text-vxvue-900;
+}
+
+@utility thumb {
+  @apply rounded-xs shadow-sm ring-1 ring-black/5;
+}
+
+@utility link {
+  @apply text-vxvue hover:text-vxvue-700 active:text-vxvue-700 hover:underline active:underline;
+}
+
+@utility floating-label {
+  @apply absolute px-2 left-1 top-2 scale-75 z-10 origin-[0]
+        bg-white -translate-y-5 transform-gpu duration-200
+        peer-focus:text-blue-600 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-5 peer-focus:bg-white
+        peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-slate-400 peer-placeholder-shown:bg-transparent peer-placeholder-shown:cursor-text;
+}
 
 @layer base {
     button:focus-visible {
@@ -19,46 +152,9 @@
     @font-face {
         font-family: 'Inter';
         font-style: italic;
-        font-synthesis: none;
         font-weight: 100 900;
         font-display: optional;
         src: local(''), url('@/assets/fonts/Inter/InterTight-Italic[wght].woff2') format('woff2');
-    }
-}
-
-@layer components {
-    .autocomplete-item[aria-selected="true"] {
-        @apply bg-vxvue-700 text-white;
-    }
-    .button {
-        @apply px-4 py-2 font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-2;
-    }
-    .disabled {
-        @apply text-stone-700 !bg-stone-200 hover:!text-stone-700 hover:!bg-stone-300;
-    }
-    .chip {
-        @apply rounded-l-full rounded-r-full bg-stone-300 py-1 px-4;
-    }
-    .icon-link {
-        @apply text-vxvue-700 border-2 border-transparent p-1 rounded hover:text-vxvue-500 hover:border-vxvue-500 transition duration-300;
-    }
-    label.required {
-        @apply font-bold
-    }
-    .form-input {
-        @apply text-vxvue-900
-    }
-    .thumb {
-        @apply rounded-sm shadow ring-1 ring-black ring-opacity-5
-    }
-    .link {
-        @apply text-vxvue hover:text-vxvue-700 active:text-vxvue-700 hover:underline active:underline
-    }
-    .floating-label {
-        @apply absolute px-2 left-1 top-2 scale-75 z-10 origin-[0]
-        bg-white -translate-y-5 transform-gpu duration-200
-        peer-focus:text-blue-600 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-5 peer-focus:bg-white
-        peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-slate-400 peer-placeholder-shown:bg-transparent peer-placeholder-shown:cursor-text
     }
 }
 
