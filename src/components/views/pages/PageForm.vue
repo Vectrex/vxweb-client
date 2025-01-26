@@ -11,7 +11,6 @@
   })
   const form = ref({})
   const errors = ref({})
-  const options = ref({})
   const busy = ref(false)
   const tiptap = ref(null)
   const elements = [
