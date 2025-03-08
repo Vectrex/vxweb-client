@@ -1,6 +1,5 @@
 <script setup>
-  import { Modal, Spinner } from "vx-vue"
-  import { Focus as vFocus } from "@/directives/focus"
+  import { Modal, Spinner, VFocus } from "vx-vue"
   import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/vue/24/solid"
   import { urlQueryCreate } from "@/util/url-query"
   import { vxFetch } from "@/composables/vxFetch"

@@ -13,7 +13,7 @@
       <cog-6-tooth-icon class="shrink-0 size-8" /><span v-if="expanded" class="whitespace-nowrap">{{ user.username }} ({{ user.email }})</span>
     </router-link>
     <a
-      href="logout"
+      href="/logout"
       class="flex items-center space-x-2 text-white hover:text-white/75"
       @click.prevent="emit('authenticate', null)"
     >

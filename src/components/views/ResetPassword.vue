@@ -1,5 +1,5 @@
 <script setup>
-  import { PasswordInput, SubmitButton } from "vx-vue"
+  import { PasswordInput, SubmitButton, VFloatingLabel, VFocus } from "vx-vue"
   import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
@@ -34,14 +34,8 @@
         </div>
       </template>
       <template v-else>
-        <div class="relative">
-          <password-input id="new-password" v-model.trim="form.password" placeholder=" " class="w-full peer" />
-          <label class="floating-label" for="new-password">Neues Passwort (8 Zeichen oder mehr)</label>
-        </div>
-        <div class="relative">
-          <password-input id="new-password-repeat" v-model.trim="form.passwordRepeat" placeholder=" " class="w-full peer" />
-          <label class="floating-label" for="new-password-repeat">Neues Passwort wiederholen</label>
-        </div>
+        <password-input v-model.trim="form.password" v-floating-label v-focus placeholder="Neues Passwort (8 Zeichen oder mehr)" class="w-full" />
+        <password-input v-model.trim="form.passwordRepeat" v-floating-label class="w-full" placeholder="Neues Passwort wiederholen" />
         <div class="flex justify-center">
           <submit-button theme="success" class="button" @click="submit">
             Neues Passwort bestätigen

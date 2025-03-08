@@ -6,15 +6,14 @@
   import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue"
   import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue"
   import FolderTree from "@/components/views/files/FolderTree.vue"
-  import { Confirm, Sortable } from "vx-vue"
+  import { Confirm, Sortable, VFocus } from "vx-vue"
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
   import { urlQueryCreate } from '@/util/url-query'
   import { formatFilesize } from "@/composables/formatFilesize"
-  import { Focus as vFocus } from "@/directives/focus"
   import { vxFetch } from "@/composables/vxFetch"
   import { promisedXhr } from "@/util/promisedXhr"
   import router from "@/router"
-  import {ref, onMounted, watch, computed, nextTick } from "vue"
+  import {computed, nextTick, ref, watch } from "vue"
 
   const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id', 'fetch-error'])
   const props = defineProps({

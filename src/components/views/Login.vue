@@ -1,10 +1,8 @@
 <script setup>
-  import { Modal, PasswordInput, SubmitButton } from "vx-vue"
+  import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel } from "vx-vue"
   import Logo from "@/components/misc/logo.vue"
-  import { HomeIcon } from '@heroicons/vue/20/solid'
-  import { XMarkIcon } from "@heroicons/vue/24/solid"
+  import { HomeIcon, XMarkIcon } from '@heroicons/vue/20/solid'
   import { vxFetch } from "@/composables/vxFetch"
-  import { Focus as vFocus } from "@/directives/focus"
   import { ref } from "vue"
 
   const emit = defineEmits(['authenticate', 'notify'])
@@ -63,8 +61,8 @@
         </div>
 
         <div class="py-8 px-4 space-y-4 bg-white sm:px-10">
-          <input v-model.trim="form.username" type="text" class="w-full form-input" placeholder="Username">
-          <password-input v-model.trim="form.password" class="w-full" placeholder="Passwort" />
+          <input v-model.trim="form.username" type="text" class="w-full form-input" placeholder="Username" v-floating-label />
+          <password-input v-model.trim="form.password" class="w-full" placeholder="Passwort" v-floating-label />
 
           <div class="flex justify-between items-center">
             <submit-button :busy="busy" theme="success" class="button" @submit="submit">
@@ -93,6 +91,7 @@
           <input
             v-model.trim="email"
             v-focus
+            v-floating-label
             type="text"
             class="w-full form-input"
             placeholder="E-Mail"

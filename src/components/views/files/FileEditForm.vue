@@ -1,7 +1,7 @@
 <script setup>
   import FormDialog from "@/components/views/shared/FormDialog.vue"
   import Divider from "@/components/misc/divider.vue"
-  import { SubmitButton } from "vx-vue"
+  import { SubmitButton, VFloatingLabel } from "vx-vue"
   import { formatFilesize } from '@/composables/formatFilesize'
   import { vxFetch } from "@/composables/vxFetch"
   import { computed, ref, watch } from "vue"
@@ -84,25 +84,22 @@
             <div class="relative">
               <input
                 v-if="!field.type"
-                :id="field.model + '-input'"
                 v-model="form[field.model]"
-                class="w-full form-input peer"
+                v-floating-label="{ invalid: errors[field.model] }"
+                :required="field.required"
+                :placeholder="field.label"
+                class="w-full form-input"
                 v-bind="field.attrs"
-                placeholder=" "
               >
               <textarea
                 v-else-if="field.type === 'textarea'"
-                :id="field.model + '-' + field.type"
                 v-model="form[field.model]"
-                class="w-full form-textarea peer"
-                placeholder=" "
+                v-floating-label="{ invalid: errors[field.model] }"
+                :required="field.required"
+                :placeholder="field.label"
+                class="w-full form-textarea"
+                v-bind="field.attrs"
               />
-              <label
-                :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
-                :for="field.model + '-' + field.type || 'input'"
-              >
-                {{ field.label }}
-              </label>
               <p v-if="errors[field.model]" class="text-sm text-error">
                 {{ errors[field.model] }}
               </p>

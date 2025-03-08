@@ -1,5 +1,5 @@
 <script setup>
-  import { Focus as vFocus } from "@/directives/focus"
+  import { VFocus } from "vx-vue"
   import { DocumentArrowUpIcon, FolderPlusIcon } from '@heroicons/vue/24/solid'
   import { onClickOutside } from "@vueuse/core"
   import { ref } from "vue"
