@@ -60,7 +60,7 @@
     </template>
     <template #content>
       <div class="px-4 pt-20 pb-4 space-y-4">
-        <div v-for="(field, ndx) in fields" :key="ndx" class="relative">
+        <div v-for="field in fields" :key="field.model" class="relative">
           <template v-if="!field.type">
             <input
               :id="field.model"

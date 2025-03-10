@@ -40,7 +40,7 @@
 
   <div class="pb-4 space-y-4">
     <div class="space-y-4">
-      <div v-for="(field, ndx) in fields" :key="ndx">
+      <div v-for="field in fields" :key="field.model">
         <label :for="field.model" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
         <div>
           <input
