@@ -48,26 +48,26 @@
     @fetch-error="emit('fetch-error', $event)"
     @after-sort="storeSort"
   >
-    <template #action="slotProps">
+    <template #action="{ row }">
       <div class="flex justify-end items-center space-x-1">
-        <template v-if="slotProps.row.isFolder">
-          <button class="icon-link" @click="fm.editFolder(slotProps.row)">
+        <template v-if="row.isFolder">
+          <button class="icon-link" @click="fm.editFolder(row)">
             <pencil-square-icon class="size-5" />
           </button>
-          <button class="icon-link" @click="fm.delFolder(slotProps.row)">
+          <button class="icon-link" @click="fm.delFolder(row)">
             <trash-icon class="size-5" />
           </button>
         </template>
         <template v-else>
-          <button class="icon-link" @click="fm.editFile(slotProps.row)">
+          <button class="icon-link" @click="fm.editFile(row)">
             <pencil-square-icon class="size-5" />
           </button>
-          <button class="flex items-center icon-link" @click="fm.moveFile(slotProps.row)">
+          <button class="flex items-center icon-link" @click="fm.moveFile(row)">
             <document-minus-icon class="size-5" />
             <play-icon class="w-3 h-3" />
             <document-plus-icon class="size-5" />
           </button>
-          <button class="icon-link" @click="fm.delFile(slotProps.row)">
+          <button class="icon-link" @click="fm.delFile(row)">
             <trash-icon class="size-5" />
           </button>
         </template>

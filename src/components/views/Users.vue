@@ -80,10 +80,10 @@
           key-property="id"
           @after-sort="storeSort"
         >
-          <template #action="slotProps">
-            <div v-if="currentUser.username !== slotProps.row.username" class="flex justify-end space-x-2">
-              <a class="icon-link" href="#" @click.prevent="edit(slotProps.row.id)"><PencilSquareIcon class="size-5" /></a>
-              <a class="icon-link" href="#" @click.prevent="del(slotProps.row.id)"><TrashIcon class="size-5" /></a>
+          <template #action="{ row }">
+            <div v-if="currentUser.username !== row.username" class="flex justify-end space-x-2">
+              <a class="icon-link" href="#" @click.prevent="edit(row.id)"><PencilSquareIcon class="size-5" /></a>
+              <a class="icon-link" href="#" @click.prevent="del(row.id)"><TrashIcon class="size-5" /></a>
             </div>
           </template>
         </sortable>

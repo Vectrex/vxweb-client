@@ -57,12 +57,12 @@
           key-property="id"
           @after-sort="storeSort"
         >
-          <template #action="slotProps">
+          <template #action="{ row }">
             <div class="flex justify-end space-x-2">
-              <router-link :to="{ name: 'pageEdit', params: { id: slotProps.row.id }}" class="icon-link">
+              <router-link :to="{ name: 'pageEdit', params: { id: row.id }}" class="icon-link">
                 <PencilSquareIcon class="size-5" />
               </router-link>
-              <button class="icon-link" @click="del(slotProps.row.id)">
+              <button class="icon-link" @click="del(row.id)">
                 <TrashIcon class="size-5" />
               </button>
             </div>

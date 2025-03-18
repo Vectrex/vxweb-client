@@ -316,27 +316,27 @@
               >
             </template>
 
-            <template #checked="slotProps">
-              <input v-model="slotProps.row.checked" type="checkbox" class="form-checkbox">
+            <template #checked="{ row }">
+              <input v-model="row.checked" type="checkbox" class="form-checkbox">
             </template>
 
-            <template #name="slotProps">
+            <template #name="{ row }">
               <div class="flex items-center space-x-1 group">
-                <template v-if="slotProps.row.isFolder">
+                <template v-if="row.isFolder">
                   <input
-                    v-if="slotProps.row === toRename"
+                    v-if="row === toRename"
                     v-focus
                     class="form-input"
-                    :value="slotProps.row.name"
+                    :value="row.name"
                     @keydown.enter="rename($event, 'folder')"
                     @keydown.esc="toRename = null"
                     @blur="toRename = null"
                   >
                   <template v-else>
-                    <a :href="'#' + slotProps.row.id" class="link" @click.prevent="emit('update:folder-id', slotProps.row.id)">{{ slotProps.row.name }}</a>
+                    <a :href="'#' + row.id" class="link" @click.prevent="emit('update:folder-id', row.id)">{{ row.name }}</a>
                     <button
                       class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
-                      @click="toRename = slotProps.row"
+                      @click="toRename = row"
                     >
                       <pencil-square-icon class="size-5" />
                     </button>
@@ -344,19 +344,19 @@
                 </template>
                 <template v-else>
                   <input
-                    v-if="slotProps.row === toRename"
+                    v-if="row === toRename"
                     v-focus
                     class="form-input"
-                    :value="slotProps.row.name"
+                    :value="row.name"
                     @keydown.enter="rename($event, 'file')"
                     @keydown.esc="toRename = null"
                     @blur="toRename = null"
                   >
                   <template v-else>
-                    <span>{{ slotProps.row.name }}</span>
+                    <span>{{ row.name }}</span>
                     <button
                       class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
-                      @click="toRename = slotProps.row"
+                      @click="toRename = row"
                     >
                       <pencil-square-icon class="size-5" />
                     </button>
@@ -365,15 +365,15 @@
               </div>
             </template>
 
-            <template #size="slotProps">
-              <template v-if="!slotProps.row.isFolder">
-                {{ formatFilesize(slotProps.row.size, ',').formatted.value }}
+            <template #size="{ row }">
+              <template v-if="!row.isFolder">
+                {{ formatFilesize(row.size, ',').formatted.value }}
               </template>
             </template>
 
-            <template #type="slotProps">
-              <img v-if="slotProps.row.image" :src="slotProps.row.src" alt="" class="thumb">
-              <span v-else>{{ slotProps.row.type }}</span>
+            <template #type="{ row }">
+              <img v-if="row.image" :src="row.src" alt="" class="thumb">
+              <span v-else>{{ row.type }}</span>
             </template>
 
             <template v-for="(_, name) in $slots" #[name]="slotData">

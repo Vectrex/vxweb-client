@@ -38,10 +38,10 @@
     @after-sort="storeSort"
     @update:folder-id="currentFolder = $event"
   >
-    <template #action="slotProps">
+    <template #action="{ row }">
       <div class="flex justify-end items-center space-x-1">
-        <template v-if="!slotProps.row.isFolder && (!onlyImages || slotProps.row.image)">
-          <button class="icon-link" @click="emit('pickFile', slotProps.row)">
+        <template v-if="!row.isFolder && (!onlyImages || row.image)">
+          <button class="icon-link" @click="emit('pickFile', row)">
             <arrow-top-right-on-square-icon class="size-5" />
           </button>
         </template>

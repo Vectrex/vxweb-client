@@ -92,21 +92,21 @@
           :count="paginated.entriesPerPage"
           @after-sort="storeSort"
         >
-          <template #catId="slotProps">
-            {{ categories.find(c => c.id === slotProps.row.catId).label }}
+          <template #catId="{ row }">
+            {{ categories.find(c => c.id === row.catId).label }}
           </template>
-          <template #pub="slotProps">
-            <form-switch :model-value="slotProps.row.pub" @update:model-value="publish(slotProps.row)" />
+          <template #pub="{ row }">
+            <form-switch :model-value="row.pub" @update:model-value="publish(row)" />
           </template>
-          <template #marked="slotProps">
-            <input type="checkbox" class="form-checkbox text-slate-500" disabled="disabled" :checked="slotProps.row.marked">
+          <template #marked="{ row }">
+            <input type="checkbox" class="form-checkbox text-slate-500" disabled="disabled" :checked="row.marked">
           </template>
-          <template #action="slotProps">
+          <template #action="{ row }">
             <div class="flex justify-end items-center space-x-1">
-              <router-link :to="{ name: 'articleEdit', params: { id: slotProps.row.id } }" class="icon-link">
+              <router-link :to="{ name: 'articleEdit', params: { id: row.id } }" class="icon-link">
                 <pencil-square-icon class="size-5" />
               </router-link>
-              <button class="icon-link" @click="del(slotProps.row)">
+              <button class="icon-link" @click="del(row)">
                 <trash-icon class="size-5" />
               </button>
             </div>
