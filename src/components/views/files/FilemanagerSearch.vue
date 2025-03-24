@@ -66,7 +66,9 @@
           >
           <spinner v-if="busy" class="size-5 text-vxvue" />
         </div>
-        <a href="#" @click.prevent="handleEsc"><x-mark-icon class="size-5 text-white" /></a>
+        <button @click="handleEsc">
+          <x-mark-icon class="size-5 text-white" />
+        </button>
       </div>
     </template>
 

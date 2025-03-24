@@ -61,14 +61,16 @@
         </div>
 
         <div class="py-8 px-4 space-y-4 bg-white sm:px-10">
-          <input v-model.trim="form.username" type="text" class="w-full form-input" placeholder="Username" v-floating-label />
-          <password-input v-model.trim="form.password" class="w-full" placeholder="Passwort" v-floating-label />
+          <input v-model.trim="form.username" v-floating-label class="w-full form-input" placeholder="Username">
+          <password-input v-model.trim="form.password" v-floating-label class="w-full" placeholder="Passwort" />
 
           <div class="flex justify-between items-center">
             <submit-button :busy="busy" theme="success" class="button" @submit="submit">
               Anmelden
             </submit-button>
-            <a v-if="!disablePasswordReset" href="#" class="text-rose-600 hover:text-rose-500 link" @click.prevent="showDialog">Passwort vergessen?</a>
+            <button v-if="!disablePasswordReset" class="text-rose-600 hover:text-rose-500 link" @click="showDialog">
+              Passwort vergessen?
+            </button>
             <span v-if="!getWindow().location.host.match(/^localhost/)" class="flex space-x-1">
               <home-icon class="size-5" />
               <a :href="getWindow().location.protocol + '//' + getWindow().location.host" class="text-rose-600 hover:text-rose-500 link">
@@ -83,7 +85,9 @@
       <template #title>
         <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
           <span class="text-xl font-bold text-white">Passwort vergessen?</span>
-          <a href="#" @click.prevent="hideDialog"><x-mark-icon class="size-5 text-white" /></a>
+          <button @click="hideDialog">
+            <x-mark-icon class="size-5 text-white" />
+          </button>
         </div>
       </template>
       <template #default>

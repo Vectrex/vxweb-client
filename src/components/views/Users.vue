@@ -82,8 +82,12 @@
         >
           <template #action="{ row }">
             <div v-if="currentUser.username !== row.username" class="flex justify-end space-x-2">
-              <a class="icon-link" href="#" @click.prevent="edit(row.id)"><PencilSquareIcon class="size-5" /></a>
-              <a class="icon-link" href="#" @click.prevent="del(row.id)"><TrashIcon class="size-5" /></a>
+              <button class="icon-link" @click="edit(row.id)">
+                <PencilSquareIcon class="size-5" />
+              </button>
+              <button class="icon-link" @click="del(row.id)">
+                <TrashIcon class="size-5" />
+              </button>
             </div>
           </template>
         </sortable>

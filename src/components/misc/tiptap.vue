@@ -140,7 +140,9 @@
       <template #title>
         <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
           <span class="text-xl font-bold text-white">{{ onlyImages ? 'Bilddatei selektieren...' : 'Zieladresse eingeben oder Datei wählen...' }}</span>
-          <a href="#" @click.prevent="showModal = false"><x-mark-icon class="size-5 text-white" /></a>
+          <button @click="showModal = false">
+            <x-mark-icon class="size-5 text-white" />
+          </button>
         </div>
       </template>
       <template #default>

@@ -251,7 +251,6 @@
         <div class="relative">
           <button
             class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
-            href="#"
             @click.stop="showAddActivities = !showAddActivities"
           >
             <plus-icon class="size-5" />
