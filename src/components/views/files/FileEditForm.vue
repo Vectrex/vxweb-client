@@ -61,7 +61,7 @@
     <template #content>
       <div class="pt-16 pb-4 space-y-2">
         <div>
-          <img v-if="(fileInfo.mimetype || '').startsWith('image')" :src="fileInfo.thumb" class="w-full" :alt="fileInfo.name"> />
+          <img v-if="(fileInfo.mimetype || '').startsWith('image')" :src="fileInfo.thumb" class="w-full pb-4" :alt="fileInfo.name" />
           <divider class="px-4">
             Details
           </divider>
