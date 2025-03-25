@@ -21,14 +21,14 @@
     }
     return sanitized
   })
-  const fields = ref([
+  const fields = [
     { model: 'username', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
     { model: 'email', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
     { model: 'name', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { type: FormSelect, model: 'admingroupsid', attrs: { options: adminGroups, disabledLabel: "(Gruppe)", class: "w-full" }, required: true },
+    { type: FormSelect, model: 'admingroupsid', attrs: ref({ options: adminGroups, disabledLabel: "(Gruppe)", class: "w-full" }), required: true },
     { type: PasswordInput, model: 'new_PWD', attrs: { placeholder: 'Neues Passwort', maxlength: 128, autocomplete: "off", class: "w-full" }},
     { type: PasswordInput, model: 'new_PWD_verify', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
-  ])
+  ]
   const doFetch = vxFetch(emit)
   const submit = async () => {
     busy.value = true
@@ -66,7 +66,7 @@
               :id="field.model"
               :required="field.required"
               v-model.trim="form[field.model]"
-              v-bind="field.attrs || {}"
+              v-bind="field.attrs.value || field.attrs"
               v-floating-label="{ invalid: errors[field.model] }"
             >
           </template>
@@ -76,7 +76,7 @@
               :id="field.model"
               :required="field.required"
               v-model.trim="form[field.model]"
-              v-bind="field.attrs || {}"
+              v-bind="field.attrs.value || field.attrs"
             >
             </component>
           </template>
