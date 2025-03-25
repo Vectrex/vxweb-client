@@ -1,6 +1,6 @@
 <script setup>
   import FormDialog from "@/components/views/shared/FormDialog.vue"
-  import { FormSelect, PasswordInput, SubmitButton } from "vx-vue"
+  import { FormSelect, PasswordInput, SubmitButton, VFloatingLabel } from "vx-vue"
   import { computed, ref, watch } from "vue"
   import { vxFetch } from "@/composables/vxFetch"
 
@@ -10,7 +10,7 @@
   })
   const form = ref({})
   const errors = ref({})
-  const options = ref({})
+  const adminGroups = ref([])
   const busy = ref(false)
   const sanitizedForm = computed(() => {
     let sanitized = {}
@@ -21,14 +21,14 @@
     }
     return sanitized
   })
-  const fields = [
-    { model: 'username', label: 'Username', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
-    { model: 'email', label: 'E-Mail', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
-    { model: 'name', label: 'Name', attrs: {maxlength: 128, autocomplete: "off"}, required: true },
-    { type: FormSelect, model: 'admingroupsid', label: 'Gruppe', required: true, options: [] },
-    { type: PasswordInput, model: 'new_PWD', label: 'Neues Passwort', attrs: {maxlength: 128, autocomplete: "off" }},
-    { type: PasswordInput, model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: {maxlength: 128, autocomplete: "off" }}
-  ]
+  const fields = ref([
+    { model: 'username', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { model: 'email', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { model: 'name', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { type: FormSelect, model: 'admingroupsid', attrs: { options: adminGroups, disabledLabel: "(Gruppe)", class: "w-full" }, required: true },
+    { type: PasswordInput, model: 'new_PWD', attrs: { placeholder: 'Neues Passwort', maxlength: 128, autocomplete: "off", class: "w-full" }},
+    { type: PasswordInput, model: 'new_PWD_verify', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
+  ])
   const doFetch = vxFetch(emit)
   const submit = async () => {
     busy.value = true
@@ -45,7 +45,7 @@
   watch(() => props.id, async v => {
     const response = (await doFetch('user/' + (v || '')).json()).data.value
     if (response) {
-      options.value = response.options || {}
+      adminGroups.value = response.options?.admingroupsid || []
       form.value = response.form || {}
     }
     else {
@@ -64,32 +64,20 @@
           <template v-if="!field.type">
             <input
               :id="field.model"
+              :required="field.required"
               v-model.trim="form[field.model]"
-              class="w-full form-input peer"
-              placeholder=" "
+              v-bind="field.attrs || {}"
+              v-floating-label="{ invalid: errors[field.model] }"
             >
-            <label
-              :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
-              :for="field.model"
-            >
-              {{ field.label }}
-            </label>
           </template>
           <template v-else>
             <component
               :is="field.type"
               :id="field.model"
+              :required="field.required"
               v-model.trim="form[field.model]"
-              :options="options[field.model]"
-              class="w-full"
-              placeholder=" "
+              v-bind="field.attrs || {}"
             >
-              <label
-                :class="['floating-label', { 'text-error': errors[field.model], 'required': field.required }]"
-                :for="field.model"
-              >
-                {{ field.label }}
-              </label>
             </component>
           </template>
           <p v-if="errors[field.model]" class="text-sm text-error">
