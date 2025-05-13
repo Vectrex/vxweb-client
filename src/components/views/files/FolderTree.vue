@@ -4,6 +4,7 @@
   import { urlQueryCreate } from '@/util/url-query'
   import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
+  import FormDialog from "@/components/views/shared/FormDialog.vue";
 
   const emit = defineEmits(['fetch-error'])
   const root = ref({})
@@ -33,16 +34,14 @@
 </script>
 
 <template>
-  <div>
-    <form-title class="w-sidebar" @cancel="resolve(false)">
+  <form-dialog>
+    <template #title>
       Zielordner wählen
-    </form-title>
-    <div class="overflow-hidden h-[calc(100vh-var(--header-height))]">
-      <div class="overflow-y-auto h-full">
-        <div class="px-4 pt-20 pb-4">
-          <simple-tree :branch="root" :model-value="selectedFolder" @update:model-value="resolve($event)" />
-        </div>
+    </template>
+    <template #content>
+      <div class="p-4">
+        <simple-tree :branch="root" :model-value="selectedFolder" @update:model-value="resolve($event)" />
       </div>
-    </div>
-  </div>
+    </template>
+  </form-dialog>
 </template>

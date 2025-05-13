@@ -63,7 +63,7 @@
 </script>
 
 <template>
-  <div class="py-4 max-w-4xl space-y-2">
+  <div class="py-4 space-y-2 max-w-4xl">
     <div class="grid grid-cols-3 gap-2">
       <div v-for="element in dateElements" :key="element.model">
         <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>

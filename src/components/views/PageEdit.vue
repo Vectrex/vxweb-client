@@ -80,7 +80,7 @@
       @response-received="handleFormResponse"
       @fetch-error="emit('fetch-error', $event)"
     />
-    <div class="w-1/3 shrink-0 overflow-hidden h-[calc(100vh-var(--header-height)-1.5rem)]">
+    <div class="overflow-hidden w-1/3 shrink-0 h-[calc(100vh-var(--header-height)-1.5rem)]">
       <revision-table
         :revisions="revisions"
         class="overflow-y-auto w-full h-full"

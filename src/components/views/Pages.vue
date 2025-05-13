@@ -47,7 +47,7 @@
   </teleport>
 
   <div class="grid">
-    <div class="overflow-hidden shadow-sm ring-1 ring-black/5 rounded-sm">
+    <div class="overflow-hidden rounded-sm ring-1 shadow-sm ring-black/5">
       <div class="overflow-x-auto">
         <sortable
           :rows="pages"

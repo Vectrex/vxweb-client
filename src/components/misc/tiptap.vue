@@ -141,12 +141,12 @@
         <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
           <span class="text-xl font-bold text-white">{{ onlyImages ? 'Bilddatei selektieren...' : 'Zieladresse eingeben oder Datei wählen...' }}</span>
           <button @click="showModal = false">
-            <x-mark-icon class="size-5 text-white" />
+            <x-mark-icon class="text-white size-5" />
           </button>
         </div>
       </template>
       <template #default>
-        <div class="space-y-4 py-4">
+        <div class="py-4 space-y-4">
           <div v-if="!onlyImages" class="flex items-center px-4 space-x-2">
             <div class="relative grow">
               <input id="link-input" v-model.trim="linkData.href" class="w-full form-input peer" placeholder=" ">

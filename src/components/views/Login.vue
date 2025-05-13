@@ -1,7 +1,8 @@
 <script setup>
   import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel } from "vx-vue"
   import Logo from "@/components/misc/logo.vue"
-  import { HomeIcon, XMarkIcon } from '@heroicons/vue/20/solid'
+  import FormTitle from "@/components/views/shared/FormTitle.vue"
+  import { HomeIcon } from '@heroicons/vue/20/solid'
   import { vxFetch } from "@/composables/vxFetch"
   import { ref } from "vue"
 
@@ -54,7 +55,7 @@
 <template>
   <div class="flex flex-col justify-center py-12 min-h-screen sm:px-6 lg:px-8 bg-slate-200">
     <transition name="appear" appear>
-      <div class="mt-8 ring-1 ring-black/5 shadow-sm sm:mx-auto sm:w-full sm:max-w-xl" @keydown.enter="submit">
+      <div class="mt-8 ring-1 shadow-sm sm:mx-auto sm:w-full sm:max-w-xl ring-black/5" @keydown.enter="submit">
         <div class="flex items-baseline px-10 pt-16 pb-0 space-x-2 text-white rounded-t bg-vxvue">
           <logo class="w-1/2" />
           <span class="text-2xl">Administration</span>
@@ -83,12 +84,9 @@
     </transition>
     <modal :show="showPasswordForgotten" container-class="w-full lg:w-1/2 xl:w-1/4" @clicked-outside="hideDialog">
       <template #title>
-        <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
-          <span class="text-xl font-bold text-white">Passwort vergessen?</span>
-          <button @click="hideDialog">
-            <x-mark-icon class="size-5 text-white" />
-          </button>
-        </div>
+        <form-title class="w-full text-white bg-vxvue-500" @cancel="hideDialog">
+          Passwort vergessen?
+        </form-title>
       </template>
       <template #default>
         <div class="py-8 px-4 space-y-4 sm:px-10">

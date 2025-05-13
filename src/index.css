@@ -240,6 +240,7 @@
     --success-color-950: 10 56 20;
 
     --header-height: 6rem;
+    --form-title-height: 4rem;
 }
 
 .ProseMirror {

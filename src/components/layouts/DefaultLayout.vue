@@ -17,7 +17,7 @@
       <div class="flex overflow-y-auto flex-col grow bg-vxvue">
         <div class="flex items-end pr-2 pb-2 pl-4 space-x-2 h-24 bg-vxvue-600">
           <button @click="sideBarExpanded = !sideBarExpanded">
-            <bars3-icon class="shrink-0 w-8 h-8 text-white" />
+            <bars3-icon class="w-8 h-8 text-white shrink-0" />
           </button>
           <logo v-if="sideBarExpanded" class="w-44 text-white" />
         </div>

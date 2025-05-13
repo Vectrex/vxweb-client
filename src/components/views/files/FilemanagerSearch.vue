@@ -51,9 +51,9 @@
     </button>
   </teleport>
 
-  <modal :show="showSearch">
+  <modal :show="showSearch" container-class="w-full lg:w-1/2 max-h-[90vh]" @clicked-outside="handleEsc">
     <template #title>
-      <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue">
+      <div class="flex justify-between items-center px-4 w-full h-[var(--form-title-height)] bg-vxvue">
         <div class="flex items-center space-x-2 w-full">
           <input
             v-focus
@@ -67,7 +67,7 @@
           <spinner v-if="busy" class="size-5 text-vxvue" />
         </div>
         <button @click="handleEsc">
-          <x-mark-icon class="size-5 text-white" />
+          <x-mark-icon class="text-white size-5" />
         </button>
       </div>
     </template>

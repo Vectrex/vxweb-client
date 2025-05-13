@@ -22,9 +22,9 @@
 
 <template>
   <div class="flex flex-col justify-center py-12 min-h-screen sm:px-6 lg:px-8 bg-slate-200">
-    <div class="p-8 ring-1 ring-black/5 shadow-sm sm:mx-auto sm:w-full sm:max-w-md bg-white flex flex-col space-y-4">
+    <div class="flex flex-col p-8 space-y-4 bg-white ring-1 shadow-sm sm:mx-auto sm:w-full sm:max-w-md ring-black/5">
       <template v-if="success">
-        <div class="text-success font-bold text-center">
+        <div class="font-bold text-center text-success">
           Das Passwort wurde erfolgreich neu gesetzt.
         </div>
         <div class="text-center">

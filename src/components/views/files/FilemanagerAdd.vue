@@ -27,7 +27,7 @@
 <template>
   <div
     ref="container"
-    class="absolute left-0 z-10 py-1 mt-2 bg-white rounded-sm ring-1 ring-black/5 shadow-lg origin-top-right focus:outline-hidden"
+    class="absolute left-0 z-10 py-1 mt-2 bg-white rounded-sm ring-1 shadow-lg origin-top-right ring-black/5 focus:outline-hidden"
     role="menu"
     aria-orientation="vertical"
   >

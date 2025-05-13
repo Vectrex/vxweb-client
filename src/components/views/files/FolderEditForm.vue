@@ -53,7 +53,7 @@
       {{ form.path }}
     </template>
     <template #content>
-      <div class="px-4 pt-20 pb-4 space-y-4">
+      <div class="p-4 space-y-2">
         <div v-for="field in fields" :key="field.model" class="relative">
           <input
             v-if="!field.type"

@@ -59,7 +59,7 @@
       Benutzer {{ form.id ? 'bearbeiten' : 'anlegen' }}
     </template>
     <template #content>
-      <div class="px-4 pt-20 pb-4 space-y-4">
+      <div class="p-4 space-y-2">
         <div v-for="field in fields" :key="field.model" class="relative">
           <template v-if="!field.type">
             <input
