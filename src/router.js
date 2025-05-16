@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { UsersIcon, NewspaperIcon, DocumentIcon, PhotoIcon } from '@heroicons/vue/24/solid'
+import { useAuthStore } from '@/stores/auth'
 
 function lazyLoad (view) {
     return () => import (`@/components/views/${view}.vue`)
@@ -25,24 +26,6 @@ const routes = [
         }
     },
     {
-        name: 'profile',
-        path: '/profile',
-        component: lazyLoad('Profile'),
-        meta: {
-            heading: 'Meine Einstellungen'
-        }
-    },
-    {
-        name: 'files',
-        path: '/files/:folderId?',
-        component: lazyLoad('Files'),
-        props: true,
-        meta: {
-            label: 'Dateien',
-            icon: PhotoIcon
-        }
-    },
-    {
         path: '/articles',
         meta: {
             label: 'Artikel',
@@ -61,6 +44,16 @@ const routes = [
                 props: true
             }
         ]
+    },
+    {
+        name: 'files',
+        path: '/files/:folderId?',
+        component: lazyLoad('Files'),
+        props: true,
+        meta: {
+            label: 'Dateien',
+            icon: PhotoIcon
+        }
     },
     {
         path: '/pages',
@@ -109,7 +102,7 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-    if (!to.meta.noAuth && !sessionStorage.getItem("currentUser")) {
+    if (!to.meta.noAuth && !useAuthStore().credentials.bearerToken) {
         return { name: 'login' };
     }
 })

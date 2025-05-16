@@ -5,9 +5,7 @@
   import Logo from "@/components/misc/logo.vue"
   import { ref } from "vue"
 
-  const emit = defineEmits(["authenticate"])
-  const props = defineProps({ user: { type: Object, default: () => ({}) }})
-
+  const emit = defineEmits(['notify', 'fetch-error'])
   const sideBarExpanded = ref(false)
 </script>
 
@@ -25,7 +23,11 @@
           <main-menu class="flex-1 py-6 px-2 space-y-1" :expanded="sideBarExpanded" />
         </div>
         <div class="p-4 h-32 border-t border-t-white">
-          <account-info :user="user" :expanded="sideBarExpanded" @authenticate="emit('authenticate', $event)" />
+          <account-info
+            :expanded="sideBarExpanded"
+            @notify="emit('notify', $event)"
+            @fetch-error="emit('fetch-error', $event)"
+          />
         </div>
       </div>
     </div>

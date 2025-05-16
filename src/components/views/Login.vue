@@ -1,12 +1,15 @@
 <script setup>
-  import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel } from "vx-vue"
-  import Logo from "@/components/misc/logo.vue"
-  import FormTitle from "@/components/views/shared/FormTitle.vue"
+  import { useAuthStore } from '@/stores/auth.js'
   import { HomeIcon } from '@heroicons/vue/20/solid'
-  import { vxFetch } from "@/composables/vxFetch"
-  import { ref } from "vue"
+  import Logo from '@/components/misc/logo.vue'
+  import FormTitle from '@/components/views/shared/FormTitle.vue'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel } from 'vx-vue'
+  import { ref } from 'vue'
+  import router from '@/router'
 
-  const emit = defineEmits(['authenticate', 'notify'])
+  const emit = defineEmits(['notify'])
+  const authStore = useAuthStore()
   const form = ref({ username: '', password: '' })
   const email = ref('')
   const busy = ref(false)
@@ -15,13 +18,13 @@
   const disablePasswordReset = JSON.parse((import.meta.env.VITE_DISABLE_PASSWORD_RESET || 'true').toLowerCase())
 
   const submit = async () => {
-    if (form.value.username && form.value.password) {
+    if (form.value.username?.trim() && form.value.password?.trim()) {
       busy.value = true
-      const response = (await doFetch("login").post(JSON.stringify(form.value)).json()).data.value
+      const response = (await doFetch('login').post(JSON.stringify(form.value)).json()).data.value
       busy.value = false
       if(response.bearerToken) {
-        sessionStorage.setItem('bearerToken', response.bearerToken)
-        emit('authenticate', response)
+        authStore.authenticate(response)
+        await router.push({ name: 'articles' })
       }
       else {
         emit('notify', response)
@@ -38,7 +41,7 @@
   const requestPassword = async () => {
     if(/[^@]+@[^@]/.test(email.value)) {
       busy.value = true
-      const response = (await doFetch("request-password").put(JSON.stringify({ email: email.value })).json()).data.value
+      const response = (await doFetch('request-password').put(JSON.stringify({ email: email.value })).json()).data.value
       if (!response.success) {
         emit('notify', response)
       }

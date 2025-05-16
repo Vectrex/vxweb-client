@@ -1,25 +1,14 @@
 <script setup>
-  import { MessageToast } from "vx-vue"
-  import { computed, ref } from "vue"
-  import router from "@/router"
+  import { useAuthStore } from '@/stores/auth'
+  import { MessageToast } from 'vx-vue'
+  import { computed, onMounted, ref } from 'vue'
+  import router from '@/router'
 
+  const authStore = useAuthStore()
   const user = ref({})
   const toast = ref({})
   const layout = computed(() => router.currentRoute.value?.meta.layout || 'DefaultLayout')
 
-  const authenticate = e => {
-    if (!e) {
-      sessionStorage.removeItem("currentUser")
-      sessionStorage.removeItem("bearerToken")
-      user.value = {}
-      router.push({ name: 'login' })
-    }
-    else {
-      sessionStorage.setItem("currentUser", JSON.stringify(e.user))
-      router.push({ name: 'profile' })
-      user.value = e.user
-    }
-  }
   const notify = data => {
     if (data.message) {
       toast.value = {
@@ -39,12 +28,28 @@
       notify({ message: `${response.status}: ${response.statusText}.`})
     }
   }
-  user.value = JSON.parse(sessionStorage.getItem("currentUser") || '{}')
+  onMounted(async () => {
+    onMounted(async () => {
+      await router.isReady()
+      const currentRoute = router.currentRoute.value
+      if (!currentRoute.meta?.noAuth && !authStore.credentials.bearerToken) {
+        await router.replace({ name: 'login' })
+      }
+    })
+
+  })
 </script>
 
 <template>
-  <component :is="layout" :user="user" @authenticate="authenticate">
-    <router-view @notify="notify" @authenticate="authenticate" @fetch-error="handleFetchError" />
+  <component
+    :is="layout"
+    @notify="notify"
+    @fetch-error="handleFetchError"
+  >
+    <router-view
+      @notify="notify"
+      @fetch-error="handleFetchError"
+  />
   </component>
 
   <message-toast

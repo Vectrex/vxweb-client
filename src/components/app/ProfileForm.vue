@@ -1,11 +1,11 @@
 <script setup>
-  import { PasswordInput, SubmitButton } from "vx-vue"
-  import Headline from "@/components/app/Headline.vue"
-  import Divider from "@/components/misc/divider.vue"
-  import { onMounted, ref } from "vue"
-  import { vxFetch } from "@/composables/vxFetch"
+  import { useAuthStore } from '@/stores/auth'
+  import { PasswordInput, SubmitButton } from 'vx-vue'
+  import Divider from '@/components/misc/divider.vue'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { onMounted, ref } from 'vue'
 
-  const emit = defineEmits(['notify', 'fetch-error'])
+  const emit = defineEmits(['notify', 'fetch-error', 'cancel'])
 
   const fields = [
     { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
@@ -14,6 +14,7 @@
     { type: PasswordInput, model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
     { type: PasswordInput, model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
   ]
+  const authStore = useAuthStore()
   const form = ref({})
   const errors = ref({})
   const busy = ref(false)
@@ -23,6 +24,9 @@
     busy.value = true
     const response = (await doFetch('profile_data').post(JSON.stringify(form.value)).json()).data.value || {}
     busy.value = false
+    if (response.success) {
+      authStore.credentials.user = response.payload
+    }
     errors.value = response.errors || {}
     emit('notify', response)
   }
@@ -34,12 +38,8 @@
 </script>
 
 <template>
-  <teleport defer to="#tools">
-    <headline>{{ $route.meta?.heading }}</headline>
-  </teleport>
-
-  <div class="pb-4 space-y-4">
-    <div class="space-y-4">
+  <div class="space-y-4">
+    <div class="space-y-2">
       <div v-for="field in fields" :key="field.model">
         <label :for="field.model" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
         <div>
@@ -47,14 +47,14 @@
             v-if="!field.type"
             :id="field.model"
             v-model.trim="form[field.model]"
-            class="w-96 form-input"
+            class="form-input w-full"
           >
           <component
             :is="field.type"
             v-else
             :id="field.model"
             v-model.trim="form[field.model]"
-            class="w-96"
+            class="w-full"
           />
           <p v-if="errors[field.model]" class="text-sm text-error">
             {{ errors[field.model] }}
@@ -65,7 +65,6 @@
 
     <template v-if="notifications.length">
       <divider>Benachrichtigungen</divider>
-
       <div class="space-y-4">
         <div v-for="notification in notifications" :key="notification.alias" class="space-x-2">
           <label class="space-x-2">
@@ -76,8 +75,11 @@
       </div>
     </template>
 
-    <submit-button :busy="busy" theme="success" class="button" @submit="submit">
-      Änderungen speichern
-    </submit-button>
+    <div class="flex items-center justify-between">
+      <button class="button cancel" @click="emit('cancel')">Abbrechen</button>
+      <submit-button :busy="busy" theme="success" class="button" @submit="submit">
+        Änderungen speichern
+      </submit-button>
+    </div>
   </div>
 </template>
