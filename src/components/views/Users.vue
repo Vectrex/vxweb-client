@@ -1,4 +1,5 @@
 <script setup>
+  import { useAuthStore } from '@/stores/auth'
   import { Confirm, Sortable } from "vx-vue"
   import Headline from "@/components/app/Headline.vue"
   import UserForm from "@/components/views/users/UserForm.vue"
@@ -14,7 +15,6 @@
   const editData = ref({ id: null })
   const deleteRequest = ref(null)
   const doFetch = vxFetch(emit)
-  const currentUser = JSON.parse(sessionStorage.getItem('currentUser'))
   const cols = [
     { label: "Username", sortable: true, width: "w-1/4", prop: "username" },
     { label: "Name", sortable: true, width: "w-1/6", prop: "name" },
@@ -81,7 +81,7 @@
           @after-sort="storeSort"
         >
           <template #action="{ row }">
-            <div v-if="currentUser.username !== row.username" class="flex justify-end space-x-2">
+            <div v-if="useAuthStore().credentials.user?.username !== row.username" class="flex justify-end space-x-2">
               <button class="icon-link" @click="edit(row.id)">
                 <PencilSquareIcon class="size-5" />
               </button>

@@ -1,3 +1,5 @@
+import { useAuthStore } from '@/stores/auth'
+
 const promisedXhr = async (
     path,
     method = 'GET',
@@ -17,7 +19,7 @@ const promisedXhr = async (
         headers['Content-Type'] = 'application/x-www-form-urlencoded';
     }
 
-    const bearerToken = sessionStorage.getItem("bearerToken");
+    const bearerToken = useAuthStore().credentials.bearerToken;
 
     if (bearerToken) {
         headers['Authorization'] = 'Bearer ' + bearerToken;

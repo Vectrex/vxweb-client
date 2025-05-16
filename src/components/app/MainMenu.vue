@@ -1,9 +1,10 @@
 <script setup>
-  import router from "@/router"
+  import { useAuthStore } from '@/stores/auth'
+  import router from '@/router'
 
   const props = defineProps({ expanded: Boolean })
   const linkedRoutes = router.options.routes.filter(route => route.meta?.label)
-  const userRoles = JSON.parse(sessionStorage.getItem('currentUser'))?.roles || []
+  const userRoles = useAuthStore().credentials.user?.roles || []
 </script>
 
 <template>
