@@ -1,6 +1,6 @@
 <script setup>
   import { useAuthStore } from '@/stores/auth'
-  import { PasswordInput, SubmitButton } from 'vx-vue'
+  import { PasswordInput, SubmitButton, VFloatingLabel } from 'vx-vue'
   import Divider from '@/components/misc/divider.vue'
   import { vxFetch } from '@/composables/vxFetch'
   import { onMounted, ref } from 'vue'
@@ -8,11 +8,11 @@
   const emit = defineEmits(['notify', 'fetch-error', 'cancel'])
 
   const fields = [
-    { model: 'username', label: 'Username', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-    { model: 'email', label: 'E-Mail', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-    { model: 'name', label: 'Name', attrs: { maxlength: 128, autocomplete: "off" }, required: true },
-    { type: PasswordInput, model: 'new_PWD', label: 'Neues Passwort', attrs: { maxlength: 128, autocomplete: "off" } },
-    { type: PasswordInput, model: 'new_PWD_verify', label: 'Passwort wiederholen', attrs: { maxlength: 128, autocomplete: "off" } }
+    { model: 'username', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { model: 'email', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { model: 'name', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { type: PasswordInput, model: 'new_PWD', attrs: { placeholder: 'Neues Passwort', maxlength: 128, autocomplete: "off", class: "w-full" }},
+    { type: PasswordInput, model: 'new_PWD_verify', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
   ]
   const authStore = useAuthStore()
   const form = ref({})
@@ -40,26 +40,31 @@
 <template>
   <div class="space-y-4">
     <div class="space-y-2">
-      <div v-for="field in fields" :key="field.model">
-        <label :for="field.model" :class=" { required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
-        <div>
+
+
+      <div v-for="field in fields" :key="field.model" class="relative">
+        <template v-if="!field.type">
           <input
-            v-if="!field.type"
             :id="field.model"
             v-model.trim="form[field.model]"
-            class="form-input w-full"
+            v-floating-label="{ invalid: errors[field.model] }"
+            :required="field.required"
+            v-bind="field.attrs.value || field.attrs"
           >
+        </template>
+        <template v-else>
           <component
             :is="field.type"
-            v-else
             :id="field.model"
             v-model.trim="form[field.model]"
-            class="w-full"
+            v-floating-label="{ invalid: errors[field.model] }"
+            :required="field.required"
+            v-bind="field.attrs.value || field.attrs"
           />
-          <p v-if="errors[field.model]" class="text-sm text-error">
-            {{ errors[field.model] }}
-          </p>
-        </div>
+        </template>
+        <p v-if="errors[field.model]" class="text-sm text-error">
+          {{ errors[field.model] }}
+        </p>
       </div>
     </div>
 
