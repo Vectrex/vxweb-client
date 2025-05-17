@@ -18,7 +18,7 @@
   const disablePasswordReset = JSON.parse((import.meta.env.VITE_DISABLE_PASSWORD_RESET || 'true').toLowerCase())
 
   const submit = async () => {
-    if (form.value.username?.trim() && form.value.password?.trim()) {
+    if (form.value.username && form.value.password) {
       busy.value = true
       const response = (await doFetch('login').post(JSON.stringify(form.value)).json()).data.value
       busy.value = false
