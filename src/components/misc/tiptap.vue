@@ -18,13 +18,13 @@
     CodeBracketSquareIcon,
     LinkIcon,
     PhotoIcon,
-    XMarkIcon,
     TrashIcon,
     CheckIcon
   } from '@heroicons/vue/24/solid'
-  import { Modal } from "vx-vue"
-  import tiptapFiles from "@/components/misc/tiptap-files.vue"
-  import { onBeforeUnmount, ref, watch } from "vue"
+  import { Modal } from 'vx-vue'
+  import tiptapFiles from '@/components/misc/tiptap-files.vue'
+  import FormTitle from '@/components/views/shared/FormTitle.vue'
+  import { onBeforeUnmount, ref, watch } from 'vue'
 
   const props = defineProps({ modelValue: { type: String, default: '' }, fileManagerDisable: Boolean })
   const emit = defineEmits(['update:modelValue', 'openFileManager'])
@@ -136,14 +136,11 @@
     <editor-content :editor="editor" class="w-full max-w-none prose" />
     <textarea v-if="showSrc" class="my-2 w-full text-sm form-textarea" :value="modelValue" @blur="emit('update:modelValue', $event.target.value)" />
 
-    <modal :show="showModal">
+    <modal :show="showModal" container-class="w-full lg:w-3/4 max-h-[90vh]">
       <template #title>
-        <div class="flex fixed justify-between items-center px-4 w-full h-16 bg-vxvue-500">
-          <span class="text-xl font-bold text-white">{{ onlyImages ? 'Bilddatei selektieren...' : 'Zieladresse eingeben oder Datei wählen...' }}</span>
-          <button @click="showModal = false">
-            <x-mark-icon class="text-white size-5" />
-          </button>
-        </div>
+        <form-title @cancel="showModal = false">
+          {{ onlyImages ? 'Bilddatei selektieren...' : 'Zieladresse eingeben oder Datei wählen...' }}
+        </form-title>
       </template>
       <template #default>
         <div class="py-4 space-y-4">

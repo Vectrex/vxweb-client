@@ -12,7 +12,8 @@
   const cols = [
     {
       label: "",
-      prop: "checked"
+      prop: "checked",
+      cssClass: "w-6"
     },
     {
       label: "Dateiname",

@@ -1,19 +1,19 @@
 <script setup>
-  import FileEditForm from "@/components/views/files/FileEditForm.vue"
-  import FolderEditForm from "@/components/views/files/FolderEditForm.vue"
-  import FilemanagerActions from "@/components/views/files/FilemanagerActions.vue"
-  import FilemanagerAdd from "@/components/views/files/FilemanagerAdd.vue"
-  import FilemanagerBreadcrumbs from "@/components/views/files/FilemanagerBreadcrumbs.vue"
-  import FilemanagerSearch from "@/components/views/files/FilemanagerSearch.vue"
-  import FolderTree from "@/components/views/files/FolderTree.vue"
-  import { Confirm, Sortable, VFocus } from "vx-vue"
+  import FileEditForm from '@/components/views/files/FileEditForm.vue'
+  import FolderEditForm from '@/components/views/files/FolderEditForm.vue'
+  import FilemanagerActions from '@/components/views/files/FilemanagerActions.vue'
+  import FilemanagerAdd from '@/components/views/files/FilemanagerAdd.vue'
+  import FilemanagerBreadcrumbs from '@/components/views/files/FilemanagerBreadcrumbs.vue'
+  import FilemanagerSearch from '@/components/views/files/FilemanagerSearch.vue'
+  import FolderTree from '@/components/views/files/FolderTree.vue'
+  import { Confirm, Sortable, VFocus } from 'vx-vue'
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
   import { urlQueryCreate } from '@/util/url-query'
-  import { formatFilesize } from "@/composables/formatFilesize"
-  import { vxFetch } from "@/composables/vxFetch"
-  import { promisedXhr } from "@/util/promisedXhr"
-  import router from "@/router"
-  import {computed, nextTick, ref, watch } from "vue"
+  import { formatFilesize } from '@/composables/formatFilesize'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { promisedXhr } from '@/util/promisedXhr'
+  import router from '@/router'
+  import {computed, nextTick, ref, watch } from 'vue'
 
   const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id', 'fetch-error'])
   const props = defineProps({
@@ -293,93 +293,91 @@
       <div v-if="!isModal" id="search-input" />
     </div>
 
-    <div class="grid">
-      <div class="overflow-hidden rounded-sm ring-1 shadow-sm ring-black/5">
-        <div class="overflow-x-auto">
-          <sortable
-            ref="sortable"
-            :rows="directoryEntries"
-            :columns="columns"
-            :sort-prop="initSort.prop"
-            :sort-direction="initSort.dir"
-            @after-sort="emit('after-sort', $event)"
-          >
-            <template #checked-header>
-              <input
-                ref="multiCheckbox"
-                type="checkbox"
-                :checked="multiCheckValue"
-                :indeterminate="multiCheckValue === undefined"
-                class="form-checkbox"
-                @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked)"
-              >
-            </template>
+    <div class="overflow-hidden rounded-sm ring-1 shadow-sm ring-black/5">
+      <div class="overflow-x-auto">
+        <sortable
+          ref="sortable"
+          :rows="directoryEntries"
+          :columns="columns"
+          :sort-prop="initSort.prop"
+          :sort-direction="initSort.dir"
+          @after-sort="emit('after-sort', $event)"
+        >
+          <template #checked-header>
+            <input
+              ref="multiCheckbox"
+              type="checkbox"
+              :checked="multiCheckValue"
+              :indeterminate="multiCheckValue === undefined"
+              class="form-checkbox"
+              @click="[...folders, ...files].forEach(item => item.checked = $event.target.checked)"
+            >
+          </template>
 
-            <template #checked="{ row }">
-              <input v-model="row.checked" type="checkbox" class="form-checkbox">
-            </template>
+          <template #checked="{ row }">
+            <input v-model="row.checked" type="checkbox" class="form-checkbox">
+          </template>
 
-            <template #name="{ row }">
-              <div class="flex items-center space-x-1 group">
-                <template v-if="row.isFolder">
-                  <input
-                    v-if="row === toRename"
-                    v-focus
-                    class="form-input"
-                    :value="row.name"
-                    @keydown.enter="rename($event, 'folder')"
-                    @keydown.esc="toRename = null"
-                    @blur="toRename = null"
-                  >
-                  <template v-else>
-                    <a :href="'#' + row.id" class="link" @click.prevent="emit('update:folder-id', row.id)">{{ row.name }}</a>
-                    <button
-                      class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
-                      @click="toRename = row"
-                    >
-                      <pencil-square-icon class="size-5" />
-                    </button>
-                  </template>
-                </template>
+          <template #name="{ row }">
+            <div class="flex items-center space-x-1 group">
+              <template v-if="row.isFolder">
+                <input
+                  v-if="row === toRename"
+                  v-focus
+                  class="form-input"
+                  :value="row.name"
+                  @keydown.enter="rename($event, 'folder')"
+                  @keydown.esc="toRename = null"
+                  @blur="toRename = null"
+                >
                 <template v-else>
-                  <input
-                    v-if="row === toRename"
-                    v-focus
-                    class="form-input"
-                    :value="row.name"
-                    @keydown.enter="rename($event, 'file')"
-                    @keydown.esc="toRename = null"
-                    @blur="toRename = null"
+                  <a :href="'#' + row.id" class="link" @click.prevent="emit('update:folder-id', row.id)">{{ row.name }}</a>
+                  <button
+                    class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
+                    @click="toRename = row"
                   >
-                  <template v-else>
-                    <span>{{ row.name }}</span>
-                    <button
-                      class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
-                      @click="toRename = row"
-                    >
-                      <pencil-square-icon class="size-5" />
-                    </button>
-                  </template>
+                    <pencil-square-icon class="size-5" />
+                  </button>
                 </template>
-              </div>
-            </template>
-
-            <template #size="{ row }">
-              <template v-if="!row.isFolder">
-                {{ formatFilesize(row.size, ',').formatted.value }}
               </template>
-            </template>
+              <template v-else>
+                <input
+                  v-if="row === toRename"
+                  v-focus
+                  class="form-input"
+                  :value="row.name"
+                  @keydown.enter="rename($event, 'file')"
+                  @keydown.esc="toRename = null"
+                  @blur="toRename = null"
+                >
+                <template v-else>
+                  <span class="overflow-hidden text-ellipsis">{{ row.name }}</span>
+                  <button
+                    class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
+                    @click="toRename = row"
+                  >
+                    <pencil-square-icon class="size-5" />
+                  </button>
+                </template>
+              </template>
+            </div>
+          </template>
 
-            <template #type="{ row }">
-              <img v-if="row.image" :src="row.src" alt="" class="thumb">
-              <span v-else>{{ row.type }}</span>
+          <template #size="{ row }">
+            <template v-if="!row.isFolder">
+              {{ formatFilesize(row.size, ',').formatted.value }}
             </template>
+          </template>
 
-            <template v-for="(_, name) in $slots" #[name]="slotData">
-              <slot :name="name" v-bind="slotData" />
-            </template>
-          </sortable>
-        </div>
+          <template #type="{ row }">
+            <img v-if="row.image" :src="row.src" alt="" class="thumb">
+            <span v-else>{{ row.type }}</span>
+          </template>
+
+          <template v-for="(_, name) in $slots" #[name]="slotData">
+            <slot :name="name" v-bind="slotData" />
+          </template>
+        </sortable>
       </div>
     </div>
   </div>
