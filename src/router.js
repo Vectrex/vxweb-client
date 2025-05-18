@@ -13,7 +13,7 @@ const routes = [
         component: lazyLoad('Login'),
         meta: {
             noAuth: true,
-            layout: 'LoginLayout',
+            layout: 'BareLayout',
         }
     },
     {
@@ -91,7 +91,7 @@ const routes = [
         path: '/:pathMatch(.*)',
         component: lazyLoad('404'),
         meta: {
-            layout: 'LoginLayout'
+            layout: 'BareLayout'
         }
     }
 ]
