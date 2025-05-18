@@ -5,7 +5,6 @@
   import router from '@/router'
 
   const authStore = useAuthStore()
-  const user = ref({})
   const toast = ref({})
   const layout = computed(() => router.currentRoute.value?.meta.layout || 'DefaultLayout')
 
@@ -49,7 +48,7 @@
     <router-view
       @notify="notify"
       @fetch-error="handleFetchError"
-  />
+    />
   </component>
 
   <message-toast

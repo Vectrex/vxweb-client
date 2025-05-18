@@ -88,7 +88,11 @@ const routes = [
         }
     },
     {
-        path: '/:pathMatch(.*)', component: lazyLoad('404')
+        path: '/:pathMatch(.*)',
+        component: lazyLoad('404'),
+        meta: {
+            layout: 'LoginLayout'
+        }
     }
 ]
 
