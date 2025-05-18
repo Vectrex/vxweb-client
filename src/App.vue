@@ -28,14 +28,10 @@
     }
   }
   onMounted(async () => {
-    onMounted(async () => {
-      await router.isReady()
-      const currentRoute = router.currentRoute.value
-      if (!currentRoute.meta?.noAuth && !authStore.credentials.bearerToken) {
-        await router.replace({ name: 'login' })
-      }
-    })
-
+    await router.isReady()
+    if (!router.currentRoute.value.meta?.noAuth && !authStore.credentials.bearerToken) {
+      await router.replace({ name: 'login' })
+    }
   })
 </script>
 
