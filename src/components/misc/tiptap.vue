@@ -26,8 +26,9 @@
   import FormTitle from '@/components/views/shared/FormTitle.vue'
   import { onBeforeUnmount, ref, watch } from 'vue'
 
-  const props = defineProps({ modelValue: { type: String, default: '' }, fileManagerDisable: Boolean })
-  const emit = defineEmits(['update:modelValue', 'openFileManager'])
+  const model = defineModel({ type: String, default: '' })
+  const props = defineProps({ fileManagerDisable: Boolean })
+  const emit = defineEmits(['openFileManager'])
   const showSrc = ref(false)
   const showModal = ref(false)
   const onlyImages = ref(false)
@@ -57,8 +58,8 @@
         }
       })
     ],
-    content: props.modelValue,
-    onUpdate: () => emit('update:modelValue', editor.getHTML())
+    content: model.value,
+    onUpdate: () => model.value = editor.getHTML()
   })
   const buttonClass = (isActive = null) => 'icon-link' + (isActive && editor.isActive(isActive) ? ' bg-slate-400' : '')
   const pickLink = () => {
@@ -90,7 +91,7 @@
     showModal.value = false
   }
 
-  watch (() => props.modelValue, v => { if(editor.getHTML() !== v) { editor.commands.setContent(v, false) }})
+  watch (model, v => { if(editor.getHTML() !== v) { editor.commands.setContent(v, false) }})
   onBeforeUnmount(() => editor.destroy())
 </script>
 
@@ -134,7 +135,7 @@
       </div>
     </div>
     <editor-content :editor="editor" class="w-full max-w-none prose" />
-    <textarea v-if="showSrc" class="my-2 w-full text-sm form-textarea" :value="modelValue" @blur="emit('update:modelValue', $event.target.value)" />
+    <textarea v-if="showSrc" class="my-2 w-full text-sm form-textarea" :value="model" @blur="model = $event.target.value" />
 
     <modal :show="showModal" container-class="w-full lg:w-3/4 max-h-[90vh]">
       <template #title>
