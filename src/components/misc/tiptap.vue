@@ -12,6 +12,7 @@
   import History from '@tiptap/extension-history'
   import Link from '@tiptap/extension-link'
   import Image from '@tiptap/extension-image'
+  import {Heading} from '@tiptap/extension-heading'
   import {
     ArrowUturnLeftIcon,
     ArrowUturnRightIcon,
@@ -38,6 +39,7 @@
       Document,
       Text,
       Paragraph,
+      Heading,
       HardBreak,
       History,
       BulletList,
