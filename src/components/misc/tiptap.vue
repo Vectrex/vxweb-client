@@ -39,7 +39,7 @@
       Document,
       Text,
       Paragraph,
-      Heading,
+      Heading.configure({ levels: [1, 2, 3, 4] }),
       HardBreak,
       History,
       BulletList,
@@ -63,7 +63,8 @@
     content: model.value,
     onUpdate: () => model.value = editor.getHTML()
   })
-  const buttonClass = (isActive = null) => 'icon-link' + (isActive && editor.isActive(isActive) ? ' bg-slate-400' : '')
+  const buttonClass = (isActive = null, params = {}) => 'icon-link' + (isActive && editor.isActive(isActive, params) ? ' bg-slate-400' : '')
+  const toggleStyle = (style, params = {}) => editor.chain().focus()['toggle' + (style && String(style[0]).toUpperCase() + String(style).slice(1))](params).run()
   const pickLink = () => {
     onlyImages.value = false
     showModal.value = true
@@ -109,18 +110,24 @@
         </button>
       </div>
       <div class="flex px-1 space-x-1 border-r border-slate-500">
-        <button :class="buttonClass('bold')" @click="editor.chain().focus().toggleBold().run()">
+        <button :class="buttonClass('bold')" @click="toggleStyle('bold')">
           <strong class="block h-5">Ab</strong>
         </button>
-        <button :class="buttonClass('italic')" @click="editor.chain().focus().toggleItalic().run()">
+        <button :class="buttonClass('italic')" @click="toggleStyle('italic')">
           <em class="block h-5">Ab</em>
         </button>
-        <button :class="buttonClass()" @click="editor.commands.toggleBulletList()">
+        <button :class="buttonClass('bulletList')" @click="toggleStyle('bulletList')">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5"><path fill="none" d="M0 0h24v24H0z" /><path d="M8 4h13v2H8V4zM4.5 6.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm0 6.9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor" /></svg>
         </button>
-        <button :class="buttonClass()" @click="editor.commands.toggleOrderedList()">
+        <button :class="buttonClass('orderedList')" @click="toggleStyle('orderedList')">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5"><path fill="none" d="M0 0h24v24H0z" /><path d="M8 4h13v2H8V4zM5 3v3h1v1H3V6h1V4H3V3h2zM3 14v-2.5h2V11H3v-1h3v2.5H4v.5h2v1H3zm2 5.5H3v-1h2V18H3v-1h3v4H3v-1h2v-.5zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor" /></svg>
         </button>
+        <button :class="buttonClass('heading', { level: 2 })" @click="toggleStyle('heading', { level: 2 })">
+          h2
+        </button>
+        <select class="form-select" @change="toggleStyle('heading', { level: $event.target.value })">
+          <option v-for="i in [1, 2, 3, 4]" :value="i" :class="buttonClass('heading', { level: i })">H{{ i }}</option>
+        </select>
       </div>
       <div class="flex px-1 space-x-1 border-r border-slate-500">
         <button :class="buttonClass('link')" @click="pickLink">
