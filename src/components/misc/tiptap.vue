@@ -12,7 +12,7 @@
   import History from '@tiptap/extension-history'
   import Link from '@tiptap/extension-link'
   import Image from '@tiptap/extension-image'
-  import {Heading} from '@tiptap/extension-heading'
+  import Heading from '@tiptap/extension-heading'
   import {
     ArrowUturnLeftIcon,
     ArrowUturnRightIcon,
@@ -122,11 +122,16 @@
         <button :class="buttonClass('orderedList')" @click="toggleStyle('orderedList')">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="size-5"><path fill="none" d="M0 0h24v24H0z" /><path d="M8 4h13v2H8V4zM5 3v3h1v1H3V6h1V4H3V3h2zM3 14v-2.5h2V11H3v-1h3v2.5H4v.5h2v1H3zm2 5.5H3v-1h2V18H3v-1h3v4H3v-1h2v-.5zM8 11h13v2H8v-2zm0 7h13v2H8v-2z" fill="currentColor" /></svg>
         </button>
-        <button :class="buttonClass('heading', { level: 2 })" @click="toggleStyle('heading', { level: 2 })">
-          h2
-        </button>
-        <select class="form-select" @change="toggleStyle('heading', { level: $event.target.value })">
-          <option v-for="i in [1, 2, 3, 4]" :value="i" :class="buttonClass('heading', { level: i })">H{{ i }}</option>
+        <select class="form-select">
+          <option value="" :disabled="true" :selected="!editor.isActive('heading')">Überschrift</option>
+          <option
+            v-for="i in [1, 2, 3, 4]"
+            :value="i"
+            :selected="editor.isActive('heading', { level: i })"
+            @click="toggleStyle('heading', { level: i })"
+          >
+            H{{ i }}
+          </option>
         </select>
       </div>
       <div class="flex px-1 space-x-1 border-r border-slate-500">
@@ -144,7 +149,7 @@
       </div>
     </div>
     <editor-content :editor="editor" class="w-full max-w-none prose" />
-    <textarea v-if="showSrc" class="my-2 w-full text-sm form-textarea" :value="model" @blur="model = $event.target.value" />
+    <textarea v-if="showSrc" class="my-2 w-full min-h-32 text-sm form-textarea" :value="model" @blur="model = $event.target.value" />
 
     <modal :show="showModal" container-class="w-full lg:w-3/4 max-h-[90vh]">
       <template #title>
