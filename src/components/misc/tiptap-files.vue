@@ -1,8 +1,8 @@
 <script setup>
-  import Filemanager from "@/components/views/files/Filemanager.vue"
+  import Filemanager from '@/components/views/files/Filemanager.vue'
   import { ArrowTopRightOnSquareIcon } from '@heroicons/vue/24/solid'
-  import { getSort, storeSort } from "@/util/storeSort"
-  import { ref } from "vue"
+  import { getSort, storeSort } from '@/util/storeSort'
+  import { ref } from 'vue'
 
   const props = defineProps({ folderId: { type: [String, Number], default: null }, onlyImages: Boolean })
   const emit = defineEmits(['notify', 'pickFile'])

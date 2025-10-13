@@ -1,8 +1,8 @@
 <script setup>
-  import { SubmitButton, VFloatingLabel } from "vx-vue"
-  import FormDialog from "@/components/views/shared/FormDialog.vue"
-  import { vxFetch } from "@/composables/vxFetch"
-  import { computed, ref, watch } from "vue"
+  import { SubmitButton, VFloatingLabel } from 'vx-vue'
+  import FormDialog from '@/components/views/shared/FormDialog.vue'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { computed, ref, watch } from 'vue'
 
   const props = defineProps({ id: { type: Number, default: null }})
   const emit = defineEmits(['cancel', 'response-received', 'fetch-error'])

@@ -1,9 +1,9 @@
 <script setup>
-  import { Bars3Icon } from "@heroicons/vue/24/solid"
-  import MainMenu from "@/components/app/MainMenu.vue"
-  import AccountInfo from "@/components/app/AccountInfo.vue"
-  import Logo from "@/components/misc/logo.vue"
-  import { ref } from "vue"
+  import { Bars3Icon } from '@heroicons/vue/24/solid'
+  import MainMenu from '@/components/app/MainMenu.vue'
+  import AccountInfo from '@/components/app/AccountInfo.vue'
+  import Logo from '@/components/misc/logo.vue'
+  import { ref } from 'vue'
 
   const emit = defineEmits(['notify', 'fetch-error'])
   const sideBarExpanded = ref(false)

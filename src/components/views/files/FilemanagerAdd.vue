@@ -1,8 +1,8 @@
 <script setup>
-  import { VFocus } from "vx-vue"
+  import { VFocus } from 'vx-vue'
   import { DocumentArrowUpIcon, FolderPlusIcon } from '@heroicons/vue/24/solid'
-  import { onClickOutside } from "@vueuse/core"
-  import { ref } from "vue"
+  import { onClickOutside } from '@vueuse/core'
+  import { ref } from 'vue'
 
   const props = defineProps({ multiple: { type: Boolean, default: true }})
   const emit = defineEmits(['upload', 'create-folder', 'close'])

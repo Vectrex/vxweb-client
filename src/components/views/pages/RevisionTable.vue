@@ -1,8 +1,8 @@
 <script setup>
-  import { FormSwitch } from "vx-vue"
+  import { FormSwitch } from 'vx-vue'
   import { EyeIcon, TrashIcon } from '@heroicons/vue/24/solid'
-  import { computed } from "vue"
-  import { useDateFormat } from "@vueuse/core"
+  import { useDateFormat } from '@vueuse/core'
+  import { computed } from 'vue'
 
   const emit = defineEmits(['activate-revision', 'load-revision', 'delete-revision'])
   const props = defineProps({ revisions: { type: Array, default: () => [] }})

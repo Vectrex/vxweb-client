@@ -1,8 +1,9 @@
 <script setup>
-  import FormDialog from "@/components/views/shared/FormDialog.vue"
-  import { FormSelect, PasswordInput, SubmitButton, VFloatingLabel } from "vx-vue"
-  import { computed, ref, watch } from "vue"
-  import { vxFetch } from "@/composables/vxFetch"
+  import FormDialog from '@/components/views/shared/FormDialog.vue'
+  import Divider from '@/components/misc/divider.vue'
+  import { FormSelect, PasswordInput, SubmitButton, VFloatingLabel } from 'vx-vue'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { computed, ref, watch } from 'vue'
 
   const emit = defineEmits(['cancel', 'response-received', 'fetch-error'])
   const props = defineProps({
@@ -13,10 +14,15 @@
   const adminGroups = ref([])
   const busy = ref(false)
   const sanitizedForm = computed(() => {
-    let sanitized = {}
+    let sanitized = { misc: {} }
     for (const [key, value] of Object.entries(form.value)) {
       if(value !== null) {
-        sanitized[key] = value
+        if (key.startsWith('misc.')) {
+          sanitized.misc[key.replace('misc.', '')] = value
+        }
+        else {
+          sanitized[key] = value
+        }
       }
     }
     return sanitized
@@ -47,6 +53,12 @@
     if (response) {
       adminGroups.value = response.options?.admingroupsid || []
       form.value = response.form || {}
+      if (form.value.misc) {
+        for (const [key, value] of Object.entries(form.value.misc)) {
+          form.value[`misc.${key}`] = value
+        }
+        unset(form.value, 'misc')
+      }
     }
     else {
       emit('cancel')
@@ -60,22 +72,22 @@
     </template>
     <template #content>
       <div class="p-4 space-y-2">
-        <div v-for="field in fields" :key="field.model" class="relative">
+        <div v-for="field in fields" :key="field.model">
           <template v-if="!field.type">
             <input
               :id="field.model"
-              :required="field.required"
               v-model.trim="form[field.model]"
-              v-bind="field.attrs.value || field.attrs"
               v-floating-label="{ invalid: errors[field.model] }"
+              :required="field.required"
+              v-bind="field.attrs.value || field.attrs"
             >
           </template>
           <template v-else>
             <component
               :is="field.type"
               :id="field.model"
-              :required="field.required"
               v-model.trim="form[field.model]"
+              :required="field.required"
               v-bind="field.attrs.value || field.attrs"
             >
             </component>
@@ -84,6 +96,32 @@
             {{ errors[field.model] }}
           </p>
         </div>
+        <divider v-if="miscFields.length">Zusatzinformationen</divider>
+        <div v-for="field in miscFields" :key="field.model">
+          <template v-if="!field.type">
+            <input
+              :id="field.model"
+              v-model.trim="form[field.model]"
+              v-floating-label="{ invalid: errors[field.model] }"
+              :required="field.required"
+              v-bind="field.attrs.value || field.attrs"
+            >
+          </template>
+          <template v-else>
+            <component
+              :is="field.type"
+              :id="field.model"
+              v-model.trim="form[field.model]"
+              :required="field.required"
+              v-bind="field.attrs.value || field.attrs"
+            >
+            </component>
+          </template>
+          <p v-if="errors[field.model]" class="text-sm text-error">
+            {{ errors[field.model] }}
+          </p>
+        </div>
+
         <submit-button :busy="busy" theme="success" class="button" @submit="submit">
           {{ form.id ? 'Daten übernehmen' : 'User anlegen' }}
         </submit-button>

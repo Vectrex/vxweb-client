@@ -1,9 +1,9 @@
 <script setup>
-  import { Modal, Spinner, VFocus } from "vx-vue"
-  import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/vue/24/solid"
-  import { urlQueryCreate } from "@/util/url-query"
-  import { vxFetch } from "@/composables/vxFetch"
-  import { ref } from "vue"
+  import { Modal, Spinner, VFocus } from 'vx-vue'
+  import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/solid'
+  import { urlQueryCreate } from '@/util/url-query'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { ref } from 'vue'
 
   const emit = defineEmits(['folder-picked','fetch-error'])
   const props = defineProps({

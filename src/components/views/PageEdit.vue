@@ -1,10 +1,10 @@
 <script setup>
-  import Headline from "@/components/app/Headline.vue"
-  import PageForm from "@/components/views/pages/PageForm.vue"
-  import RevisionTable from "@/components/views/pages/RevisionTable.vue"
-  import { vxFetch } from "@/composables/vxFetch"
-  import router from "@/router"
-  import { onMounted, ref } from "vue"
+  import Headline from '@/components/app/Headline.vue'
+  import PageForm from '@/components/views/pages/PageForm.vue'
+  import RevisionTable from '@/components/views/pages/RevisionTable.vue'
+  import { vxFetch } from '@/composables/vxFetch'
+  import router from '@/router'
+  import { onMounted, ref } from 'vue'
 
   const props = defineProps({ id: { type: [String, Number], default: null }})
   const emit = defineEmits(['notify', 'fetch-error'])

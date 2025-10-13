@@ -1,10 +1,10 @@
 <script setup>
-  import { Confirm, Sortable } from "vx-vue"
-  import Headline from "@/components/app/Headline.vue"
+  import { Confirm, Sortable } from 'vx-vue'
+  import Headline from '@/components/app/Headline.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
-  import { storeSort, getSort } from "@/util/storeSort"
-  import { vxFetch } from "@/composables/vxFetch"
-  import { ref, onMounted } from "vue"
+  import { storeSort, getSort } from '@/util/storeSort'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { ref, onMounted } from 'vue'
 
   const emit = defineEmits(['notify', 'fetch-error'])
   const cols = [
@@ -36,7 +36,7 @@
 <template>
   <teleport defer to="#tools">
     <headline>
-      <span>{{ $route.meta?.heading }}</span>
+      <span>{{ $route.meta?.heading || $route.meta?.label }}</span>
       <button
         class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
         @click="$router.push({ name: 'pageEdit' })"

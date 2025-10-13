@@ -1,12 +1,12 @@
 <script setup>
   import { useAuthStore } from '@/stores/auth'
-  import { Confirm, Sortable } from "vx-vue"
-  import Headline from "@/components/app/Headline.vue"
-  import UserForm from "@/components/views/users/UserForm.vue"
+  import { Confirm, Sortable } from 'vx-vue'
+  import Headline from '@/components/app/Headline.vue'
+  import UserForm from '@/components/views/users/UserForm.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
-  import { ref, onMounted } from "vue"
-  import { vxFetch } from "@/composables/vxFetch"
-  import { storeSort, getSort } from "@/util/storeSort"
+  import { vxFetch } from '@/composables/vxFetch'
+  import { storeSort, getSort } from '@/util/storeSort'
+  import { ref, onMounted } from 'vue'
 
   const emit = defineEmits(['notify', 'fetch-error'])
 
@@ -58,7 +58,7 @@
 <template>
   <teleport defer to="#tools">
     <headline>
-      <span>Benutzer</span>
+      <span>{{ $route.meta?.heading || $route.meta?.label }}</span>
       <button
         class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
         @click="edit(null)"

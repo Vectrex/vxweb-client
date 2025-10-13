@@ -1,8 +1,8 @@
 <script setup>
-  import Tiptap from "@/components/misc/tiptap.vue"
-  import { SubmitButton } from "vx-vue"
-  import { vxFetch } from "@/composables/vxFetch"
-  import { ref, watch } from "vue"
+  import Tiptap from '@/components/misc/tiptap.vue'
+  import { SubmitButton } from 'vx-vue'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { ref, watch } from 'vue'
 
   const emit = defineEmits(['response-received', 'open-file-manager', 'fetch-error'])
   const props = defineProps({

@@ -1,6 +1,6 @@
 <script setup>
   import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid'
-  import { getCurrentInstance } from "vue"
+  import { getCurrentInstance } from 'vue'
 
   const instance = getCurrentInstance()
   const props = defineProps({

@@ -1,5 +1,5 @@
 <script setup>
-  import { FormSelect } from "vx-vue"
+  import { FormSelect } from 'vx-vue'
   const props = defineProps({
     modelValue: { type: Object, default: () => ({}) },
     options: { type: Object, default: () => ({}) },

@@ -1,10 +1,10 @@
 <script setup>
-  import FormDialog from "@/components/views/shared/FormDialog.vue"
-  import Divider from "@/components/misc/divider.vue"
-  import { SubmitButton, VFloatingLabel } from "vx-vue"
+  import FormDialog from '@/components/views/shared/FormDialog.vue'
+  import Divider from '@/components/misc/divider.vue'
+  import { SubmitButton, VFloatingLabel } from 'vx-vue'
   import { formatFilesize } from '@/composables/formatFilesize'
-  import { vxFetch } from "@/composables/vxFetch"
-  import { computed, ref, watch } from "vue"
+  import { vxFetch } from '@/composables/vxFetch'
+  import { computed, ref, watch } from 'vue'
 
   const props = defineProps({ id: { type: Number, default: null }})
   const emit = defineEmits(['cancel', 'response-received', 'fetch-error'])

@@ -1,12 +1,12 @@
 <script setup>
-  import { Tabs } from "vx-vue"
-  import Headline from "@/components/app/Headline.vue"
-  import ArticleForm from "@/components/views/articles/ArticleForm.vue"
-  import ArticleFiles from "@/components/views/articles/ArticleFiles.vue"
-  import LinkedFiles from "@/components/views/articles/LinkedFiles.vue"
-  import { vxFetch } from "@/composables/vxFetch"
-  import router from "@/router"
-  import { computed, onMounted, ref } from "vue"
+  import { Tabs } from 'vx-vue'
+  import Headline from '@/components/app/Headline.vue'
+  import ArticleForm from '@/components/views/articles/ArticleForm.vue'
+  import ArticleFiles from '@/components/views/articles/ArticleFiles.vue'
+  import LinkedFiles from '@/components/views/articles/LinkedFiles.vue'
+  import { vxFetch } from '@/composables/vxFetch'
+  import router from '@/router'
+  import { computed, onMounted, ref } from 'vue'
 
   const emit = defineEmits(['notify', 'fetch-error'])
   const props = defineProps({

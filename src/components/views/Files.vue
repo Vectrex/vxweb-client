@@ -1,10 +1,10 @@
 <script setup>
-  import Headline from "@/components/app/Headline.vue"
-  import Filemanager from "@/components/views/files/Filemanager.vue"
+  import Headline from '@/components/app/Headline.vue'
+  import Filemanager from '@/components/views/files/Filemanager.vue'
   import { PencilSquareIcon, DocumentMinusIcon, DocumentPlusIcon, PlayIcon, TrashIcon } from '@heroicons/vue/24/solid'
-  import { getSort, storeSort } from "@/util/storeSort"
-  import router from "@/router"
-  import { ref } from "vue"
+  import { getSort, storeSort } from '@/util/storeSort'
+  import router from '@/router'
+  import { ref } from 'vue'
 
   const props = defineProps({ folderId: { type: [String, Number], default: null }})
   const emit = defineEmits(['notify', 'fetch-error'])
@@ -36,7 +36,9 @@
 </script>
 <template>
   <teleport defer to="#tools">
-    <headline>Dateien</headline>
+    <headline>
+      <span>{{ $route.meta?.heading || $route.meta?.label }}</span>
+    </headline>
   </teleport>
 
   <filemanager

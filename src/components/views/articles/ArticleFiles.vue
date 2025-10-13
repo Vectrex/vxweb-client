@@ -1,11 +1,11 @@
 <script setup>
-  import Filemanager from "@/components/views/files/Filemanager.vue"
-  import { FormSwitch } from "vx-vue"
+  import Filemanager from '@/components/views/files/Filemanager.vue'
+  import { FormSwitch } from 'vx-vue'
   import { PencilSquareIcon, TrashIcon, DocumentMinusIcon, PlayIcon, DocumentPlusIcon } from '@heroicons/vue/24/solid'
-  import { getSort, storeSort } from "@/util/storeSort"
-  import { vxFetch } from "@/composables/vxFetch"
-  import router from "@/router"
-  import { ref } from "vue"
+  import { getSort, storeSort } from '@/util/storeSort'
+  import { vxFetch } from '@/composables/vxFetch'
+  import router from '@/router'
+  import { ref } from 'vue'
 
   const props = defineProps({
     articleId: { type: [Number, String], default: null },

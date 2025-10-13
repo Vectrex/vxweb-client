@@ -1,7 +1,7 @@
 <script setup>
-  import { PasswordInput, SubmitButton, VFloatingLabel, VFocus } from "vx-vue"
-  import { vxFetch } from "@/composables/vxFetch"
-  import { ref } from "vue"
+  import { PasswordInput, SubmitButton, VFloatingLabel, VFocus } from 'vx-vue'
+  import { vxFetch } from '@/composables/vxFetch'
+  import { ref } from 'vue'
 
   const emit = defineEmits(['notify'])
   const success = ref(false)

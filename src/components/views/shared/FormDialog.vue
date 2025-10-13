@@ -1,5 +1,5 @@
 <script setup>
-  import FormTitle from "@/components/views/shared/FormTitle.vue"
+  import FormTitle from '@/components/views/shared/FormTitle.vue'
   const emit = defineEmits(['cancel'])
 </script>
 <template>

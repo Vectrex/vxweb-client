@@ -1,10 +1,9 @@
 <script setup>
-  import FormTitle from "@/components/views/shared/FormTitle.vue"
-  import { SimpleTree } from "vx-vue"
+  import { SimpleTree } from 'vx-vue'
   import { urlQueryCreate } from '@/util/url-query'
-  import { vxFetch } from "@/composables/vxFetch"
-  import { ref } from "vue"
-  import FormDialog from "@/components/views/shared/FormDialog.vue";
+  import { vxFetch } from '@/composables/vxFetch'
+  import FormDialog from '@/components/views/shared/FormDialog.vue'
+  import { ref } from 'vue'
 
   const emit = defineEmits(['fetch-error'])
   const root = ref({})
