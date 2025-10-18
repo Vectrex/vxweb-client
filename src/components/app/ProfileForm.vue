@@ -43,25 +43,23 @@
 
 
       <div v-for="field in fields" :key="field.model" class="relative">
-        <template v-if="!field.type">
-          <input
-            :id="field.model"
-            v-model.trim="form[field.model]"
-            v-floating-label="{ invalid: errors[field.model] }"
-            :required="field.required"
-            v-bind="field.attrs.value || field.attrs"
-          >
-        </template>
-        <template v-else>
-          <component
-            :is="field.type"
-            :id="field.model"
-            v-model.trim="form[field.model]"
-            v-floating-label="{ invalid: errors[field.model] }"
-            :required="field.required"
-            v-bind="field.attrs.value || field.attrs"
-          />
-        </template>
+        <input
+          v-if="!field.type"
+          :id="field.model"
+          v-model.trim="form[field.model]"
+          v-floating-label="{ invalid: errors[field.model] }"
+          :required="field.required"
+          v-bind="field.attrs.value || field.attrs"
+        >
+        <component
+          :is="field.type"
+          v-else
+          :id="field.model"
+          v-model.trim="form[field.model]"
+          v-floating-label="{ invalid: errors[field.model] }"
+          :required="field.required"
+          v-bind="field.attrs.value || field.attrs"
+        />
         <p v-if="errors[field.model]" class="text-sm text-error">
           {{ errors[field.model] }}
         </p>

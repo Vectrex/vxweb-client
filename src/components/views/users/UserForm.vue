@@ -31,10 +31,11 @@
     { model: 'username', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
     { model: 'email', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
     { model: 'name', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { type: FormSelect, model: 'admingroupsid', attrs: ref({ options: adminGroups, disabledLabel: "(Gruppe)", class: "w-full" }), required: true },
+    { type: FormSelect, model: 'admingroupsid', attrs: ref({ options: adminGroups, placeholder: "(Gruppe)", class: "w-full" }), required: true },
     { type: PasswordInput, model: 'new_PWD', attrs: { placeholder: 'Neues Passwort', maxlength: 128, autocomplete: "off", class: "w-full" }},
     { type: PasswordInput, model: 'new_PWD_verify', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
   ]
+  const miscFields = []
   const doFetch = vxFetch(emit)
   const submit = async () => {
     busy.value = true
@@ -73,55 +74,50 @@
     <template #content>
       <div class="p-4 space-y-2">
         <div v-for="field in fields" :key="field.model">
-          <template v-if="!field.type">
+          <input
+            v-if="!field.type"
+            :id="field.model"
+            v-model.trim="form[field.model]"
+            v-floating-label="{ invalid: errors[field.model] }"
+            :required="field.required"
+            v-bind="field.attrs.value || field.attrs"
+          >
+          <component
+            :is="field.type"
+            v-else
+            :id="field.model"
+            v-model.trim="form[field.model]"
+            :required="field.required"
+            v-bind="field.attrs.value || field.attrs"
+          />
+          <p v-if="errors[field.model]" class="text-sm text-error">
+            {{ errors[field.model] }}
+          </p>
+        </div>
+        <template v-if="miscFields && miscFields.length">
+          <divider>Zusatzinformationen</divider>
+          <div v-for="field in miscFields" :key="field.model">
             <input
+              v-if="!field.type"
               :id="field.model"
               v-model.trim="form[field.model]"
               v-floating-label="{ invalid: errors[field.model] }"
               :required="field.required"
               v-bind="field.attrs.value || field.attrs"
             >
-          </template>
-          <template v-else>
             <component
               :is="field.type"
+              v-else
               :id="field.model"
               v-model.trim="form[field.model]"
               :required="field.required"
               v-bind="field.attrs.value || field.attrs"
-            >
-            </component>
-          </template>
-          <p v-if="errors[field.model]" class="text-sm text-error">
-            {{ errors[field.model] }}
-          </p>
-        </div>
-        <divider v-if="miscFields.length">Zusatzinformationen</divider>
-        <div v-for="field in miscFields" :key="field.model">
-          <template v-if="!field.type">
-            <input
-              :id="field.model"
-              v-model.trim="form[field.model]"
-              v-floating-label="{ invalid: errors[field.model] }"
-              :required="field.required"
-              v-bind="field.attrs.value || field.attrs"
-            >
-          </template>
-          <template v-else>
-            <component
-              :is="field.type"
-              :id="field.model"
-              v-model.trim="form[field.model]"
-              :required="field.required"
-              v-bind="field.attrs.value || field.attrs"
-            >
-            </component>
-          </template>
-          <p v-if="errors[field.model]" class="text-sm text-error">
-            {{ errors[field.model] }}
-          </p>
-        </div>
-
+            />
+            <p v-if="errors[field.model]" class="text-sm text-error">
+              {{ errors[field.model] }}
+            </p>
+          </div>
+        </template>
         <submit-button :busy="busy" theme="success" class="button" @submit="submit">
           {{ form.id ? 'Daten übernehmen' : 'User anlegen' }}
         </submit-button>

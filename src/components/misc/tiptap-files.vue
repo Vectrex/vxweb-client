@@ -40,11 +40,13 @@
   >
     <template #action="{ row }">
       <div class="flex justify-end items-center space-x-1">
-        <template v-if="!row.isFolder && (!onlyImages || row.image)">
-          <button class="icon-link" @click="emit('pickFile', row)">
-            <arrow-top-right-on-square-icon class="size-5" />
-          </button>
-        </template>
+        <button
+          v-if="!row.isFolder && (!onlyImages || row.image)"
+          class="icon-link"
+          @click="emit('pickFile', row)"
+        >
+          <arrow-top-right-on-square-icon class="size-5" />
+        </button>
       </div>
     </template>
   </filemanager>

@@ -24,7 +24,7 @@
   ]
   const elements = [
     { type: FormSwitch, model: 'customflags', label: 'Markiert', attrs: { class: 'ml-2' } },
-    { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { class: 'w-full', disabledLabel: '(Kategorie wählen)' } },
+    { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { class: 'w-full', placeholder: '(Kategorie wählen)' } },
     { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
     { type: 'text', model: 'subline', label: 'Unterüberschrift' },
     { type: 'textarea', model: 'teaser', label: 'Anrisstext' },
@@ -32,7 +32,17 @@
   ]
   const busy = ref(false)
   const options = ref({ articlecategoriesid: [] })
-  const form = ref({})
+  const form = ref({
+    article_date: new Date(),
+    display_from: null,
+    display_until: null,
+    customflags: false,
+    articlecategoriesid: null,
+    headline: '',
+    subline: '',
+    teaser: '',
+    content: ''
+  })
   const errors = ref({})
   onMounted(async ()  => {
     options.value.articlecategoriesid = (await doFetch('article/categories').json()).data.value || []
