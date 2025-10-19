@@ -9,7 +9,7 @@
   const props = defineProps({
     id: { type: [String, Number], default: null }
   })
-  const form = ref({})
+  const doFetch = vxFetch(emit)
   const errors = ref({})
   const adminGroups = ref([])
   const busy = ref(false)
@@ -36,7 +36,7 @@
     { type: PasswordInput, model: 'new_PWD_verify', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
   ]
   const miscFields = []
-  const doFetch = vxFetch(emit)
+  const form = ref({})
   const submit = async () => {
     busy.value = true
     const response = (await doFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()).data.value
@@ -53,7 +53,14 @@
     const response = (await doFetch('user/' + (v || '')).json()).data.value
     if (response) {
       adminGroups.value = response.options?.admingroupsid || []
-      form.value = response.form || {}
+      form.value = response.form || {
+        username: '',
+        email: '',
+        name: '',
+        admingroupsid: null,
+        new_PWD: '',
+        new_PWD_verify: ''
+      }
       if (form.value.misc) {
         for (const [key, value] of Object.entries(form.value.misc)) {
           form.value[`misc.${key}`] = value
@@ -99,17 +106,18 @@
           <div v-for="field in miscFields" :key="field.model">
             <input
               v-if="!field.type"
-              :id="field.model"
-              v-model.trim="form[field.model]"
-              v-floating-label="{ invalid: errors[field.model] }"
+              :id="'misc.' + field.model"
+              v-model.trim="form['misc.' + field.model]"
+              v-floating-label="{ invalid: errors['misc.' + field.model] }"
               :required="field.required"
               v-bind="field.attrs.value || field.attrs"
             >
             <component
               :is="field.type"
               v-else
-              :id="field.model"
-              v-model.trim="form[field.model]"
+              :id="'misc.' + field.model"
+              v-model.trim="form['misc.' + field.model]"
+              v-floating-label="{ invalid: errors['misc.' + field.model] }"
               :required="field.required"
               v-bind="field.attrs.value || field.attrs"
             />
