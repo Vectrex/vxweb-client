@@ -17,13 +17,13 @@
     inputFormat: 'D.M.YYYY',
     outputFormat: 'D MMMM YYYY'
   }
-  const dateElements = [
-    { model: 'article_date', label: 'Artikeldatum', attrs: datepickerAttrs },
+  const dateFields = [
+    { model: 'article_date', default: new Date(), label: 'Artikeldatum', attrs: datepickerAttrs },
     { model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
     { model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}}
   ]
-  const elements = [
-    { type: FormSwitch, model: 'customflags', label: 'Markiert', attrs: { class: 'ml-2' } },
+  const fields = [
+    { type: FormSwitch, model: 'customflags', default: false, label: 'Markiert', attrs: { class: 'ml-2' } },
     { type: FormSelect, model: 'articlecategoriesid', label: 'Kategorie', required: true, attrs: { class: 'w-full', placeholder: '(Kategorie wählen)' } },
     { type: 'text', model: 'headline', label: 'Überschrift/Titel', required: true },
     { type: 'text', model: 'subline', label: 'Unterüberschrift' },
@@ -32,26 +32,19 @@
   ]
   const busy = ref(false)
   const options = ref({ articlecategoriesid: [] })
-  const form = ref({
-    article_date: new Date(),
-    display_from: null,
-    display_until: null,
-    customflags: false,
-    articlecategoriesid: null,
-    headline: '',
-    subline: '',
-    teaser: '',
-    content: ''
-  })
+  const form = ref({})
   const errors = ref({})
   onMounted(async ()  => {
     options.value.articlecategoriesid = (await doFetch('article/categories').json()).data.value || []
 
     if (props.id) {
       const data = (await doFetch('article/' + props.id).json()).data.value || {}
-      elements.forEach(item => data[item.model] = item.type === FormSwitch ? Boolean(data[item.model]) : data[item.model])
+      fields.forEach(item => data[item.model] = item.type === FormSwitch ? Boolean(data[item.model]) : data[item.model])
       form.value = data
-      dateElements.forEach(item => form.value[item.model] = form.value[item.model] ? new Date(form.value[item.model]) : null)
+      dateFields.forEach(item => form.value[item.model] = form.value[item.model] ? new Date(form.value[item.model]) : null)
+    }
+    else {
+      form.value = Object.fromEntries([...dateFields, ...fields].map(f => [f.model, f.default !== undefined ? f.default : null]))
     }
   })
   const submit = async () => {
@@ -75,40 +68,40 @@
 <template>
   <div class="py-4 space-y-2 max-w-4xl">
     <div class="grid grid-cols-3 gap-2">
-      <div v-for="element in dateElements" :key="element.model">
-        <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
+      <div v-for="field in dateFields" :key="field.model">
+        <label :for="field.model" :class="{ required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
         <datepicker
-          :id="element.model"
-          v-model="form[element.model]"
-          v-bind="element.attrs"
+          :id="field.model"
+          v-model="form[field.model]"
+          v-bind="field.attrs"
         />
       </div>
     </div>
 
     <div class="space-y-2">
-      <div v-for="element in elements" :key="element.model" class="flex flex-wrap items-center">
-        <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
+      <div v-for="field in fields" :key="field.model" class="flex flex-wrap items-center">
+        <label :for="field.model" :class="{ required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
         <input
-          v-if="['text', 'number'].includes(element.type)"
-          :id="element.model"
-          v-model="form[element.model]"
-          :type="element.type"
+          v-if="['text', 'number'].includes(field.type)"
+          :id="field.model"
+          v-model="form[field.model]"
+          :type="field.type"
           class="w-full form-input"
-          v-bind="element.attrs"
+          v-bind="field.attrs"
         >
         <textarea
-          v-else-if="element.type === 'textarea'"
-          :id="element.model"
-          v-model="form[element.model]"
+          v-else-if="field.type === 'textarea'"
+          :id="field.model"
+          v-model="form[field.model]"
           class="w-full form-textarea"
         />
         <component
-          :is="element.type"
+          :is="field.type"
           v-else
-          :id="element.model"
-          v-model="form[element.model]"
-          :options="options[element.model] || []"
-          v-bind="element.attrs"
+          :id="field.model"
+          v-model="form[field.model]"
+          :options="options[field.model] || []"
+          v-bind="field.attrs"
         />
       </div>
 

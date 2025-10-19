@@ -28,9 +28,9 @@
     return sanitized
   })
   const fields = [
-    { model: 'username', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { model: 'email', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { model: 'name', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { model: 'username', default: '', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { model: 'email', default: '', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { model: 'name', default: '', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
     { type: FormSelect, model: 'admingroupsid', attrs: ref({ options: adminGroups, placeholder: "(Gruppe)", class: "w-full" }), required: true },
     { type: PasswordInput, model: 'new_PWD', attrs: { placeholder: 'Neues Passwort', maxlength: 128, autocomplete: "off", class: "w-full" }},
     { type: PasswordInput, model: 'new_PWD_verify', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
@@ -53,14 +53,8 @@
     const response = (await doFetch('user/' + (v || '')).json()).data.value
     if (response) {
       adminGroups.value = response.options?.admingroupsid || []
-      form.value = response.form || {
-        username: '',
-        email: '',
-        name: '',
-        admingroupsid: null,
-        new_PWD: '',
-        new_PWD_verify: ''
-      }
+      form.value = response.form || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
+
       if (form.value.misc) {
         for (const [key, value] of Object.entries(form.value.misc)) {
           form.value[`misc.${key}`] = value

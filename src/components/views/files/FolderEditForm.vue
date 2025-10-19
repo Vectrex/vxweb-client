@@ -39,7 +39,7 @@
   watch(() => props.id, async v => {
     const response = (await doFetch('folder/' + v).json()).data.value
     if (response) {
-      form.value = response
+      form.value = response || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
     }
     else {
       emit('cancel')

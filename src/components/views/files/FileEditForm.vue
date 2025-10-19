@@ -44,7 +44,7 @@
   watch(() => props.id, async v => {
     const response = (await doFetch('file/' + v).json()).data.value
     if (response) {
-      form.value = response.form || {}
+      form.value = response.formData || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
       fileInfo.value = response.fileInfo || {}
     }
     else {
@@ -67,9 +67,13 @@
           </divider>
           <div class="py-2 space-y-2 text-sm">
             <span class="inline-block w-1/3">Typ</span><span class="inline-block w-2/3">{{ fileInfo.mimetype }}</span>
-            <span v-if="fileInfo.imageInfo" class="inline-block w-1/3">Breite/Höhe</span><span class="inline-block w-2/3">{{ fileInfo.imageInfo.w }} x {{ fileInfo.imageInfo.h }}px</span>
+            <template v-if="fileInfo.imageInfo">
+              <span class="inline-block w-1/3">Breite/Höhe</span><span class="inline-block w-2/3">{{ fileInfo.imageInfo.w }} x {{ fileInfo.imageInfo.h }}px</span>
+            </template>
             <span class="inline-block w-1/3">Link</span><span class="inline-block w-2/3"><a class="link" :href="fileInfo.url" target="_blank">{{ fileInfo.name }}</a></span>
-            <span v-if="fileInfo.cache" class="inline-block w-1/3">Cache</span><span class="inline-block w-2/3">{{ fileInfo.cache.count }} Dateien, {{ formatFilesize(fileInfo.cache.totalSize).formatted.value }}</span>
+            <template v-if="fileInfo.cache">
+              <span class="inline-block w-1/3">Cache</span><span class="inline-block w-2/3">{{ fileInfo.cache.count }} Dateien, {{ formatFilesize(fileInfo.cache.totalSize).formatted.value }}</span>
+            </template>
           </div>
         </div>
         <div>

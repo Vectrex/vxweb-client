@@ -8,11 +8,11 @@
   const emit = defineEmits(['notify', 'fetch-error', 'cancel'])
 
   const fields = [
-    { model: 'username', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { model: 'email', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { model: 'name', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { type: PasswordInput, model: 'new_PWD', attrs: { placeholder: 'Neues Passwort', maxlength: 128, autocomplete: "off", class: "w-full" }},
-    { type: PasswordInput, model: 'new_PWD_verify', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
+    { model: 'username', default: '', required: true, attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }},
+    { model: 'email', default: '', required: true, attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }},
+    { model: 'name', default: '', required: true, attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }},
+    { model: 'new_PWD', type: PasswordInput, default: '', attrs: { placeholder: 'Neues Passwort', maxlength: 128, autocomplete: "off", class: "w-full" }},
+    { model: 'new_PWD_verify', type: PasswordInput, default: '', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
   ]
   const authStore = useAuthStore()
   const form = ref({})
@@ -32,8 +32,10 @@
   }
   onMounted(async () => {
     const response = (await doFetch('profile_data').json()).data.value || {}
+    const defaults = {}
+    fields.forEach(f => defaults[f.model] = f.default)
     notifications.value = response.notifications || []
-    form.value = response.formData || {}
+    form.value = response.formData || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
   })
 </script>
 

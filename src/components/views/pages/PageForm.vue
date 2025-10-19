@@ -13,7 +13,7 @@
   const errors = ref({})
   const busy = ref(false)
   const tiptap = ref(null)
-  const elements = [
+  const fields = [
     { type: 'text', model: 'title', label: 'Titel', required: true },
     { type: 'textarea', model: 'description', label: 'Beschreibung' },
     { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' }
@@ -26,7 +26,7 @@
     errors.value = response.errors || {}
     emit('response-received', response)
   }
-  watch(() => props.initData, v => form.value = v || {}, { immediate: true })
+  watch(() => props.initData, v => form.value = v || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null])), { immediate: true })
 </script>
 
 <template>
@@ -49,20 +49,20 @@
       </p>
     </div>
 
-    <div v-for="element in elements" :key="element.model" class="flex flex-wrap items-center">
-      <label :for="element.model" :class="{ required: element.required, 'text-error': errors[element.model] }">{{ element.label }}</label>
+    <div v-for="field in fields" :key="field.model" class="flex flex-wrap items-center">
+      <label :for="field.model" :class="{ required: field.required, 'text-error': errors[field.model] }">{{ field.label }}</label>
       <input
-        v-if="['text', 'number'].includes(element.type)"
-        :id="element.model"
-        v-model="form[element.model]"
-        :type="element.type"
+        v-if="['text', 'number'].includes(field.type)"
+        :id="field.model"
+        v-model="form[field.model]"
+        :type="field.type"
         class="w-full form-input"
-        v-bind="element.attrs"
+        v-bind="field.attrs"
       >
       <textarea
-        v-else-if="element.type === 'textarea'"
-        :id="element.model"
-        v-model="form[element.model]"
+        v-else-if="field.type === 'textarea'"
+        :id="field.model"
+        v-model="form[field.model]"
         class="w-full form-textarea"
       />
     </div>
