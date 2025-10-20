@@ -1,6 +1,7 @@
 <script setup>
-  import { SubmitButton, VFloatingLabel } from 'vx-vue'
+  import { SubmitButton } from 'vx-vue'
   import FormDialog from '@/components/views/shared/FormDialog.vue'
+  import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import { vxFetch } from '@/composables/vxFetch'
   import { computed, ref, watch } from 'vue'
 
@@ -11,8 +12,8 @@
   const errors = ref({})
   const busy = ref(false)
   const fields = [
-    { model: 'title', label: 'Titel' },
-    { type: 'textarea', model: 'description', label: 'Beschreibung' }
+    { model: 'title', attrs: { placeholder: 'Titel', class: 'w-full' }},
+    { model: 'description', type: 'textarea', attrs: { placeholder: 'Beschreibung', class: 'w-full' }}
   ]
   const sanitizedForm = computed(() => {
       let sanitized = {}
@@ -54,28 +55,7 @@
     </template>
     <template #content>
       <div class="p-4 space-y-2">
-        <div v-for="field in fields" :key="field.model" class="relative">
-          <input
-            v-if="!field.type"
-            v-model="form[field.model]"
-            v-floating-label="{ invalid: errors[field.model] }"
-            :placeholder="field.label"
-            :required="field.required"
-            class="w-full form-input"
-          >
-          <textarea
-            v-else-if="field.type === 'textarea'"
-            :id="field.model + '-' + field.type"
-            v-model="form[field.model]"
-            v-floating-label="{ invalid: errors[field.model] }"
-            :placeholder="field.label"
-            :required="field.required"
-            class="w-full form-textarea"
-          />
-          <p v-if="errors[field.model]" class="text-sm text-error">
-            {{ errors[field.model] }}
-          </p>
-        </div>
+        <form-element-group :fields="fields" v-model="form" class="space-y-2" />
         <submit-button :busy="busy" theme="success" class="button" @submit="submit">
           Daten übernehmen
         </submit-button>

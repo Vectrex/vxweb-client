@@ -1,7 +1,8 @@
 <script setup>
   import { useAuthStore } from '@/stores/auth'
-  import { PasswordInput, SubmitButton, VFloatingLabel } from 'vx-vue'
+  import { PasswordInput, SubmitButton } from 'vx-vue'
   import Divider from '@/components/misc/divider.vue'
+  import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import { vxFetch } from '@/composables/vxFetch'
   import { onMounted, ref } from 'vue'
 
@@ -32,8 +33,6 @@
   }
   onMounted(async () => {
     const response = (await doFetch('profile_data').json()).data.value || {}
-    const defaults = {}
-    fields.forEach(f => defaults[f.model] = f.default)
     notifications.value = response.notifications || []
     form.value = response.formData || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
   })
@@ -41,33 +40,7 @@
 
 <template>
   <div class="space-y-4">
-    <div class="space-y-2">
-
-
-      <div v-for="field in fields" :key="field.model" class="relative">
-        <input
-          v-if="!field.type"
-          :id="field.model"
-          v-model.trim="form[field.model]"
-          v-floating-label="{ invalid: errors[field.model] }"
-          :required="field.required"
-          v-bind="field.attrs.value || field.attrs"
-        >
-        <component
-          :is="field.type"
-          v-else
-          :id="field.model"
-          v-model.trim="form[field.model]"
-          v-floating-label="{ invalid: errors[field.model] }"
-          :required="field.required"
-          v-bind="field.attrs.value || field.attrs"
-        />
-        <p v-if="errors[field.model]" class="text-sm text-error">
-          {{ errors[field.model] }}
-        </p>
-      </div>
-    </div>
-
+    <form-element-group v-model="form" :fields="fields" :errors="errors" class="space-y-2" />
     <template v-if="notifications.length">
       <divider>Benachrichtigungen</divider>
       <div class="space-y-4">

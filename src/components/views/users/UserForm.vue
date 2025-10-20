@@ -1,7 +1,8 @@
 <script setup>
   import FormDialog from '@/components/views/shared/FormDialog.vue'
+  import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import Divider from '@/components/misc/divider.vue'
-  import { FormSelect, PasswordInput, SubmitButton, VFloatingLabel } from 'vx-vue'
+  import { FormSelect, PasswordInput, SubmitButton } from 'vx-vue'
   import { vxFetch } from '@/composables/vxFetch'
   import { computed, ref, watch } from 'vue'
 
@@ -13,30 +14,21 @@
   const errors = ref({})
   const adminGroups = ref([])
   const busy = ref(false)
-  const sanitizedForm = computed(() => {
-    let sanitized = { misc: {} }
-    for (const [key, value] of Object.entries(form.value)) {
-      if(value !== null) {
-        if (key.startsWith('misc.')) {
-          sanitized.misc[key.replace('misc.', '')] = value
-        }
-        else {
-          sanitized[key] = value
-        }
-      }
-    }
-    return sanitized
-  })
+  const form = ref({})
+  const miscForm = ref({})
+  const sanitizedForm = computed(() => ({
+    ...Object.fromEntries(Object.entries(form.value).filter(([_, v]) => v !== null && v !== undefined)),
+    misc: Object.fromEntries(Object.entries(miscForm.value).filter(([_, v]) => v !== null && v !== undefined))
+  }))
   const fields = [
-    { model: 'username', default: '', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { model: 'email', default: '', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
-    { model: 'name', default: '', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full form-input" }, required: true },
+    { model: 'username', default: '', attrs: { placeholder: 'Username', maxlength: 128, autocomplete: "off", class: "w-full" }, required: true },
+    { model: 'email', default: '', attrs: { placeholder: 'E-Mail', maxlength: 128, autocomplete: "off", class: "w-full" }, required: true },
+    { model: 'name', default: '', attrs: { placeholder: 'Name', maxlength: 128, autocomplete: "off", class: "w-full" }, required: true },
     { type: FormSelect, model: 'admingroupsid', attrs: ref({ options: adminGroups, placeholder: "(Gruppe)", class: "w-full" }), required: true },
     { type: PasswordInput, model: 'new_PWD', attrs: { placeholder: 'Neues Passwort', maxlength: 128, autocomplete: "off", class: "w-full" }},
     { type: PasswordInput, model: 'new_PWD_verify', attrs: { placeholder: 'Passwort wiederholen', maxlength: 128, autocomplete: "off", class: "w-full" }}
   ]
   const miscFields = []
-  const form = ref({})
   const submit = async () => {
     busy.value = true
     const response = (await doFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()).data.value
@@ -56,10 +48,8 @@
       form.value = response.form || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
 
       if (form.value.misc) {
-        for (const [key, value] of Object.entries(form.value.misc)) {
-          form.value[`misc.${key}`] = value
-        }
-        unset(form.value, 'misc')
+        miscForm.value = form.value.misc
+        delete form.value.misc
       }
     }
     else {
@@ -74,51 +64,10 @@
     </template>
     <template #content>
       <div class="p-4 space-y-2">
-        <div v-for="field in fields" :key="field.model">
-          <input
-            v-if="!field.type"
-            :id="field.model"
-            v-model.trim="form[field.model]"
-            v-floating-label="{ invalid: errors[field.model] }"
-            :required="field.required"
-            v-bind="field.attrs.value || field.attrs"
-          >
-          <component
-            :is="field.type"
-            v-else
-            :id="field.model"
-            v-model.trim="form[field.model]"
-            :required="field.required"
-            v-bind="field.attrs.value || field.attrs"
-          />
-          <p v-if="errors[field.model]" class="text-sm text-error">
-            {{ errors[field.model] }}
-          </p>
-        </div>
+        <form-element-group v-model="form" :fields="fields" class="space-y-2" />
         <template v-if="miscFields && miscFields.length">
           <divider>Zusatzinformationen</divider>
-          <div v-for="field in miscFields" :key="field.model">
-            <input
-              v-if="!field.type"
-              :id="'misc.' + field.model"
-              v-model.trim="form['misc.' + field.model]"
-              v-floating-label="{ invalid: errors['misc.' + field.model] }"
-              :required="field.required"
-              v-bind="field.attrs.value || field.attrs"
-            >
-            <component
-              :is="field.type"
-              v-else
-              :id="'misc.' + field.model"
-              v-model.trim="form['misc.' + field.model]"
-              v-floating-label="{ invalid: errors['misc.' + field.model] }"
-              :required="field.required"
-              v-bind="field.attrs.value || field.attrs"
-            />
-            <p v-if="errors[field.model]" class="text-sm text-error">
-              {{ errors[field.model] }}
-            </p>
-          </div>
+          <form-element-group v-model="miscForm" :fields="miscFields" class="space-y-2" />
         </template>
         <submit-button :busy="busy" theme="success" class="button" @submit="submit">
           {{ form.id ? 'Daten übernehmen' : 'User anlegen' }}

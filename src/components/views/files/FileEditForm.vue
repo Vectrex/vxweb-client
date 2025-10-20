@@ -1,7 +1,8 @@
 <script setup>
   import FormDialog from '@/components/views/shared/FormDialog.vue'
+  import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import Divider from '@/components/misc/divider.vue'
-  import { SubmitButton, VFloatingLabel } from 'vx-vue'
+  import { SubmitButton } from 'vx-vue'
   import { formatFilesize } from '@/composables/formatFilesize'
   import { vxFetch } from '@/composables/vxFetch'
   import { computed, ref, watch } from 'vue'
@@ -14,10 +15,10 @@
   const errors = ref({})
   const busy = ref(false)
   const fields = [
-    { model: 'title', label: 'Titel' },
-    { model: 'subtitle', label: 'Untertitel' },
-    { type: 'textarea', model: 'description', label: 'Beschreibung' },
-    { model: 'customsort', label: 'Sortierziffer', attrs: { type: "number" } },
+    { model: 'title', attrs: { placeholder: 'Titel', class: 'w-full' }},
+    { model: 'subtitle', attrs: { placeholder: 'Untertitel', class: 'w-full' }},
+    { model: 'description', type: 'textarea', label: 'Beschreibung', attrs: { placeholder: 'Beschreibung', class: 'w-full' }},
+    { model: 'customsort', attrs: { placeholder: 'Sortierziffer', type: 'number', class: 'w-full' }},
   ]
   const sanitizedForm = computed(() => {
     let sanitized = {}
@@ -80,37 +81,11 @@
           <divider>
             Metadaten
           </divider>
-          <div v-for="field in fields" :key="field.model" class="py-2 space-y-2">
-            <div class="relative">
-              <input
-                v-if="!field.type"
-                v-model="form[field.model]"
-                v-floating-label="{ invalid: errors[field.model] }"
-                :required="field.required"
-                :placeholder="field.label"
-                class="w-full form-input"
-                v-bind="field.attrs"
-              >
-              <textarea
-                v-else-if="field.type === 'textarea'"
-                v-model="form[field.model]"
-                v-floating-label="{ invalid: errors[field.model] }"
-                :required="field.required"
-                :placeholder="field.label"
-                class="w-full form-textarea"
-                v-bind="field.attrs"
-              />
-              <p v-if="errors[field.model]" class="text-sm text-error">
-                {{ errors[field.model] }}
-              </p>
-            </div>
-          </div>
+          <form-element-group v-model="form" :fields="fields" class="py-2 space-y-2" />
         </div>
-        <div>
-          <submit-button :busy="busy" theme="success" class="button" @submit="submit">
-            Daten übernehmen
-          </submit-button>
-        </div>
+        <submit-button :busy="busy" theme="success" class="button" @submit="submit">
+          Daten übernehmen
+        </submit-button>
       </div>
     </template>
   </form-dialog>

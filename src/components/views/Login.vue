@@ -3,6 +3,7 @@
   import { HomeIcon } from '@heroicons/vue/20/solid'
   import Logo from '@/components/misc/logo.vue'
   import FormTitle from '@/components/views/shared/FormTitle.vue'
+  import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import { vxFetch } from '@/composables/vxFetch'
   import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel } from 'vx-vue'
   import { ref } from 'vue'
@@ -10,13 +11,17 @@
 
   const emit = defineEmits(['notify'])
   const authStore = useAuthStore()
-  const form = ref({ username: '', password: '' })
+  const form = ref({})
   const email = ref('')
   const busy = ref(false)
   const showPasswordForgotten = ref(false)
   const doFetch = vxFetch()
   const disablePasswordReset = JSON.parse((import.meta.env.VITE_DISABLE_PASSWORD_RESET || 'true').toLowerCase())
 
+  const fields = [
+    { model: 'username', attrs: { placeholder: 'Username', class: 'w-full' } },
+    { model: 'password', type: PasswordInput, attrs: { placeholder: 'Passwort', class: 'w-full' } },
+  ]
   const submit = async () => {
     if (form.value.username && form.value.password) {
       busy.value = true
@@ -65,10 +70,8 @@
         </div>
 
         <div class="py-8 px-4 space-y-4 bg-white sm:px-10">
-          <input v-model.trim="form.username" v-floating-label class="w-full form-input" placeholder="Username">
-          <password-input v-model.trim="form.password" v-floating-label class="w-full" placeholder="Passwort" />
-
-          <div class="flex justify-between items-center">
+          <form-element-group v-model="form" :fields="fields" class="space-y-2" />
+          <div class="flex justify-between items-center px-">
             <submit-button :busy="busy" theme="success" class="button" @submit="submit">
               Anmelden
             </submit-button>
