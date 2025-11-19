@@ -9,7 +9,7 @@
 
   const props = defineProps({
     articleId: { type: [Number, String], default: null },
-    electedFolder: { type: [Number, String], default: null },
+    selectedFolder: { type: [Number, String], default: null },
   })
   const emit = defineEmits(['notify', 'update-linked', 'fetch-error'])
   const cols = [
