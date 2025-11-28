@@ -85,7 +85,7 @@
           </button>
           <button class="flex items-center icon-link" @click="fm.moveFile(row)">
             <document-minus-icon class="size-5" />
-            <play-icon class="w-3 h-3" />
+            <play-icon class="size-3" />
             <document-plus-icon class="size-5" />
           </button>
           <button class="icon-link" @click="fm.delFile(row)">
