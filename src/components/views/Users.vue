@@ -16,11 +16,11 @@
   const deleteRequest = ref(null)
   const doFetch = vxFetch(emit)
   const cols = [
-    { label: "Username", sortable: true, width: "w-1/4", prop: "username" },
-    { label: "Name", sortable: true, width: "w-1/6", prop: "name" },
-    { label: "Email", prop: "email" },
-    { label: "Gruppe", sortable: true, width: "w-1/6", prop: "alias" },
-    { label: "", width: "w-1/12", prop: "action", cssClass: "text-right" }
+    { label: 'Username', sortable: true, cssClass: 'w-1/4', prop: 'username' },
+    { label: 'Name', sortable: true, cssClass: 'w-1/6', prop: 'name' },
+    { label: 'Email', prop: 'email' },
+    { label: 'Gruppe', sortable: true, cssClass: 'w-1/6', prop: 'alias' },
+    { label: '', cssClass: 'w-1/12', prop: 'action' }
   ]
   const edit = id => {
     formShown.value = true
