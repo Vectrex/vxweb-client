@@ -45,7 +45,7 @@
   watch(() => props.id, async v => {
     const response = (await doFetch('file/' + v).json()).data.value
     if (response) {
-      form.value = response.formData || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
+      form.value = response.form || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
       fileInfo.value = response.fileInfo || {}
     }
     else {
