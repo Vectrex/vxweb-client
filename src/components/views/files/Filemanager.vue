@@ -235,7 +235,7 @@
 <template>
   <div
     v-cloak
-    :class="{'border-2 border-dotted border-vxvue-alt -m-[2px]': indicateDrag }"
+    :class="{'border-2 border-dotted border-vxvue-alt -m-0.5': indicateDrag }"
     @drop.prevent.stop="uploadDraggedFiles"
     @dragover.prevent.stop="indicateDrag = true"
     @dragleave.prevent.stop="indicateDrag = false"

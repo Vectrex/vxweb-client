@@ -54,7 +54,9 @@
     </template>
 
     <div class="flex items-center justify-between">
-      <button class="button cancel" @click="emit('cancel')">Abbrechen</button>
+      <button class="button cancel" @click="emit('cancel')">
+        Abbrechen
+      </button>
       <submit-button :busy="busy" theme="success" class="button" @submit="submit">
         Änderungen speichern
       </submit-button>

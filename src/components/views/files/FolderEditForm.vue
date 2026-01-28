@@ -55,7 +55,7 @@
     </template>
     <template #content>
       <div class="p-4 space-y-2">
-        <form-element-group :fields="fields" v-model="form" class="space-y-2" />
+        <form-element-group v-model="form" :fields="fields" class="space-y-2" />
         <submit-button :busy="busy" theme="success" class="button" @submit="submit">
           Daten übernehmen
         </submit-button>

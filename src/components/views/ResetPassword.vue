@@ -34,8 +34,19 @@
         </div>
       </template>
       <template v-else>
-        <password-input v-model.trim="form.password" v-floating-label v-focus placeholder="Neues Passwort (8 Zeichen oder mehr)" class="w-full" />
-        <password-input v-model.trim="form.passwordRepeat" v-floating-label class="w-full" placeholder="Neues Passwort wiederholen" />
+        <password-input
+          v-model.trim="form.password"
+          v-floating-label
+          v-focus
+          placeholder="Neues Passwort (8 Zeichen oder mehr)"
+          class="w-full"
+        />
+        <password-input
+          v-model.trim="form.passwordRepeat"
+          v-floating-label
+          placeholder="Neues Passwort wiederholen"
+          class="w-full"
+        />
         <div class="flex justify-center">
           <submit-button theme="success" class="button" @click="submit">
             Neues Passwort bestätigen

@@ -31,14 +31,14 @@
         v-bind="field.attrs?.value || field.attrs"
       />
       <component
-          :is="field.type"
-          v-else
-          :id="field.model"
-          v-model.trim="model[field.model]"
-          v-floating-label="{ invalid: errors[field.model] }"
-          :options="field.options || undefined"
-          :required="field.required"
-          v-bind="field.attrs?.value || field.attrs"
+        :is="field.type"
+        v-else
+        :id="field.model"
+        v-model.trim="model[field.model]"
+        v-floating-label="{ invalid: errors[field.model] }"
+        :options="field.options || undefined"
+        :required="field.required"
+        v-bind="field.attrs?.value || field.attrs"
       />
       <p v-if="errors[field.model]" class="text-sm text-error">
         {{ errors[field.model] }}

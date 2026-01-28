@@ -35,7 +35,9 @@
 
   <modal :show="showForm" container-class="w-full lg:w-1/2 xl:w-1/4 max-h-[90vh]">
     <template #title>
-      <form-title @cancel="showForm = false">Meine Einstellungen</form-title>
+      <form-title @cancel="showForm = false">
+        Meine Einstellungen
+      </form-title>
     </template>
     <template #default>
       <profile-form

@@ -60,7 +60,7 @@
       emit('response-received', { success: response.success, message: response.message })
 
       if (!props.id) {
-        router.replace({ name: 'articleEdit', params: { id: response.id }})
+        await router.replace({ name: 'articleEdit', params: { id: response.id }})
       }
   }
 </script>

@@ -67,7 +67,7 @@
             :src="fileInfo.thumb"
             :alt="fileInfo.name"
             class="pb-4 w-full"
-          />
+          >
           <divider>Details</divider>
           <div class="py-2 space-y-2 text-sm">
             <span class="inline-block w-1/3">Typ</span><span class="inline-block w-2/3">{{ fileInfo.mimetype }}</span>
