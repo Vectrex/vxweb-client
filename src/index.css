@@ -138,6 +138,15 @@
         peer-placeholder-shown:top-1/2 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-slate-400 peer-placeholder-shown:bg-transparent peer-placeholder-shown:cursor-text;
 }
 
+@utility menu-item {
+    &.router-link-active {
+        @apply bg-vxvue-700 text-white
+    }
+    &:not(.router-link-active) {
+        @apply text-slate-100 hover:bg-vxvue-700
+    }
+}
+
 @layer base {
     button:focus-visible {
         @apply outline-black;
