@@ -53,7 +53,7 @@
 
   <modal :show="showSearch" container-class="w-full lg:w-1/2 max-h-[90vh]" @clicked-outside="handleEsc">
     <template #title>
-      <div class="flex justify-between items-center px-4 w-full h-[var(--form-title-height)] bg-vxvue">
+      <div class="flex justify-between items-center px-4 w-full h-(--form-title-height) bg-vxvue">
         <div class="flex items-center space-x-2 w-full">
           <input
             v-focus

@@ -34,7 +34,7 @@
   const indicateDrag = ref(false)
   const formShown = ref( null)
   const pickedId = ref(null)
-  const upload = ref({ files: [], progressing: false, cancelToken: {} })
+  const upload = ref({ files: [], progressing: false, abortController: null })
   const progress = ref({ total: null, loaded: null, file: null })
 
   const deleteRequest = ref(null)
@@ -167,23 +167,23 @@
       }
       progress.value.file = file.f.name
       try {
-        response = await promisedXhr(
-            urlQueryCreate("file?folder=" + file.folderId, props.requestParameters),
-            'POST',
-            {
+        response = await promisedXhr({
+          path: urlQueryCreate("file", {...props.requestParameters, folder: file.folderId }),
+          method: 'POST',
+          headers: {
               'Content-type': file.f.ftype || 'application/octet-stream',
               'X-File-Name': file.f.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
               'X-File-Size': file.f.size,
               'X-File-Type': file.f.type
             },
-            file.f,
-            null,
-            e => {
+            body: file.f,
+            timeout: 30,
+            onUploadProgress: e => {
               progress.value.total = e.total
               progress.value.loaded = e.loaded
             },
-            upload.value.cancelToken
-        )
+            signal: upload.value.abortController?.signal
+        })
         if (response.status >= 400) {
           await router.replace({ name: 'login' })
         }
@@ -220,12 +220,7 @@
       handleUploads()
     }
   }
-  const cancelUpload = () => {
-    if (upload.value.cancelToken.cancel) {
-      upload.value.cancelToken.cancel()
-      upload.value.cancelToken = {}
-    }
-  }
+  const cancelUpload = () => upload.value.abortController?.abort()
 
   watch(() => props.folderId,  v => { readFolder(v); currentFolderId.value = v }, { immediate: true })
 
