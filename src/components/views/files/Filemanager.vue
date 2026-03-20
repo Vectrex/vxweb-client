@@ -6,7 +6,7 @@
   import FilemanagerBreadcrumbs from '@/components/views/files/FilemanagerBreadcrumbs.vue'
   import FilemanagerSearch from '@/components/views/files/FilemanagerSearch.vue'
   import FolderTree from '@/components/views/files/FolderTree.vue'
-  import { Confirm, Sortable, VFocus } from 'vx-vue'
+  import { Confirm, Sortable, VFocus, VxVueTransition } from 'vx-vue'
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
   import { urlQueryCreate } from '@/util/url-query'
   import { formatFilesize } from '@/composables/formatFilesize'
@@ -177,7 +177,7 @@
               'X-File-Type': file.f.type
             },
             body: file.f,
-            timeout: 30,
+            timeout: 30000,
             onUploadProgress: e => {
               progress.value.total = e.total
               progress.value.loaded = e.loaded
@@ -245,19 +245,21 @@
         />
         <div class="relative">
           <button
+            id="add-activities-button"
+            type="button"
             class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
             @click.stop="showAddActivities = !showAddActivities"
           >
             <plus-icon class="size-5" />
           </button>
-          <transition name="appear">
+          <vx-vue-transition name="appear">
             <filemanager-add
               v-if="showAddActivities"
               @upload="uploadInputFiles"
               @create-folder="createFolder"
               @close="showAddActivities = false"
             />
-          </transition>
+          </vx-vue-transition>
         </div>
         <filemanager-actions
           v-if="checkedFolders.length || checkedFiles.length"
@@ -378,13 +380,13 @@
   </div>
 
   <teleport to="body">
-    <transition name="fade">
+    <vx-vue-transition name="fade">
       <div
         v-if="formShown"
         class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
         @click.stop="formShown = null"
       />
-    </transition>
+    </vx-vue-transition>
 
     <transition name="slide-from-right">
       <folder-edit-form

@@ -25,7 +25,7 @@ export const promisedXhr = ({
     method = 'GET',
     headers = {},
     body = null,
-    timeout = 10,
+    timeout = null,
     onUploadProgress = () => {},
     signal = null,
     responseType = 'auto',

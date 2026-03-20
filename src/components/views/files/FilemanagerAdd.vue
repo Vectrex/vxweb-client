@@ -21,7 +21,7 @@
     }
     showAddFolderInput.value = false
   }
-  onClickOutside(container, () => emit('close'))
+  onClickOutside(container, () => emit('close'), { ignore: ['#add-activities-button'] })
 </script>
 
 <template>

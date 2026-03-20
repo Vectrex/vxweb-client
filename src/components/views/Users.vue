@@ -1,6 +1,6 @@
 <script setup>
   import { useAuthStore } from '@/stores/auth'
-  import { Confirm, Sortable } from 'vx-vue'
+  import { Confirm, Sortable, VxVueTransition } from 'vx-vue'
   import Headline from '@/components/app/Headline.vue'
   import UserForm from '@/components/views/users/UserForm.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
@@ -96,13 +96,13 @@
   </div>
 
   <teleport to="body">
-    <transition name="fade">
+    <vx-vue-transition name="fade">
       <div
         v-if="formShown"
         class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
         @click.stop="formShown = false"
       />
-    </transition>
+    </vx-vue-transition>
     <transition name="slide-from-right">
       <user-form
         v-if="formShown"
