@@ -168,7 +168,7 @@
       progress.value.file = file.f.name
       try {
         response = await promisedXhr(
-            urlQueryCreate("file?folder=" + file.folderId, props.requestParameters),
+            urlQueryCreate("file", { folder: file.folderId, ...props.requestParameters }),
             'POST',
             {
               'Content-type': file.f.ftype || 'application/octet-stream',
