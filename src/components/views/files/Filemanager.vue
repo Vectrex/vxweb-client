@@ -12,7 +12,6 @@
   import { formatFilesize } from '@/composables/formatFilesize'
   import { vxFetch } from '@/composables/vxFetch'
   import { useVxUpload } from '@/composables/useVxUpload'
-  import { promisedXhr } from '@/util/promisedXhr'
   import router from '@/router'
   import {computed, nextTick, ref, watch } from 'vue'
   import ProgressBar from '@/components/views/shared/ProgressBar.vue'
@@ -25,6 +24,7 @@
       requestParameters: { type: Object, default: () => ({}) },
       isModal: Boolean
   })
+  const { upload: uploadFile, cancel: cancelUploadRequest, progress: uploadProgress } = useVxUpload()
   const limits = ref({})
   const currentFolderId = ref(null)
   const parentId = ref(null)
@@ -37,7 +37,6 @@
   const formShown = ref( null)
   const pickedId = ref(null)
   const upload = ref({ files: [], progressing: false, abortController: null })
-  const progress = ref({ total: null, loaded: null, file: null })
 
   const deleteRequest = ref(null)
   const alert = ref(null)
@@ -167,30 +166,23 @@
         await alert.value.open('Datei zu groß', "'" + file.f.name + "' übersteigt die maximale Uploadgröße.")
         continue
       }
-      progress.value.file = file.f.name
       try {
-        upload.value.abortController = new AbortController()
-        response = await promisedXhr({
-          path: urlQueryCreate("file", {...props.requestParameters, folder: file.folderId }),
-          method: 'POST',
+        response = await uploadFile({
+          path: urlQueryCreate('file', { ...props.requestParameters, folder: file.folderId }),
+          file: file.f,
+          timeout: 30000,
           headers: {
-              'Content-type': file.f.ftype || 'application/octet-stream',
-              'X-File-Name': file.f.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
-              'X-File-Size': file.f.size,
-              'X-File-Type': file.f.type
-            },
-            body: file.f,
-            timeout: 30000,
-            onUploadProgress: e => {
-              progress.value.total = e.total
-              progress.value.loaded = e.loaded
-            },
-            signal: upload.value.abortController?.signal
+            'Content-type': file.f.type || 'application/octet-stream',
+            'X-File-Name': file.f.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
+            'X-File-Size': file.f.size,
+            'X-File-Type': file.f.type
+          }
         })
         if (response.status >= 400) {
           await router.replace({ name: 'login' })
+          return
         }
-        else if(response.files && currentFolderId.value === file.folderId) {
+        if(response.files && currentFolderId.value === file.folderId) {
           files.value = response.files
         }
       } catch (err) {
@@ -219,11 +211,14 @@
     Array.from(files).forEach(file => upload.value.files.push({ f: file, folderId: currentFolderId.value }))
     if (!upload.value.progressing) {
       upload.value.progressing = true
-      progress.value.loaded = 0
       handleUploads()
     }
   }
-  const cancelUpload = () => upload.value.abortController?.abort()
+  const cancelUpload = () => {
+    cancelUploadRequest()
+    upload.value.files = []
+    upload.value.progressing = false
+  }
 
   watch(() => props.folderId,  v => { readFolder(v); currentFolderId.value = v }, { immediate: true })
 
@@ -280,9 +275,9 @@
           </button>
           <div class="flex flex-col items-center space-y-2">
             <div class="text-sm">
-              {{ progress.file }}
+              {{ uploadProgress.fileName }}
             </div>
-            <progress-bar class="w-64 h-2 rounded-full bg-slate-200" :progress="100 * progress.loaded / (progress.total || 1)" />
+            <progress-bar class="w-64 h-2 rounded-full bg-slate-200" :progress="uploadProgress.percent" />
           </div>
         </div>
         <strong v-else class="text-center text-primary d-block col-12">Dateien zum Upload hierher ziehen</strong>
