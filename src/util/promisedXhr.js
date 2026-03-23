@@ -1,5 +1,3 @@
-import { useAuthStore } from '@/stores/auth'
-
 const isPlainObject = value => Object.prototype.toString.call(value) === '[object Object]'
 
 const toError = (xhr, fallbackMessage) => ({
@@ -32,16 +30,12 @@ export const promisedXhr = ({
 } = {}) => {
     if (!path) return Promise.reject(new Error('`path` is required.'))
 
-    const baseUrl = import.meta.env.VITE_API_ROOT || `//${window.location.host}/admin/`
     const xhr = new XMLHttpRequest()
     const requestHeaders = { ...headers }
 
     const headerKeys = Object.keys(requestHeaders).map(key => key.toLowerCase())
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || null
-    const bearerToken = useAuthStore().credentials.bearerToken
-
     if (csrfToken && !headerKeys.includes('x-csrf-token')) requestHeaders['X-CSRF-Token'] = csrfToken
-    if (bearerToken && !headerKeys.includes('authorization')) requestHeaders['Authorization'] = 'Bearer ' + bearerToken
     if (
         body != null &&
         !headerKeys.includes('content-type') &&
@@ -115,7 +109,7 @@ export const promisedXhr = ({
             signal.addEventListener('abort', onSignalAbort, { once: true })
         }
 
-        xhr.open(method, baseUrl + path, true)
+        xhr.open(method, path, true)
         Object.entries(requestHeaders).forEach(([key, value]) => { if (value != null) xhr.setRequestHeader(key, value) })
 
         if (isPlainObject(body) && requestHeaders['Content-Type'] === 'application/json') {

@@ -8,7 +8,6 @@ export function useVxUpload (defaultOptions = {}) {
     const error = ref(null)
     const response = ref(null)
 
-    let currentRequest = null
     let abortController = null
 
     const cancel = () => abortController?.abort()
@@ -23,12 +22,12 @@ export function useVxUpload (defaultOptions = {}) {
         reset()
         loading.value = true
 
-        const merged = { ...defaultOptions, ...options }
-        const file = merged.file || null
-        const fileName = file?.name || merged.fileName || ''
+        const mergedOptions = { ...defaultOptions, ...options }
+        const file = mergedOptions.file || null
+        const fileName = file?.name || mergedOptions.fileName || ''
         abortController = new AbortController()
 
-        const externalSignal = merged.signal
+        const externalSignal = mergedOptions.signal
         const onExternalAbort = () => abortController.abort()
         progress.value.fileName = fileName
 
@@ -40,14 +39,14 @@ export function useVxUpload (defaultOptions = {}) {
                     externalSignal.addEventListener('abort', onExternalAbort, { once: true })
                 }
             }
-            currentRequest = promisedXhr({
-                path: merged.path,
-                method: merged.method || 'POST',
-                headers: merged.headers || {},
-                body: merged.body ?? file ?? null,
-                timeout: merged.timeout ?? null,
+            response.value = await promisedXhr({
+                path: mergedOptions.path,
+                method: mergedOptions.method || 'POST',
+                headers: mergedOptions.headers || {},
+                body: mergedOptions.body ?? file ?? null,
+                timeout: mergedOptions.timeout ?? null,
                 signal: abortController.signal,
-                responseType: merged.responseType || 'auto',
+                responseType: mergedOptions.responseType || 'auto',
                 onUploadProgress: e => {
                     const total = e.total || 0
                     const loaded = e.loaded || 0
@@ -56,8 +55,8 @@ export function useVxUpload (defaultOptions = {}) {
                     progress.value.total = total
                     progress.value.percent = total ? Math.round((loaded / total) * 100) : 0
 
-                    if (typeof merged.onProgress === 'function') {
-                        merged.onProgress({
+                    if (typeof mergedOptions.onProgress === 'function') {
+                        mergedOptions.onProgress({
                             ...e,
                             loaded,
                             total,
@@ -68,7 +67,6 @@ export function useVxUpload (defaultOptions = {}) {
                 }
             })
 
-            response.value = await currentRequest
             return response.value
         } catch (err) {
             error.value = err
@@ -78,11 +76,9 @@ export function useVxUpload (defaultOptions = {}) {
                 externalSignal.removeEventListener('abort', onExternalAbort)
             }
             loading.value = false
-            currentRequest = null
             abortController = null
         }
     }
-
     return {
         upload,
         cancel,

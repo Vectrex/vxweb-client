@@ -6,15 +6,17 @@
   import FilemanagerBreadcrumbs from '@/components/views/files/FilemanagerBreadcrumbs.vue'
   import FilemanagerSearch from '@/components/views/files/FilemanagerSearch.vue'
   import FolderTree from '@/components/views/files/FolderTree.vue'
+  import ProgressBar from '@/components/views/shared/ProgressBar.vue'
   import { Confirm, Sortable, VFocus, VxVueTransition } from 'vx-vue'
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
   import { urlQueryCreate } from '@/util/url-query'
   import { formatFilesize } from '@/composables/formatFilesize'
   import { vxFetch } from '@/composables/vxFetch'
   import { useVxUpload } from '@/composables/useVxUpload'
+  import { useAuthStore } from '@/stores/auth'
+
   import router from '@/router'
-  import {computed, nextTick, ref, watch } from 'vue'
-  import ProgressBar from '@/components/views/shared/ProgressBar.vue'
+  import { computed, nextTick, ref, watch } from 'vue'
 
   const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id', 'fetch-error'])
   const props = defineProps({
@@ -168,14 +170,15 @@
       }
       try {
         response = await uploadFile({
-          path: urlQueryCreate('file', { ...props.requestParameters, folder: file.folderId }),
+          path: urlQueryCreate( (import.meta.env.VITE_API_ROOT || `//${window.location.host}/admin/`) + 'file', { ...props.requestParameters, folder: file.folderId }),
           file: file.f,
           timeout: 30000,
           headers: {
             'Content-type': file.f.type || 'application/octet-stream',
             'X-File-Name': file.f.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
             'X-File-Size': file.f.size,
-            'X-File-Type': file.f.type
+            'X-File-Type': file.f.type,
+            Authorization: 'Bearer ' + useAuthStore().credentials?.bearerToken
           }
         })
         if (response.status >= 400) {
