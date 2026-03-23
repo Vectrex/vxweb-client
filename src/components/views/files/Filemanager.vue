@@ -11,9 +11,11 @@
   import { urlQueryCreate } from '@/util/url-query'
   import { formatFilesize } from '@/composables/formatFilesize'
   import { vxFetch } from '@/composables/vxFetch'
+  import { useVxUpload } from '@/composables/useVxUpload'
   import { promisedXhr } from '@/util/promisedXhr'
   import router from '@/router'
   import {computed, nextTick, ref, watch } from 'vue'
+  import ProgressBar from '@/components/views/shared/ProgressBar.vue'
 
   const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id', 'fetch-error'])
   const props = defineProps({
@@ -167,6 +169,7 @@
       }
       progress.value.file = file.f.name
       try {
+        upload.value.abortController = new AbortController()
         response = await promisedXhr({
           path: urlQueryCreate("file", {...props.requestParameters, folder: file.folderId }),
           method: 'POST',
@@ -279,9 +282,7 @@
             <div class="text-sm">
               {{ progress.file }}
             </div>
-            <div class="w-64 h-2 rounded-full bg-slate-200">
-              <div class="h-full rounded-full bg-vxvue-500" :style="{ width: (100 * progress.loaded / (progress.total || 1)) + '%' }" />
-            </div>
+            <progress-bar class="w-64 h-2 rounded-full bg-slate-200" :progress="100 * progress.loaded / (progress.total || 1)" />
           </div>
         </div>
         <strong v-else class="text-center text-primary d-block col-12">Dateien zum Upload hierher ziehen</strong>
