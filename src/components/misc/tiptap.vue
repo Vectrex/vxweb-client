@@ -156,7 +156,7 @@
       </div>
     </div>
     <editor-content :editor="editor" class="w-full max-w-none prose" />
-    <textarea v-if="showSrc" class="my-2 w-full min-h-32 text-sm form-textarea" :value="model" @blur="model = $event.target.value" />
+    <textarea v-if="showSrc" class="my-2 w-full text-sm min-h-32 form-textarea" :value="model" @blur="model = $event.target.value" />
 
     <modal :show="showModal" container-class="w-full lg:w-3/4 max-h-[90vh]">
       <template #title>

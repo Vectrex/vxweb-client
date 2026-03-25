@@ -53,7 +53,7 @@
       </div>
     </template>
 
-    <div class="flex items-center justify-between">
+    <div class="flex justify-between items-center">
       <button class="button cancel" @click="emit('cancel')">
         Abbrechen
       </button>
