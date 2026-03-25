@@ -4,7 +4,7 @@
   import Logo from '@/components/misc/logo.vue'
   import FormTitle from '@/components/views/shared/FormTitle.vue'
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel, VxVueTransition } from 'vx-vue'
   import { ref } from 'vue'
   import router from '@/router'
@@ -15,7 +15,7 @@
   const email = ref('')
   const busy = ref(false)
   const showPasswordForgotten = ref(false)
-  const doFetch = vxFetch()
+  const doFetch = useVxFetch()
   const disablePasswordReset = JSON.parse((import.meta.env.VITE_DISABLE_PASSWORD_RESET || 'true').toLowerCase())
 
   const fields = [

@@ -4,7 +4,7 @@
   import ArticleForm from '@/components/views/articles/ArticleForm.vue'
   import ArticleFiles from '@/components/views/articles/ArticleFiles.vue'
   import LinkedFiles from '@/components/views/articles/LinkedFiles.vue'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import router from '@/router'
   import { computed, onMounted, ref } from 'vue'
 
@@ -27,7 +27,7 @@
   const activeTab = computed(() => {
       return router.currentRoute.value.params.section || 'edit'
   })
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const getLinkedFiles = async () => {
     if (props.id) {
       const response = (await doFetch('article/' + props.id + '/linked-files').json()).data.value || []

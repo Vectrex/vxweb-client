@@ -3,7 +3,7 @@
   import { FormSwitch } from 'vx-vue'
   import { PencilSquareIcon, TrashIcon, DocumentMinusIcon, PlayIcon, DocumentPlusIcon } from '@heroicons/vue/24/solid'
   import { getSort, storeSort } from '@/util/storeSort'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import router from '@/router'
   import { ref } from 'vue'
 
@@ -37,7 +37,7 @@
     { label: "", prop: "action" }
   ]
   const fm = ref(null)
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const handleLink = async row => {
     const response = (await doFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: row.id })).json()).data.value || {}
     if(response.success) {

@@ -4,7 +4,7 @@
   import Headline from '@/components/app/Headline.vue'
   import UserForm from '@/components/views/users/UserForm.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { storeSort, getSort } from '@/util/storeSort'
   import { ref, onMounted } from 'vue'
 
@@ -14,7 +14,7 @@
   const formShown = ref(false)
   const editData = ref({ id: null })
   const deleteRequest = ref(null)
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const cols = [
     { label: 'Username', sortable: true, cssClass: 'w-1/4', prop: 'username' },
     { label: 'Name', sortable: true, cssClass: 'w-1/6', prop: 'name' },

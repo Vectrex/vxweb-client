@@ -3,14 +3,14 @@
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import Divider from '@/components/misc/divider.vue'
   import { FormSelect, PasswordInput, SubmitButton } from 'vx-vue'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { computed, ref, watch } from 'vue'
 
   const emit = defineEmits(['cancel', 'response-received', 'fetch-error'])
   const props = defineProps({
     id: { type: [String, Number], default: null }
   })
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const errors = ref({})
   const adminGroups = ref([])
   const busy = ref(false)

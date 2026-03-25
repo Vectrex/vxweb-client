@@ -33,16 +33,13 @@ export const promisedXhr = ({
     const xhr = new XMLHttpRequest()
     const requestHeaders = { ...headers }
 
-    const headerKeys = Object.keys(requestHeaders).map(key => key.toLowerCase())
-    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || null
-    if (csrfToken && !headerKeys.includes('x-csrf-token')) requestHeaders['X-CSRF-Token'] = csrfToken
     if (
         body != null &&
-        !headerKeys.includes('content-type') &&
         !(body instanceof FormData) &&
         !(body instanceof Blob) &&
         !(body instanceof ArrayBuffer) &&
-        !ArrayBuffer.isView(body)
+        !ArrayBuffer.isView(body) &&
+        !Object.keys(requestHeaders).map(key => key.toLowerCase()).includes('content-type')
     ) requestHeaders['Content-Type'] = isPlainObject(body) ? 'application/json' : 'application/x-www-form-urlencoded'
 
     const promise = new Promise((resolve, reject) => {
@@ -87,14 +84,13 @@ export const promisedXhr = ({
                     settleReject({ status: xhr.status,
                         statusText: 'Failed to parse response.',
                         responseText: xhr.responseText,
-                        cause: error,
+                        cause: error
                     })
                 }
             } else {
                 settleReject(toError(xhr, 'Request failed.'))
             }
         }
-
         xhr.onerror = () => settleReject(toError(xhr, 'Network error.'))
         xhr.onabort = () => settleReject({ status: 499, statusText: 'Request cancelled.', responseText: '' })
         xhr.ontimeout = () => settleReject({ status: 408, statusText: 'Request timeout.', responseText: '' })
@@ -114,9 +110,9 @@ export const promisedXhr = ({
 
         if (isPlainObject(body) && requestHeaders['Content-Type'] === 'application/json') {
             xhr.send(JSON.stringify(body))
-            return
+        } else {
+            xhr.send(body)
         }
-        xhr.send(body)
     })
 
     promise.cancel = () => xhr.abort()

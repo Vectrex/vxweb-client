@@ -9,9 +9,9 @@
   import ProgressBar from '@/components/views/shared/ProgressBar.vue'
   import { Confirm, Sortable, VFocus, VxVueTransition } from 'vx-vue'
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
-  import { urlQueryCreate } from '@/util/url-query'
-  import { formatFilesize } from '@/composables/formatFilesize'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { urlQueryCreate } from '@/util/urlQuery.js'
+  import { useFormatFilesize } from '@/composables/useFormatFilesize.js'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { useVxUpload } from '@/composables/useVxUpload'
   import { useAuthStore } from '@/stores/auth'
 
@@ -54,7 +54,7 @@
   const checkedFolders = computed(() => folders.value.filter(({ checked }) => checked))
   const multiCheckValue = computed(() => !(checkedFiles.value.length + checkedFolders.value.length) ? false : (checkedFiles.value.length + checkedFolders.value.length === files.value.length + folders.value.length) ? true : undefined)
 
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const readFolder = async () => {
     const response = (await doFetch(urlQueryCreate('folder/' + (props.folderId || '-') + '/read', props.requestParameters)).json()).data.value || {}
     if (response.success) {
@@ -361,7 +361,7 @@
 
           <template #size="{ row }">
             <template v-if="!row.isFolder">
-              {{ formatFilesize(row.size, ',').formatted.value }}
+              {{ useFormatFilesize(row.size, ',').formatted.value }}
             </template>
           </template>
 

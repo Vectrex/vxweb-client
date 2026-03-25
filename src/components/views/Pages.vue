@@ -3,7 +3,7 @@
   import Headline from '@/components/app/Headline.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { storeSort, getSort } from '@/util/storeSort'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { ref, onMounted } from 'vue'
 
   const emit = defineEmits(['notify', 'fetch-error'])
@@ -17,7 +17,7 @@
   ]
   const pages = ref([])
   const deleteRequest = ref(null)
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
 
   onMounted(async () => {
     pages.value = (await doFetch('pages').json()).data.value || []

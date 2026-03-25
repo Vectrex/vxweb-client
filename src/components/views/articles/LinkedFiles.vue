@@ -1,13 +1,13 @@
 <script setup>
   import { SlickList, SlickItem, DragHandle } from 'vue-slicksort'
   import { EyeIcon, EyeSlashIcon, LinkIcon, Bars4Icon } from '@heroicons/vue/24/solid'
-  import { vxFetch } from "@/composables/vxFetch"
+  import { useVxFetch } from "@/composables/useVxFetch"
   import { ref, onMounted } from "vue"
 
   const emit = defineEmits(['update-linked', 'goto-folder', 'fetch-error'])
   const props = defineProps({ articleId: { type: [Number, String], required: true }})
   const linkedFiles = ref([])
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const saveSort = () => {
     let ids = []
     linkedFiles.value.forEach(f => ids.push(f.id))

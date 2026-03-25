@@ -1,7 +1,7 @@
 import { createFetch } from '@vueuse/core'
 import { useAuthStore } from '@/stores/auth'
 
-export const vxFetch = (emit = null) => createFetch({
+export const useVxFetch = (emit = null) => createFetch({
     baseUrl: import.meta.env.VITE_API_ROOT || ('//' + window.location.host + '/admin/'),
     options: {
         beforeFetch ({ options }) {

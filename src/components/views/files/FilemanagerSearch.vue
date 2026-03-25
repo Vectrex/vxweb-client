@@ -1,8 +1,8 @@
 <script setup>
   import { Modal, Spinner, VFocus } from 'vx-vue'
   import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/solid'
-  import { urlQueryCreate } from '@/util/url-query'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { urlQueryCreate } from '@/util/urlQuery.js'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { ref } from 'vue'
 
   const emit = defineEmits(['folder-picked','fetch-error'])
@@ -15,7 +15,7 @@
   const folders = ref([])
   const busy = ref(false)
   const showSearch = ref(false)
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
 
   const handleInput = async e => {
       modelValue.value = e.target.value
