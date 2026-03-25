@@ -2,7 +2,7 @@
   import Headline from '@/components/app/Headline.vue'
   import PageForm from '@/components/views/pages/PageForm.vue'
   import RevisionTable from '@/components/views/pages/RevisionTable.vue'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import router from '@/router'
   import { onMounted, ref } from 'vue'
 
@@ -11,7 +11,7 @@
   const form = ref({})
   const revisions = ref([])
 
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const handleResponse = response => {
     if (response.current) {
       form.value = response.current

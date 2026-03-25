@@ -6,14 +6,17 @@
   import FilemanagerBreadcrumbs from '@/components/views/files/FilemanagerBreadcrumbs.vue'
   import FilemanagerSearch from '@/components/views/files/FilemanagerSearch.vue'
   import FolderTree from '@/components/views/files/FolderTree.vue'
-  import { Confirm, Sortable, VFocus } from 'vx-vue'
+  import ProgressBar from '@/components/views/shared/ProgressBar.vue'
+  import { Confirm, Sortable, VFocus, VxVueTransition } from 'vx-vue'
   import { PencilSquareIcon, PlusIcon, XMarkIcon } from '@heroicons/vue/24/solid'
-  import { urlQueryCreate } from '@/util/url-query'
-  import { formatFilesize } from '@/composables/formatFilesize'
-  import { vxFetch } from '@/composables/vxFetch'
-  import { promisedXhr } from '@/util/promisedXhr'
+  import { urlQueryCreate } from '@/util/urlQuery.js'
+  import { useFormatFilesize } from '@/composables/useFormatFilesize.js'
+  import { useVxFetch } from '@/composables/useVxFetch'
+  import { useVxUpload } from '@/composables/useVxUpload'
+  import { useAuthStore } from '@/stores/auth'
+
   import router from '@/router'
-  import {computed, nextTick, ref, watch } from 'vue'
+  import { computed, nextTick, ref, watch } from 'vue'
 
   const emit = defineEmits(['response-received', 'after-sort', 'update:folder-id', 'fetch-error'])
   const props = defineProps({
@@ -23,6 +26,7 @@
       requestParameters: { type: Object, default: () => ({}) },
       isModal: Boolean
   })
+  const { upload: uploadFile, cancel: cancelUploadRequest, progress: uploadProgress } = useVxUpload()
   const limits = ref({})
   const currentFolderId = ref(null)
   const parentId = ref(null)
@@ -34,8 +38,7 @@
   const indicateDrag = ref(false)
   const formShown = ref( null)
   const pickedId = ref(null)
-  const upload = ref({ files: [], progressing: false, cancelToken: {} })
-  const progress = ref({ total: null, loaded: null, file: null })
+  const upload = ref({ files: [], progressing: false, abortController: null })
 
   const deleteRequest = ref(null)
   const alert = ref(null)
@@ -51,7 +54,7 @@
   const checkedFolders = computed(() => folders.value.filter(({ checked }) => checked))
   const multiCheckValue = computed(() => !(checkedFiles.value.length + checkedFolders.value.length) ? false : (checkedFiles.value.length + checkedFolders.value.length === files.value.length + folders.value.length) ? true : undefined)
 
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const readFolder = async () => {
     const response = (await doFetch(urlQueryCreate('folder/' + (props.folderId || '-') + '/read', props.requestParameters)).json()).data.value || {}
     if (response.success) {
@@ -165,29 +168,24 @@
         await alert.value.open('Datei zu groß', "'" + file.f.name + "' übersteigt die maximale Uploadgröße.")
         continue
       }
-      progress.value.file = file.f.name
       try {
-        response = await promisedXhr(
-            urlQueryCreate("file", { folder: file.folderId, ...props.requestParameters }),
-            'POST',
-            {
-              'Content-type': file.f.ftype || 'application/octet-stream',
-              'X-File-Name': file.f.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
-              'X-File-Size': file.f.size,
-              'X-File-Type': file.f.type
-            },
-            file.f,
-            null,
-            e => {
-              progress.value.total = e.total
-              progress.value.loaded = e.loaded
-            },
-            upload.value.cancelToken
-        )
+        response = await uploadFile({
+          path: urlQueryCreate( (import.meta.env.VITE_API_ROOT || `//${window.location.host}/admin/`) + 'file', { ...props.requestParameters, folder: file.folderId }),
+          file: file.f,
+          timeout: 30000,
+          headers: {
+            'Content-type': file.f.type || 'application/octet-stream',
+            'X-File-Name': file.f.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
+            'X-File-Size': file.f.size,
+            'X-File-Type': file.f.type,
+            Authorization: 'Bearer ' + useAuthStore().credentials?.bearerToken
+          }
+        })
         if (response.status >= 400) {
           await router.replace({ name: 'login' })
+          return
         }
-        else if(response.files && currentFolderId.value === file.folderId) {
+        if(response.files && currentFolderId.value === file.folderId) {
           files.value = response.files
         }
       } catch (err) {
@@ -216,15 +214,13 @@
     Array.from(files).forEach(file => upload.value.files.push({ f: file, folderId: currentFolderId.value }))
     if (!upload.value.progressing) {
       upload.value.progressing = true
-      progress.value.loaded = 0
       handleUploads()
     }
   }
   const cancelUpload = () => {
-    if (upload.value.cancelToken.cancel) {
-      upload.value.cancelToken.cancel()
-      upload.value.cancelToken = {}
-    }
+    cancelUploadRequest()
+    upload.value.files = []
+    upload.value.progressing = false
   }
 
   watch(() => props.folderId,  v => { readFolder(v); currentFolderId.value = v }, { immediate: true })
@@ -250,19 +246,21 @@
         />
         <div class="relative">
           <button
+            id="add-activities-button"
+            type="button"
             class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
             @click.stop="showAddActivities = !showAddActivities"
           >
             <plus-icon class="size-5" />
           </button>
-          <transition name="appear">
+          <vx-vue-transition name="appear">
             <filemanager-add
               v-if="showAddActivities"
               @upload="uploadInputFiles"
               @create-folder="createFolder"
               @close="showAddActivities = false"
             />
-          </transition>
+          </vx-vue-transition>
         </div>
         <filemanager-actions
           v-if="checkedFolders.length || checkedFiles.length"
@@ -280,11 +278,9 @@
           </button>
           <div class="flex flex-col items-center space-y-2">
             <div class="text-sm">
-              {{ progress.file }}
+              {{ uploadProgress.fileName }}
             </div>
-            <div class="w-64 h-2 rounded-full bg-slate-200">
-              <div class="h-full rounded-full bg-vxvue-500" :style="{ width: (100 * progress.loaded / (progress.total || 1)) + '%' }" />
-            </div>
+            <progress-bar class="w-64 h-2 rounded-full bg-slate-200" :progress="uploadProgress.percent" />
           </div>
         </div>
         <strong v-else class="text-center text-primary d-block col-12">Dateien zum Upload hierher ziehen</strong>
@@ -365,7 +361,7 @@
 
           <template #size="{ row }">
             <template v-if="!row.isFolder">
-              {{ formatFilesize(row.size, ',').formatted.value }}
+              {{ useFormatFilesize(row.size, ',').formatted.value }}
             </template>
           </template>
 
@@ -383,13 +379,13 @@
   </div>
 
   <teleport to="body">
-    <transition name="fade">
+    <vx-vue-transition name="fade">
       <div
         v-if="formShown"
         class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
         @click.stop="formShown = null"
       />
-    </transition>
+    </vx-vue-transition>
 
     <transition name="slide-from-right">
       <folder-edit-form

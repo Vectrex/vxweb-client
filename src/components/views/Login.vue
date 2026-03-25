@@ -4,8 +4,8 @@
   import Logo from '@/components/misc/logo.vue'
   import FormTitle from '@/components/views/shared/FormTitle.vue'
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
-  import { vxFetch } from '@/composables/vxFetch'
-  import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel } from 'vx-vue'
+  import { useVxFetch } from '@/composables/useVxFetch'
+  import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel, VxVueTransition } from 'vx-vue'
   import { ref } from 'vue'
   import router from '@/router'
 
@@ -15,7 +15,7 @@
   const email = ref('')
   const busy = ref(false)
   const showPasswordForgotten = ref(false)
-  const doFetch = vxFetch()
+  const doFetch = useVxFetch()
   const disablePasswordReset = JSON.parse((import.meta.env.VITE_DISABLE_PASSWORD_RESET || 'true').toLowerCase())
 
   const fields = [
@@ -62,7 +62,7 @@
 
 <template>
   <div class="flex flex-col justify-center py-12 min-h-screen sm:px-6 lg:px-8 bg-slate-200">
-    <transition name="appear" appear>
+    <vx-vue-transition name="appear" appear>
       <div class="mt-8 ring-1 shadow-sm sm:mx-auto sm:w-full sm:max-w-xl ring-black/5" @keydown.enter="submit">
         <div class="flex items-baseline px-10 pt-16 pb-0 space-x-2 text-white rounded-t bg-vxvue">
           <logo class="w-1/2" />
@@ -87,7 +87,7 @@
           </div>
         </div>
       </div>
-    </transition>
+    </vx-vue-transition>
     <modal :show="showPasswordForgotten" container-class="w-full lg:w-1/2 xl:w-1/4" @clicked-outside="hideDialog">
       <template #title>
         <form-title class="w-full text-white bg-vxvue-500" @cancel="hideDialog">

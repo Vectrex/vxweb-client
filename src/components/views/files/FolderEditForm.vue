@@ -2,7 +2,7 @@
   import { SubmitButton } from 'vx-vue'
   import FormDialog from '@/components/views/shared/FormDialog.vue'
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { computed, ref, watch } from 'vue'
 
   const props = defineProps({ id: { type: Number, default: null }})
@@ -24,7 +24,7 @@
       }
       return sanitized
   })
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const submit = async () => {
     busy.value = true
     const response = (await doFetch('folder/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value

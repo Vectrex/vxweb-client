@@ -1,68 +1,120 @@
-import { useAuthStore } from '@/stores/auth'
+const isPlainObject = value => Object.prototype.toString.call(value) === '[object Object]'
 
-const promisedXhr = async (
+const toError = (xhr, fallbackMessage) => ({
+    status: xhr?.status ?? 0,
+    statusText: xhr?.statusText ?? fallbackMessage,
+    responseText: xhr?.responseText ?? '',
+})
+
+const parseResponse = (xhr, responseType) => {
+    if (responseType === 'text') return xhr.responseText
+    if (!xhr.responseText) return null
+    if (responseType === 'json') return JSON.parse(xhr.responseText)
+
+    try {
+        return JSON.parse(xhr.responseText)
+    } catch {
+        return xhr.responseText
+    }
+}
+
+export const promisedXhr = ({
     path,
     method = 'GET',
     headers = {},
-    payload = null,
+    body = null,
     timeout = null,
-    progressCallback = null,
-    cancelToken = null
-) => {
-    const baseUrl = import.meta.env.VITE_API_ROOT || ('//' + window.location.host + '/admin/')
-    const headerKeys = Object.keys(headers).map(key => key.toLowerCase());
+    onUploadProgress = () => {},
+    signal = null,
+    responseType = 'auto',
+} = {}) => {
+    if (!path) return Promise.reject(new Error('`path` is required.'))
 
-    if (!headerKeys.includes('x-csrf-token') && document.querySelector('meta[name="csrf-token"]')) {
-        headers['X-CSRF-Token'] = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
-    }
-    if (!headerKeys.includes('content-type')) {
-        headers['Content-Type'] = 'application/x-www-form-urlencoded';
-    }
+    const xhr = new XMLHttpRequest()
+    const requestHeaders = { ...headers }
 
-    const bearerToken = useAuthStore().credentials.bearerToken;
+    if (
+        body != null &&
+        !(body instanceof FormData) &&
+        !(body instanceof Blob) &&
+        !(body instanceof ArrayBuffer) &&
+        !ArrayBuffer.isView(body) &&
+        !Object.keys(requestHeaders).map(key => key.toLowerCase()).includes('content-type')
+    ) requestHeaders['Content-Type'] = isPlainObject(body) ? 'application/json' : 'application/x-www-form-urlencoded'
 
-    if (bearerToken) {
-        headers['Authorization'] = 'Bearer ' + bearerToken;
-    }
-    const xhr = new XMLHttpRequest();
+    const promise = new Promise((resolve, reject) => {
+        let settled = false
 
-    const xhrPromise = new Promise((resolve, reject) => {
+        const cleanup = () => {
+            xhr.onreadystatechange = null
+            xhr.onerror = null
+            xhr.onabort = null
+            xhr.ontimeout = null
+            xhr.onload = null
+            xhr.upload.onprogress = null
+            if (signal) signal.removeEventListener('abort', onSignalAbort)
+        }
+
+        const settleResolve = value => {
+            if (settled) return
+            settled = true
+            cleanup()
+            resolve(value)
+        }
+
+        const settleReject = error => {
+            if (settled) return
+            settled = true
+            cleanup()
+            reject(error)
+        }
+
+        const onSignalAbort = () => {
+            xhr.abort()
+            settleReject({ status: 499, statusText: 'Request cancelled.', responseText: '' })
+        }
+
         xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                if (xhr.status >= 200 && xhr.status < 300) {
-                    resolve(JSON.parse(xhr.responseText));
-                } else {
-                    reject({
-                        status: xhr.status,
-                        statusText: xhr.statusText,
-                        responseText: xhr.responseText
-                    });
+            if (xhr.readyState !== 4) return
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    settleResolve(parseResponse(xhr, responseType))
+                } catch (error) {
+                    settleReject({ status: xhr.status,
+                        statusText: 'Failed to parse response.',
+                        responseText: xhr.responseText,
+                        cause: error
+                    })
                 }
+            } else {
+                settleReject(toError(xhr, 'Request failed.'))
             }
-        };
+        }
+        xhr.onerror = () => settleReject(toError(xhr, 'Network error.'))
+        xhr.onabort = () => settleReject({ status: 499, statusText: 'Request cancelled.', responseText: '' })
+        xhr.ontimeout = () => settleReject({ status: 408, statusText: 'Request timeout.', responseText: '' })
+        xhr.upload.onprogress = onUploadProgress
+        xhr.timeout = timeout
 
-        xhr.upload.onprogress = progressCallback || null;
-
-        if(cancelToken) {
-            cancelToken.cancel = () =>  { xhr.abort(); reject({ status: 499, statusText: 'Request cancelled.' }); };
+        if (signal) {
+            if (signal.aborted) {
+                onSignalAbort()
+                return
+            }
+            signal.addEventListener('abort', onSignalAbort, { once: true })
         }
 
-        xhr.open(method, baseUrl + path, true);
-        Object.keys(headers).forEach(key => xhr.setRequestHeader(key, headers[key]));
+        xhr.open(method, path, true)
+        Object.entries(requestHeaders).forEach(([key, value]) => { if (value != null) xhr.setRequestHeader(key, value) })
 
-        if (timeout) {
-            xhr.timeout = timeout;
-            xhr.ontimeout = () => {reject({ status: 408, statusText: 'Request timeout.' });};
+        if (isPlainObject(body) && requestHeaders['Content-Type'] === 'application/json') {
+            xhr.send(JSON.stringify(body))
+        } else {
+            xhr.send(body)
         }
+    })
 
-        xhr.send(payload);
-    });
-
-    xhrPromise.cancel = () => xhr.abort();
-
-    return xhrPromise;
-}
-
-export {
-    promisedXhr
+    promise.cancel = () => xhr.abort()
+    return promise
 }

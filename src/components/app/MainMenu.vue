@@ -17,7 +17,7 @@
             userRoles.filter(item => route.meta.roles.includes(item)).length
         "
         :to="route.name ? { name: route.name } : { path: route.path }"
-        class="flex items-center px-2 py-2 text-base font-medium rounded-sm space-x-2 flex-nowrap overflow-hidden menu-item"
+        class="flex overflow-hidden flex-nowrap items-center py-2 px-2 space-x-2 text-base font-medium rounded-sm menu-item"
       >
         <component :is="route.meta.icon" v-if="route.meta.icon" class="shrink-0 size-8" />
         <span v-if="expanded">{{ route.meta.label }}</span>

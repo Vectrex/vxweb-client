@@ -3,8 +3,8 @@
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import Divider from '@/components/misc/divider.vue'
   import { SubmitButton } from 'vx-vue'
-  import { formatFilesize } from '@/composables/formatFilesize'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useFormatFilesize } from '@/composables/useFormatFilesize.js'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { computed, ref, watch } from 'vue'
 
   const props = defineProps({ id: { type: Number, default: null }})
@@ -29,7 +29,7 @@
     }
     return sanitized
   })
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const submit = async () => {
     busy.value = true
     const response = (await doFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value
@@ -76,7 +76,9 @@
             </template>
             <span class="inline-block w-1/3">Link</span><span class="inline-block w-2/3"><a class="link" :href="fileInfo.url" target="_blank">{{ fileInfo.name }}</a></span>
             <template v-if="fileInfo.cache">
-              <span class="inline-block w-1/3">Cache</span><span class="inline-block w-2/3">{{ fileInfo.cache.count }} Dateien, {{ formatFilesize(fileInfo.cache.totalSize).formatted.value }}</span>
+              <span class="inline-block w-1/3">Cache</span><span class="inline-block w-2/3">{{ fileInfo.cache.count }} Dateien, {{
+                useFormatFilesize(fileInfo.cache.totalSize).formatted.value
+              }}</span>
             </template>
           </div>
         </div>

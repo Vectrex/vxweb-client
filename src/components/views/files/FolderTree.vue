@@ -1,7 +1,7 @@
 <script setup>
   import { SimpleTree } from 'vx-vue'
-  import { urlQueryCreate } from '@/util/url-query'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { urlQueryCreate } from '@/util/urlQuery.js'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import FormDialog from '@/components/views/shared/FormDialog.vue'
   import { ref } from 'vue'
 
@@ -9,7 +9,7 @@
   const root = ref({})
   const selectedFolder = ref({})
   let resolve = null
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
 
   const findBranch = (branch, id) => {
     if(branch.id === id) {

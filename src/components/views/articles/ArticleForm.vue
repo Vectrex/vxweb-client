@@ -1,14 +1,14 @@
 <script setup>
   import { Datepicker, FormSelect, FormSwitch, SubmitButton } from 'vx-vue'
   import Tiptap from '@/components/misc/tiptap.vue'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { useDateFormat } from '@vueuse/core'
   import { onMounted, ref } from 'vue'
   import router from '@/router'
 
   const emit = defineEmits(['response-received', 'fetch-error'])
   const props = defineProps({ id: { type: [String, Number], default: null }})
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const datepickerAttrs = {
     placeholder: 'dd.mm.yyyy',
     class: "w-full",

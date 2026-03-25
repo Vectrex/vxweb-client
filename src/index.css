@@ -263,38 +263,6 @@
 
 /* animations */
 
-.fade-enter-from,
-.fade-leave-to
-{
-    @apply opacity-0;
-}
-.fade-enter-to,
-.fade-leave-from {
-    @apply opacity-100;
-}
-.fade-enter-active {
-    @apply duration-150;
-}
-.fade-leave-active {
-    @apply duration-100;
-}
-
-.appear-enter-from,
-.appear-leave-to
-{
-    @apply transform opacity-0 scale-95;
-}
-.appear-enter-to,
-.appear-leave-from {
-    @apply transform opacity-100 scale-100;
-}
-.appear-enter-active {
-    @apply transition ease-out duration-100;
-}
-.appear-leave-active {
-    @apply transition ease-out duration-75;
-}
-
 .slide-from-left-enter-from,
 .slide-from-left-leave-to {
     @apply -translate-x-1/4 opacity-0;

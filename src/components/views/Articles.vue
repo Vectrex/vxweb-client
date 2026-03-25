@@ -3,7 +3,7 @@
   import FilterForm from '@/components/views/articles/FilterForm.vue'
   import Headline from '@/components/app/Headline.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { storeSort, getSort } from '@/util/storeSort'
   import { ref, computed, onMounted } from 'vue'
 
@@ -20,7 +20,7 @@
     { label: "Angelegt/aktualisiert", sortable: true, prop: "updated" },
     { label: "", prop: "action" }
   ]
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const articles = ref([])
   const categories = ref([])
   const paginated = ref({ page: 1, entriesPerPage: 20 })

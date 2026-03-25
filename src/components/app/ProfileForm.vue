@@ -3,7 +3,7 @@
   import { PasswordInput, SubmitButton } from 'vx-vue'
   import Divider from '@/components/misc/divider.vue'
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
-  import { vxFetch } from '@/composables/vxFetch'
+  import { useVxFetch } from '@/composables/useVxFetch'
   import { onMounted, ref } from 'vue'
 
   const emit = defineEmits(['notify', 'fetch-error', 'cancel'])
@@ -20,7 +20,7 @@
   const errors = ref({})
   const busy = ref(false)
   const notifications = ref([])
-  const doFetch = vxFetch(emit)
+  const doFetch = useVxFetch(emit)
   const submit = async () => {
     busy.value = true
     const response = (await doFetch('profile_data').post(JSON.stringify(form.value)).json()).data.value || {}
@@ -53,7 +53,7 @@
       </div>
     </template>
 
-    <div class="flex items-center justify-between">
+    <div class="flex justify-between items-center">
       <button class="button cancel" @click="emit('cancel')">
         Abbrechen
       </button>
