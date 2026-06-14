@@ -23,7 +23,7 @@
   const doFetch = useVxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await doFetch('profile_data').post(JSON.stringify(form.value)).json()).data.value || {}
+    const response = (await doFetch('profile').post(JSON.stringify(form.value)).json()).data.value || {}
     busy.value = false
     if (response.success) {
       authStore.credentials.user = response.payload
@@ -32,7 +32,7 @@
     emit('notify', response)
   }
   onMounted(async () => {
-    const response = (await doFetch('profile_data').json()).data.value || {}
+    const response = (await doFetch('profile').json()).data.value || {}
     notifications.value = response.notifications || []
     form.value = response.formData || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
   })
