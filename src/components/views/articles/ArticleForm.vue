@@ -19,7 +19,7 @@
   }
   const dateFields = [
     { model: 'article_date', default: new Date(), label: 'Artikeldatum', attrs: datepickerAttrs },
-    { model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: new Date() }},
+    { model: 'display_from', label: 'Anzeige von', attrs: { ...datepickerAttrs, validFrom: (d =>  new Date(d.setDate(d.getDate() - 1)))(new Date) }},
     { model: 'display_until', label: 'Anzeige bis', attrs: {...datepickerAttrs, validFrom: new Date()}}
   ]
   const fields = [
