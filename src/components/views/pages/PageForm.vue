@@ -12,7 +12,6 @@
   const form = ref({})
   const errors = ref({})
   const busy = ref(false)
-  const tiptap = ref(null)
   const fields = [
     { type: 'text', model: 'title', label: 'Titel', required: true },
     { type: 'textarea', model: 'description', label: 'Beschreibung' },
@@ -66,12 +65,11 @@
         class="w-full form-textarea"
       />
     </div>
-    <div class="flex flex-wrap items-center">
-      <label for="markup" :class="['required', { 'text-error': errors.markup }]">Inhalt</label>
+    <div v-for="block in form.blocks" :key="block.id" class="flex flex-wrap items-center">
+      <label :for="'markup-' + block.id" :class="['required', { 'text-error': errors.markup }]">Inhalt <em>{{ block.id }}</em></label>
       <tiptap
-        id="markup"
-        ref="tiptap"
-        v-model="form.markup"
+        :id="'markup-' + block.id"
+        v-model="block.markup"
         class="w-full"
         @open-file-manager="emit('open-file-manager')"
       />
