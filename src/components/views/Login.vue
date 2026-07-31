@@ -46,7 +46,8 @@
   const requestPassword = async () => {
     if(/[^@]+@[^@]/.test(email.value)) {
       busy.value = true
-      const response = (await doFetch('request-password').put(JSON.stringify({ email: email.value })).json()).data.value
+      const response = (await doFetch('request-password').put(JSON.stringify({ email: email.value, href: location.href })).json()).data.value
+
       if (!response.success) {
         emit('notify', response)
       }
