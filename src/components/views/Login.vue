@@ -72,7 +72,7 @@
 
         <div class="py-8 px-4 space-y-4 bg-white sm:px-10">
           <form-element-group v-model="form" :fields="fields" class="space-y-2" />
-          <div class="flex justify-between items-center px-">
+          <div class="flex justify-between items-center">
             <submit-button :busy="busy" theme="success" class="button" @submit="submit">
               Anmelden
             </submit-button>
