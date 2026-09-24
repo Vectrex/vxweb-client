@@ -4,18 +4,18 @@
   import Logo from '@/components/misc/logo.vue'
   import FormTitle from '@/components/views/shared/FormTitle.vue'
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { Modal, PasswordInput, SubmitButton, VFocus, VFloatingLabel, VxVueTransition } from 'vx-vue'
   import { ref } from 'vue'
   import router from '@/router'
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
   const authStore = useAuthStore()
   const form = ref({})
   const email = ref('')
   const busy = ref(false)
   const showPasswordForgotten = ref(false)
-  const doFetch = useVxFetch()
   const disablePasswordReset = JSON.parse((import.meta.env.VITE_DISABLE_PASSWORD_RESET || 'true').toLowerCase())
 
   const fields = [
@@ -25,14 +25,19 @@
   const submit = async () => {
     if (form.value.username && form.value.password) {
       busy.value = true
-      const response = (await doFetch('login').post(JSON.stringify(form.value)).json()).data.value
-      busy.value = false
-      if(response.bearerToken) {
-        authStore.authenticate(response)
-        await router.push({ name: 'articles' })
-      }
-      else {
-        emit('notify', response)
+      try {
+        const response = await fetchJson(vxFetch('authenticate').post(form.value))
+        if(response?.bearerToken) {
+          authStore.authenticate(response)
+          await router.push({ name: 'articles' })
+        }
+        else {
+          emit('notify', response)
+        }
+      } catch (error) {
+        emit('fetch-error', error)
+      } finally {
+        busy.value = false
       }
     }
   }
@@ -46,16 +51,20 @@
   const requestPassword = async () => {
     if(/[^@]+@[^@]/.test(email.value)) {
       busy.value = true
-      const response = (await doFetch('request-password').put(JSON.stringify({ email: email.value, href: location.href })).json()).data.value
-
-      if (!response.success) {
-        emit('notify', response)
+      try {
+        const response = await fetchJson(vxFetch('request-password').put({ email: email.value, href: location.href }))
+        if (!response?.success) {
+          emit('notify', response)
+        }
+        else {
+          emit('notify', { ...response, timeout: 0 })
+        }
+      } catch (error) {
+        emit('fetch-error', error)
+      } finally {
+        busy.value = false
+        hideDialog()
       }
-      else {
-        emit('notify', { ...response, timeout: 0 })
-      }
-      busy.value = false
-      hideDialog()
     }
   }
   const getWindow = () => window
