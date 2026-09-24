@@ -3,7 +3,8 @@
   import FilterForm from '@/components/views/articles/FilterForm.vue'
   import Headline from '@/components/app/Headline.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { storeSort, getSort } from '@/util/storeSort'
   import { ref, computed, onMounted } from 'vue'
 
@@ -20,7 +21,6 @@
     { label: "Angelegt/aktualisiert", sortable: true, prop: "updated" },
     { label: "", prop: "action" }
   ]
-  const doFetch = useVxFetch(emit)
   const articles = ref([])
   const categories = ref([])
   const paginated = ref({ page: 1, entriesPerPage: 20 })
@@ -32,25 +32,37 @@
   const deleteRequest = ref(null)
   const del = article => {
     deleteRequest.value.open('Artikel löschen', `'${ article.title }' wirklich löschen?`).then(async () => {
-      const response = (await doFetch('article/' + article.id).delete().json()).data.value || {}
-      if (response.success) {
-        articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
+      try {
+        const response = await fetchJson(vxFetch('article/' + article.id).delete()) || {}
+        if (response.success) {
+          articles.value.splice(articles.value.findIndex(item => article.id === item.id), 1)
+        }
+        emit('notify', response)
+      } catch (error) {
+        emit('fetch-error', error)
       }
-      emit('notify', response)
     }).catch(() => {})
   }
   const publish = async row => {
-    const response = (await doFetch(`article/${row.id}/${(!row.pub ? 'publish' : 'unpublish')}`).put().json()).data.value || {}
-    if(response.success) {
-      row.pub = !row.pub
+    try {
+      const response = await fetchJson(vxFetch(`article/${row.id}/${(!row.pub ? 'publish' : 'unpublish')}`).put()) || {}
+      if(response.success) {
+        row.pub = !row.pub
+      }
+      emit('notify', response)
+    } catch (error) {
+      emit('fetch-error', error)
     }
-    emit('notify', response)
   }
   onMounted(async () => {
-    const response = (await doFetch('articles').json()).data.value || {}
-    articles.value = response.articles || []
-    categories.value = response.categories || []
-    categories.value.forEach(item => item.key = item.id)
+    try {
+      const response = await fetchJson(vxFetch('articles')) || {}
+      articles.value = response.articles || []
+      categories.value = response.categories || []
+      categories.value.forEach(item => item.key = item.id)
+    } catch (error) {
+      emit('fetch-error', error)
+    }
   })
 </script>
 

@@ -26,7 +26,7 @@
     if (form.value.username && form.value.password) {
       busy.value = true
       try {
-        const response = await fetchJson(vxFetch('authenticate').post(form.value))
+        const response = await fetchJson(vxFetch('login').post(form.value))
         if(response?.bearerToken) {
           authStore.authenticate(response)
           await router.push({ name: 'articles' })
