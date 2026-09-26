@@ -2,7 +2,8 @@
   import Headline from '@/components/app/Headline.vue'
   import PageForm from '@/components/views/pages/PageForm.vue'
   import RevisionTable from '@/components/views/pages/RevisionTable.vue'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import router from '@/router'
   import { onMounted, ref } from 'vue'
 
@@ -11,7 +12,6 @@
   const form = ref({})
   const revisions = ref([])
 
-  const doFetch = useVxFetch(emit)
   const handleResponse = response => {
     if (response.current) {
       form.value = response.current
@@ -36,35 +36,52 @@
     emit('notify', response)
   }
   const activateRevision = async revision => {
-    const response = (await doFetch('revision/' + revision.id + '/activate').put().json()).data.value || {}
-    if (response.success) {
-      let active = revisions.value.find(item => item.active === true)
-      if (active) {
-        active.active = false
+    try {
+      const response = await fetchJson(vxFetch('revision/' + revision.id + '/activate').put()) || {}
+      if (response.success) {
+        let active = revisions.value.find(item => item.active === true)
+        if (active) {
+          active.active = false
+        }
+        active = revisions.value.find(item => item === revision)
+        if (active) {
+          active.active = true
+        }
+        handleResponse(response)
       }
-      active = revisions.value.find(item => item === revision)
-      if (active) {
-        active.active = true
-      }
-      handleResponse(response)
+      emit('notify', response)
+    } catch (error) {
+      emit('fetch-error', error)
     }
-    emit('notify', response)
   }
   const deleteRevision = async revision => {
-    const response = (await doFetch('revision/' + revision.id).delete().json()).data.value || {}
-    if (response.success) {
-      handleResponse(response)
+    try {
+      const response = await fetchJson(vxFetch('revision/' + revision.id).delete()) || {}
+      if (response.success) {
+        handleResponse(response)
+      }
+      emit('notify', response)
+    } catch (error) {
+      emit('fetch-error', error)
     }
-    emit('notify', response)
   }
   const loadRevision = async revision => {
-    const response = (await doFetch('revision/' + revision.id).json()).data.value || {}
-    if (response.success) {
-      handleResponse(response)
+    try {
+      const response = await fetchJson(vxFetch('revision/' + revision.id)) || {}
+      if (response.success) handleResponse(response)
+    } catch (error) {
+      emit('fetch-error', error)
     }
   }
   onMounted(async () => {
-    if(props.id) { handleResponse((await doFetch('page/' + props.id).json()).data.value || {}) }
+    if(props.id) {
+      try {
+        const response = await fetchJson(vxFetch('revision/' + props.id)) || {}
+        if (response.success) handleResponse(response)
+      } catch (error) {
+        emit('fetch-error', error)
+      }
+    }
   })
 </script>
 

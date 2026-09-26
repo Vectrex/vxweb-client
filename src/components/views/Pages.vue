@@ -3,7 +3,8 @@
   import Headline from '@/components/app/Headline.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
   import { storeSort, getSort } from '@/util/storeSort'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { ref, onMounted } from 'vue'
 
   const emit = defineEmits(['notify', 'fetch-error'])
@@ -17,18 +18,25 @@
   ]
   const pages = ref([])
   const deleteRequest = ref(null)
-  const doFetch = useVxFetch(emit)
 
   onMounted(async () => {
-    pages.value = (await doFetch('pages').json()).data.value || []
+    try {
+      pages.value = await fetchJson(vxFetch('pages')) || []
+    } catch (error) {
+      emit('fetch-error', error)
+    }
   })
   const del = id => {
     deleteRequest.value.open('Seite löschen', "Soll die Seite mit allen Revisionen wirklich gelöscht werden?").then(async () => {
-      const response = (await doFetch('page/' + id).delete().json()).data.value
-      if (response.success) {
-        pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
+      try {
+        const response = await fetchJson(vxFetch('page/' + id).delete())
+        if (response.success) {
+          pages.value.splice(pages.value.findIndex(item => id === item.id), 1)
+        }
+        emit('notify', response)
+      } catch (error) {
+        emit('fetch-error', error)
       }
-      emit('notify', response)
     }).catch(() => {})
   }
 </script>

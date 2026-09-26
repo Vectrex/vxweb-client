@@ -3,14 +3,14 @@
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import Divider from '@/components/misc/divider.vue'
   import { FormSelect, PasswordInput, SubmitButton } from 'vx-vue'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { computed, ref, watch } from 'vue'
 
   const emit = defineEmits(['cancel', 'response-received', 'fetch-error'])
   const props = defineProps({
     id: { type: [String, Number], default: null }
   })
-  const doFetch = useVxFetch(emit)
   const errors = ref({})
   const adminGroups = ref([])
   const busy = ref(false)
@@ -31,29 +31,38 @@
   const miscFields = []
   const submit = async () => {
     busy.value = true
-    const response = (await doFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](JSON.stringify(sanitizedForm.value)).json()).data.value
-    busy.value = false
-    if(!response) {
-      emit('cancel')
-    }
-    else {
-      errors.value = response.errors || {}
-      emit('response-received', { ...response, payload: response.form || null })
+    try {
+      const response = await fetchJson(vxFetch('user/' + (form.value.id || ''))[form.value.id ? 'put' : 'post'](sanitizedForm.value))
+      if(!response) {
+        emit('cancel')
+      }
+      else {
+        errors.value = response.errors || {}
+        emit('response-received', { ...response, payload: response.form || null })
+      }
+    } catch (error) {
+      emit('fetch-error', error)
+    } finally {
+      busy.value = false
     }
   }
   watch(() => props.id, async v => {
-    const response = (await doFetch('user/' + (v || '')).json()).data.value
-    if (response) {
-      adminGroups.value = response.options?.admingroupsid || []
-      form.value = response.form || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
+    try {
+      const response = await fetchJson(vxFetch('user/' + (v || '')))
+      if (response) {
+        adminGroups.value = response?.options?.admingroupsid || []
+        form.value = response?.form || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
 
-      if (form.value.misc) {
-        miscForm.value = form.value.misc
-        delete form.value.misc
+        if (form.value.misc) {
+          miscForm.value = form.value.misc
+          delete form.value.misc
+        }
       }
-    }
-    else {
-      emit('cancel')
+      else {
+        emit('cancel')
+      }
+    } catch (error) {
+      emit('fetch-error', error)
     }
   }, { immediate: true })
 </script>

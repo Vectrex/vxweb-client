@@ -3,8 +3,9 @@
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
   import Divider from '@/components/misc/divider.vue'
   import { SubmitButton } from 'vx-vue'
-  import { useFormatFilesize } from '@/composables/useFormatFilesize.js'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { useFormatFilesize } from '@/composables/useFormatFilesize'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { computed, ref, watch } from 'vue'
 
   const props = defineProps({ id: { type: Number, default: null }})
@@ -29,27 +30,35 @@
     }
     return sanitized
   })
-  const doFetch = useVxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await doFetch('file/' + props.id).put(JSON.stringify(sanitizedForm.value)).json()).data.value
-    busy.value = false
-    if(!response) {
-      emit('cancel')
-    }
-    else {
-      errors.value = response.errors || {}
-      emit('response-received', { ...response, payload: response.form || null })
+    try {
+      const response = await fetchJson(vxFetch('file/' + props.id).put(sanitizedForm.value))
+      if(!response) {
+        emit('cancel')
+      }
+      else {
+        errors.value = response.errors || {}
+        emit('response-received', { ...response, payload: response.form || null })
+      }
+    } catch (error) {
+      emit('fetch-error', error)
+    } finally {
+      busy.value = false
     }
   }
   watch(() => props.id, async v => {
-    const response = (await doFetch('file/' + v).json()).data.value
-    if (response) {
-      form.value = response.form || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
-      fileInfo.value = response.fileInfo || {}
-    }
-    else {
-      emit('cancel')
+    try {
+      const response = await fetchJson(vxFetch('file/' + v))
+      if (response) {
+        form.value = response.form || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
+        fileInfo.value = response.fileInfo || {}
+      }
+      else {
+        emit('cancel')
+      }
+    } catch (error) {
+      emit('fetch-error', error)
     }
   }, { immediate: true })
 </script>

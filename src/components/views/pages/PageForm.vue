@@ -1,7 +1,8 @@
 <script setup>
   import Tiptap from '@/components/misc/tiptap.vue'
   import { SubmitButton } from 'vx-vue'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { ref, watch } from 'vue'
 
   const emit = defineEmits(['response-received', 'open-file-manager', 'fetch-error'])
@@ -17,13 +18,18 @@
     { type: 'textarea', model: 'description', label: 'Beschreibung' },
     { type: 'textarea', model: 'keywords', label: 'Schlüsselworte' }
   ]
-  const doFetch = useVxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await doFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(form.value)).json()).data.value || {}
-    busy.value = false
-    errors.value = response.errors || {}
-    emit('response-received', response)
+    try {
+      const response = await fetchJson(vxFetch('page/' + (props.id || ''))[props.id ? 'put' : 'post'](form.value)) || {}
+      errors.value = response.errors || {}
+      emit('response-received', response)
+    } catch (error) {
+      emit('fetch-error', error)
+    }
+    finally {
+      busy.value = false
+    }
   }
   watch(() => props.initData, v => form.value = v || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null])), { immediate: true })
 </script>

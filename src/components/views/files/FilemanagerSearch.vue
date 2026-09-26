@@ -1,11 +1,12 @@
 <script setup>
   import { Modal, Spinner, VFocus } from 'vx-vue'
   import { EllipsisHorizontalIcon, FolderIcon, MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/solid'
-  import { urlQueryCreate } from '@/util/urlQuery.js'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { urlQueryCreate } from '@/util/urlQuery'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { ref } from 'vue'
 
-  const emit = defineEmits(['folder-picked','fetch-error'])
+  const emit = defineEmits(['folder-picked', 'fetch-error'])
   const props = defineProps({
     placeholder: { type: String, default: 'Datei/Verzeichnis suchen...' },
     minLength: { type: Number, default: 3 }
@@ -15,17 +16,21 @@
   const folders = ref([])
   const busy = ref(false)
   const showSearch = ref(false)
-  const doFetch = useVxFetch(emit)
 
   const handleInput = async e => {
       modelValue.value = e.target.value
       let term = modelValue.value.trim()
       if (term.length >= props.minLength) {
         busy.value = true
-        const response = (await doFetch(urlQueryCreate("files/search", { search: term })).json()).data.value || {}
-        files.value = response.files || []
-        folders.value = response.folders || []
-        busy.value = false
+        try {
+          const response = await fetchJson(vxFetch(urlQueryCreate("files/search", { search: term }))) || {}
+          files.value = response.files || []
+          folders.value = response.folders || []
+        } catch (error) {
+          emit('fetch-error', error)
+        } finally {
+          busy.value = false
+        }
       }
       else {
         files.value = []

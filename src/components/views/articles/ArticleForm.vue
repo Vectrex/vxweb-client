@@ -1,14 +1,14 @@
 <script setup>
   import { Datepicker, FormSelect, FormSwitch, SubmitButton } from 'vx-vue'
   import Tiptap from '@/components/misc/tiptap.vue'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { useDateFormat } from '@vueuse/core'
   import { onMounted, ref } from 'vue'
   import router from '@/router'
 
   const emit = defineEmits(['response-received', 'fetch-error'])
   const props = defineProps({ id: { type: [String, Number], default: null }})
-  const doFetch = useVxFetch(emit)
   const datepickerAttrs = {
     placeholder: 'dd.mm.yyyy',
     class: "w-full",
@@ -35,33 +35,39 @@
   const form = ref({})
   const errors = ref({})
   onMounted(async ()  => {
-    options.value.articlecategoriesid = (await doFetch('article/categories').json()).data.value || []
-
-    if (props.id) {
-      const data = (await doFetch('article/' + props.id).json()).data.value || {}
-      fields.forEach(item => data[item.model] = item.type === FormSwitch ? Boolean(data[item.model]) : data[item.model])
-      form.value = data
-      dateFields.forEach(item => form.value[item.model] = form.value[item.model] ? new Date(form.value[item.model]) : null)
-    }
-    else {
-      form.value = Object.fromEntries([...dateFields, ...fields].map(f => [f.model, f.default !== undefined ? f.default : null]))
+    try {
+      options.value.articlecategoriesid = await fetchJson(vxFetch('article/categories')) || []
+      if (props.id) {
+        const data = await fetchJson(vxFetch('article/' + props.id)) || {}
+        fields.forEach(item => data[item.model] = item.type === FormSwitch ? Boolean(data[item.model]) : data[item.model])
+        form.value = data
+        dateFields.forEach(item => form.value[item.model] = form.value[item.model] ? new Date(form.value[item.model]) : null)
+      }
+      else {
+        form.value = Object.fromEntries([...dateFields, ...fields].map(f => [f.model, f.default !== undefined ? f.default : null]))
+      }
+    } catch (error) {
+      emit('fetch-error', error)
     }
   })
   const submit = async () => {
-      let f = {}
-      for (const [key, value] of Object.entries(form.value)) {
-        f[key] = value instanceof Date ? useDateFormat(value,'YYYY-MM-DD').value : value
-      }
-      busy.value = true
-      const response = (await doFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](JSON.stringify(f)).json()).data.value || {}
-      busy.value = false
-
+    let f = {}
+    for (const [key, value] of Object.entries(form.value)) {
+      f[key] = value instanceof Date ? useDateFormat(value,'YYYY-MM-DD').value : value
+    }
+    busy.value = true
+    try {
+      const response = await fetchJson(vxFetch('article/' + (props.id || ''))[props.id ? 'put' : 'post'](f)) || {}
       errors.value = response.errors || {}
       emit('response-received', { success: response.success, message: response.message })
-
       if (!props.id) {
         await router.replace({ name: 'articleEdit', params: { id: response.id }})
       }
+    } catch (error) {
+      emit('fetch-error', error)
+    } finally {
+      busy.value = false
+    }
   }
 </script>
 
