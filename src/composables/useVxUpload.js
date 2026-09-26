@@ -48,7 +48,7 @@ export function useVxUpload (defaultOptions = {}) {
                 signal: abortController.signal,
                 responseType: mergedOptions.responseType || 'auto',
                 onUploadProgress: e => {
-                    const total = e.total || 0
+                    const total = e.lengthComputable ? e.total : 0
                     const loaded = e.loaded || 0
 
                     progress.value.loaded = loaded

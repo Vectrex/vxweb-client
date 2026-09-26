@@ -178,20 +178,22 @@
           timeout: 30000,
           headers: {
             'Content-type': file.f.type || 'application/octet-stream',
-            'X-File-Name': file.f.name.replace(/[^\x00-\x7F]/g, c => encodeURIComponent(c)),
+            'X-File-Name': encodeURIComponent(file.f.name),
             'X-File-Size': file.f.size,
             'X-File-Type': file.f.type,
             Authorization: 'Bearer ' + useAuthStore().credentials?.bearerToken
           }
         })
-        if (response.status >= 400) {
-          await router.replace({ name: 'login' })
-          return
-        }
         if(response.files && currentFolderId.value === file.folderId) {
           files.value = response.files
         }
       } catch (err) {
+        if (err.status >= 400) {
+          await router.replace({ name: 'login' })
+        }
+        else {
+          emit('fetch-error', err)
+        }
         upload.value.files = []
         upload.value.progressing = false
         return
