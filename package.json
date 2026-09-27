@@ -1,9 +1,10 @@
 {
   "name": "vxweb",
+  "packageManager": "pnpm@12.6.0",
   "scripts": {
     "dev": "vite",
     "dev-remote": "vite --mode remote",
-    "build": "dotenv -- cross-var vite build --mode production --base %VITE_PATH_PREFIX%",
+    "build": "dotenv -- univar vite build --mode production --base $VITE_PATH_PREFIX",
     "serve": "vite preview",
     "format-tailwind": "rustywind --write ./src"
   },
@@ -38,7 +39,7 @@
     "@vitejs/plugin-vue": "^6.0.9",
     "@tailwindcss/vite": "^4.3.3",
     "vite-plugin-vue-devtools": "^8.2.1",
-    "cross-var": "^1.1.0",
+    "univar": "^0.2.1",
     "dotenv-cli": "^11.0.0",
     "rustywind": "^0.28.0",
     "eslint": "^10.11.0",
