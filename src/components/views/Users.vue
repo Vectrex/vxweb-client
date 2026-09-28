@@ -4,7 +4,8 @@
   import Headline from '@/components/app/Headline.vue'
   import UserForm from '@/components/views/users/UserForm.vue'
   import { PencilSquareIcon, TrashIcon, PlusIcon } from '@heroicons/vue/24/solid'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { storeSort, getSort } from '@/util/storeSort'
   import { ref, onMounted } from 'vue'
 
@@ -14,7 +15,6 @@
   const formShown = ref(false)
   const editData = ref({ id: null })
   const deleteRequest = ref(null)
-  const doFetch = useVxFetch(emit)
   const cols = [
     { label: 'Username', sortable: true, cssClass: 'w-1/4', prop: 'username' },
     { label: 'Name', sortable: true, cssClass: 'w-1/6', prop: 'name' },
@@ -40,20 +40,31 @@
   }
   const del = id => {
     deleteRequest.value.open("Benutzer löschen", "Soll der Benutzer wirklich entfernt werden?").then(async () => {
-      const response = (await doFetch('users/' + id).delete().json()).data.value || {}
-      if (response.id) {
-        let ndx = users.value.findIndex(row => row.id === response.id)
-        if (ndx !== -1) {
-          users.value.splice(ndx, 1)
-          emit('notify', { message: 'Benutzer wurde erfolgreich gelöscht.', success: true })
+      try {
+        const response = await fetchJson(vxFetch('users/' + id).delete()) || {}
+        if (response.id) {
+          let ndx = users.value.findIndex(row => row.id === response.id)
+          if (ndx !== -1) {
+            users.value.splice(ndx, 1)
+            emit('notify', { message: 'Benutzer wurde erfolgreich gelöscht.', success: true })
+          }
         }
-      }
-      else {
-        emit('notify', { message: response.message })
+        else {
+          emit('notify', { message: response.message })
+        }
+      } catch (error) {
+        emit('fetch-error', error)
       }
     }).catch(() => {})
   }
-  onMounted(async () => { users.value = (await doFetch('users/init').json()).data.value?.users || [] })
+  onMounted(async () => {
+    try {
+      const response = await fetchJson(vxFetch('users/init'))
+      users.value = response?.users || []
+    } catch (error) {
+      emit('fetch-error', error)
+    }
+  })
 </script>
 <template>
   <teleport defer to="#tools">

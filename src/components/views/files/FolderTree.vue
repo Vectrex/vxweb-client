@@ -1,7 +1,8 @@
 <script setup>
   import { SimpleTree } from 'vx-vue'
   import { urlQueryCreate } from '@/util/urlQuery.js'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import FormDialog from '@/components/views/shared/FormDialog.vue'
   import { ref } from 'vue'
 
@@ -9,7 +10,6 @@
   const root = ref({})
   const selectedFolder = ref({})
   let resolve = null
-  const doFetch = useVxFetch(emit)
 
   const findBranch = (branch, id) => {
     if(branch.id === id) {
@@ -25,7 +25,7 @@
     }
   }
   const open = async (route, currentFolder) => {
-    root.value = (await doFetch(urlQueryCreate(route, { folder: currentFolder })).json()).data.value || {}
+    root.value = await fetchJson(vxFetch(urlQueryCreate(route, { folder: currentFolder }))) || {}
     selectedFolder.value = findBranch(root.value, currentFolder)
     return new Promise(res => { resolve = res })
   }

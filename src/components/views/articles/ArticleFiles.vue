@@ -3,7 +3,8 @@
   import { FormSwitch } from 'vx-vue'
   import { PencilSquareIcon, TrashIcon, DocumentMinusIcon, PlayIcon, DocumentPlusIcon } from '@heroicons/vue/24/solid'
   import { getSort, storeSort } from '@/util/storeSort'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import router from '@/router'
   import { ref } from 'vue'
 
@@ -37,12 +38,15 @@
     { label: "", prop: "action" }
   ]
   const fm = ref(null)
-  const doFetch = useVxFetch(emit)
   const handleLink = async row => {
-    const response = (await doFetch('article/' + props.articleId + '/link-file').put(JSON.stringify({ fileId: row.id })).json()).data.value || {}
-    if(response.success) {
-      row.linked = response.status === 'linked'
-      emit('update-linked')
+    try {
+      const response = await fetchJson(vxFetch('article/' + props.articleId + '/link-file').put({ fileId: row.id })) || {}
+      if(response.success) {
+        row.linked = response.status === 'linked'
+        emit('update-linked')
+      }
+    } catch (error) {
+      emit('fetch-error', error)
     }
   }
   const handleReceivedResponse = e => {

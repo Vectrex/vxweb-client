@@ -1,10 +1,6 @@
-const isPlainObject = value => Object.prototype.toString.call(value) === '[object Object]'
+import { HttpError } from '@/util/HttpError'
 
-const toError = (xhr, fallbackMessage) => ({
-    status: xhr?.status ?? 0,
-    statusText: xhr?.statusText ?? fallbackMessage,
-    responseText: xhr?.responseText ?? '',
-})
+const isPlainObject = value => Object.prototype.toString.call(value) === '[object Object]'
 
 const parseResponse = (xhr, responseType) => {
     if (responseType === 'text') return xhr.responseText
@@ -71,7 +67,7 @@ export const promisedXhr = ({
 
         const onSignalAbort = () => {
             xhr.abort()
-            settleReject({ status: 499, statusText: 'Request cancelled.', responseText: '' })
+            settleReject(new HttpError({ status: 499, statusText: 'Request cancelled.' }))
         }
 
         xhr.onreadystatechange = () => {
@@ -81,19 +77,19 @@ export const promisedXhr = ({
                 try {
                     settleResolve(parseResponse(xhr, responseType))
                 } catch (error) {
-                    settleReject({ status: xhr.status,
-                        statusText: 'Failed to parse response.',
-                        responseText: xhr.responseText,
-                        cause: error
-                    })
+                    settleReject(new HttpError(xhr, { message: 'Failed to parse response.' }, error))
                 }
             } else {
-                settleReject(toError(xhr, 'Request failed.'))
+                let data = null
+                try {
+                    data = parseResponse(xhr, responseType)
+                } catch {}
+                settleReject(new HttpError(xhr, data))
             }
         }
-        xhr.onerror = () => settleReject(toError(xhr, 'Network error.'))
-        xhr.onabort = () => settleReject({ status: 499, statusText: 'Request cancelled.', responseText: '' })
-        xhr.ontimeout = () => settleReject({ status: 408, statusText: 'Request timeout.', responseText: '' })
+        xhr.onerror = () => settleReject(new HttpError({ status: xhr.status || 0, statusText: xhr.statusText || 'Network error.' }))
+        xhr.onabort = () => settleReject(new HttpError({ status: 499, statusText: 'Request cancelled.' }))
+        xhr.ontimeout = () => settleReject(new HttpError({ status: 408, statusText: 'Request timeout.' }))
         xhr.upload.onprogress = onUploadProgress
         xhr.timeout = timeout
 

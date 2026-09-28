@@ -1,20 +1,24 @@
 <script setup>
   import { PasswordInput, SubmitButton, VFloatingLabel, VFocus } from 'vx-vue'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { ref } from 'vue'
 
-  const emit = defineEmits(['notify'])
+  const emit = defineEmits(['notify', 'fetch-error'])
   const success = ref(false)
   const props = defineProps({ hash: { type: String, default: '' }})
   const form = ref({ password: '', passwordRepeat: '' })
   const submit = async () => {
     if(form.value.password.length >= 8 && form.value.password === form.value.passwordRepeat) {
-      const response = (await useVxFetch()('set-password/' + props.hash).put(JSON.stringify(form.value)).json()).data.value
-      if (response.success) {
-        success.value = true
-      }
-      else {
-        emit('notify', response)
+      try {
+        const response = await fetchJson(vxFetch('set-password/' + props.hash).put(form.value))
+        if (response?.success) {
+          success.value = true
+        } else {
+          emit('notify', response)
+        }
+      } catch (error) {
+        emit('fetch-error', error)
       }
     }
   }

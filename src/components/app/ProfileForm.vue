@@ -3,7 +3,8 @@
   import { PasswordInput, SubmitButton } from 'vx-vue'
   import Divider from '@/components/misc/divider.vue'
   import FormElementGroup from '@/components/views/shared/FormElementGroup.vue'
-  import { useVxFetch } from '@/composables/useVxFetch'
+  import { vxFetch } from '@/composables/useVxFetch'
+  import { fetchJson } from '@/util/fetchJson'
   import { onMounted, ref } from 'vue'
 
   const emit = defineEmits(['notify', 'fetch-error', 'cancel'])
@@ -20,19 +21,23 @@
   const errors = ref({})
   const busy = ref(false)
   const notifications = ref([])
-  const doFetch = useVxFetch(emit)
   const submit = async () => {
     busy.value = true
-    const response = (await doFetch('profile').post(JSON.stringify(form.value)).json()).data.value || {}
-    busy.value = false
-    if (response.success) {
-      authStore.credentials.user = response.payload
+    try {
+      const response = await fetchJson(vxFetch('profile').post(form.value)) || {}
+      if (response.success) {
+        authStore.credentials.user = response.payload
+      }
+      errors.value = response.errors || {}
+      emit('notify', response)
+    } catch (error) {
+      emit('fetch-error', error)
+    } finally {
+      busy.value = false
     }
-    errors.value = response.errors || {}
-    emit('notify', response)
   }
   onMounted(async () => {
-    const response = (await doFetch('profile').json()).data.value || {}
+    const response = await fetchJson(vxFetch('profile')) || {}
     notifications.value = response.notifications || []
     form.value = response.formData || Object.fromEntries(fields.map(f => [f.model, f.default !== undefined ? f.default : null]))
   })
