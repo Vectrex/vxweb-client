@@ -166,6 +166,9 @@ importers:
 
   .:
     devDependencies:
+      '@formkit/drag-and-drop':
+        specifier: ^0.6.1
+        version: 0.6.1
       '@heroicons/vue':
         specifier: ^2.2.0
         version: 2.2.0(vue@3.5.43)
@@ -262,9 +265,6 @@ importers:
       vue-router:
         specifier: ^5.3.1
         version: 5.3.1(@vue/compiler-sfc@3.5.43)(pinia@4.0.3(@vue/devtools-api@8.2.1)(vue@3.5.43))(rolldown@1.2.11)(vite@8.3.1(jiti@2.7.0))(vue@3.5.43)
-      vue-slicksort:
-        specifier: ^2.0.5
-        version: 2.0.5(vue@3.5.43)
       vx-vue:
         specifier: ^1.5.7
         version: 1.5.7
@@ -455,6 +455,14 @@ packages:
 
   '@floating-ui/utils@0.2.12':
     resolution: {integrity: sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==}
+
+  '@formkit/drag-and-drop@0.6.1':
+    resolution: {integrity: sha512-DNKoPqdg9RW7k0zZlF2FH636Cc16V3tuGDVKWNHpSXr3amF4nmQZfieoLNVRxqWxXVFJq2DY+vf8SCD10JyjAA==}
+    peerDependencies:
+      '@marko/runtime-tags': '>=6.0.166'
+    peerDependenciesMeta:
+      '@marko/runtime-tags':
+        optional: true
 
   '@heroicons/vue@2.2.0':
     resolution: {integrity: sha512-G3dbSxoeEKqbi/DFalhRxJU4mTXJn7GwZ7ae8NuEQzd1bqdd0jAbdaBZlHPcvPD2xI1iGzNVB4k20Un2AguYPw==}
@@ -1886,11 +1894,6 @@ packages:
       vite:
         optional: true
 
-  vue-slicksort@2.0.5:
-    resolution: {integrity: sha512-fXz1YrNjhUbJK7o0tMk27mIr4pMAZYLSYvtmLazCtfpvz+zafPCn34ILDL8B7hT7WLVZKreYs6JVe5VWymqmzA==}
-    peerDependencies:
-      vue: '>=3.0.0'
-
   vue@3.5.43:
     resolution: {integrity: sha512-o5qZoksdnjIKvW1srZ3ab7pcDNYAerBjRe54D0LBLfRdCYFrSgBHVXokMas35czQc0//lmx4/tuY4ZNQ+Rf2Ng==}
     peerDependencies:
@@ -2177,6 +2180,8 @@ snapshots:
       '@floating-ui/utils': 0.2.12
 
   '@floating-ui/utils@0.2.12': {}
+
+  '@formkit/drag-and-drop@0.6.1': {}
 
   '@heroicons/vue@2.2.0(vue@3.5.43)':
     dependencies:
@@ -3466,10 +3471,6 @@ snapshots:
       - rollup
       - unloader
       - webpack
-
-  vue-slicksort@2.0.5(vue@3.5.43):
-    dependencies:
-      vue: 3.5.43
 
   vue@3.5.43:
     dependencies:

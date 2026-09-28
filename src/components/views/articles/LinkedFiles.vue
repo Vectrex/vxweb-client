@@ -1,8 +1,9 @@
 <script setup>
-  import { SlickList, SlickItem, DragHandle } from 'vue-slicksort'
   import { EyeIcon, EyeSlashIcon, LinkIcon, Bars4Icon } from '@heroicons/vue/24/solid'
   import { vxFetch } from '@/composables/useVxFetch'
   import { fetchJson } from '@/util/fetchJson'
+  import { useDragAndDrop } from '@formkit/drag-and-drop/vue'
+  import { animations } from '@formkit/drag-and-drop'
   import { ref, onMounted } from 'vue'
 
   const emit = defineEmits(['update-linked', 'goto-folder', 'fetch-error'])
@@ -17,6 +18,13 @@
       emit('fetch-error', error)
     }
   }
+  const [parent, files] = useDragAndDrop(
+    linkedFiles, {
+      dragHandle: '.drag-handle',
+      onDragend: saveSort,
+      plugins: [animations()]
+    }
+  )
   const unlink = async file => {
     try {
       const response = await fetchJson(vxFetch('article/' + props.articleId + '/link-file').put({ fileId: file.id })) || {}
@@ -48,11 +56,9 @@
 </script>
 
 <template>
-  <slick-list v-model:list="linkedFiles" lock-axis="y" use-drag-handle @update:list="saveSort">
-    <slick-item v-for="(item, ndx) in linkedFiles" :key="item.id" :index="ndx" class="flex items-center py-2 space-x-4 w-full border-b last:border-none">
-      <drag-handle class="cursor-pointer">
-        <bars4-icon class="size-5" />
-      </drag-handle>
+  <ul ref="parent">
+    <li v-for="item in files" :key="item.id" class="flex items-center py-2 space-x-4 w-full border-b last:border-none">
+      <bars4-icon class="size-5 cursor-pointer drag-handle" />
       <div :class="['w-1/4', { 'text-slate-400': item.hidden }]">
         {{ item.filename }}
       </div>
@@ -71,6 +77,6 @@
         </button>
       </div>
       <a class="w-1/2" :href="'#'+ item.folder.path" @click.prevent="emit('goto-folder', item.folder)">{{ item.folder.path }}</a>
-    </slick-item>
-  </slick-list>
+    </li>
+  </ul>
 </template>
