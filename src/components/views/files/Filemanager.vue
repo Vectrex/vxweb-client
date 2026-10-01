@@ -371,8 +371,7 @@
 
           <template #type="{ row }">
             <img v-if="row.image" :src="row.src" alt="" class="thumb">
-
-            <div v-else-if="row.type === 'image/svg+xml'" class="flex size-12 flex-col items-center justify-between thumb p-0.5">
+            <div v-else-if="row.type?.match(/^image\/svg/) && row.url" class="flex size-12 flex-col items-center justify-between thumb p-0.5">
               <img :src="row.url" alt="">
               <span class="text-xs">svg</span>
             </div>
