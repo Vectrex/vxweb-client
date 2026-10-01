@@ -236,12 +236,12 @@
 <template>
   <div
     v-cloak
-    :class="{'border-2 border-dotted border-vxvue-alt -m-0.5': indicateDrag }"
+    :class="{'-m-0.5 border-2 border-dotted border-vxvue-alt': indicateDrag }"
     @drop.prevent.stop="uploadDraggedFiles"
     @dragover.prevent.stop="indicateDrag = true"
     @dragleave.prevent.stop="indicateDrag = false"
   >
-    <div class="flex items-center pb-4 space-x-4 h-16">
+    <div class="flex h-16 items-center space-x-4 pb-4">
       <div class="flex items-center space-x-4">
         <filemanager-breadcrumbs
           :breadcrumbs="breadcrumbs"
@@ -253,7 +253,7 @@
           <button
             id="add-activities-button"
             type="button"
-            class="icon-link text-vxvue-700! border-transparent !hover:border-vxvue-700"
+            class="!hover:border-vxvue-700 icon-link border-transparent text-vxvue-700!"
             @click.stop="showAddActivities = !showAddActivities"
           >
             <plus-icon class="size-5" />
@@ -276,7 +276,7 @@
         />
       </div>
 
-      <div class="flex justify-center py-4 px-8 w-full rounded-r rounded-l bg-slate-200">
+      <div class="flex w-full justify-center rounded-l rounded-r bg-slate-200 px-8 py-4">
         <div v-if="upload.progressing" class="flex items-center space-x-2">
           <button class="icon-link" @click="cancelUpload">
             <x-mark-icon class="size-5" />
@@ -285,16 +285,16 @@
             <div class="text-sm">
               {{ uploadProgress.fileName }}
             </div>
-            <progress-bar class="w-64 h-2 rounded-full bg-slate-200" :progress="uploadProgress.percent" />
+            <progress-bar class="h-2 w-64 rounded-full bg-slate-200" :progress="uploadProgress.percent" />
           </div>
         </div>
-        <strong v-else class="text-center text-primary d-block col-12">Dateien zum Upload hierher ziehen</strong>
+        <strong v-else class="text-primary d-block col-12 text-center">Dateien zum Upload hierher ziehen</strong>
       </div>
 
       <div v-if="!isModal" id="search-input" />
     </div>
 
-    <div class="overflow-hidden rounded-sm ring-1 shadow-sm ring-black/5">
+    <div class="overflow-hidden rounded-sm shadow-sm ring-1 ring-black/5">
       <div class="overflow-x-auto">
         <sortable
           ref="sortable"
@@ -319,7 +319,7 @@
           </template>
 
           <template #name="{ row }">
-            <div class="flex items-center space-x-1 group">
+            <div class="group flex items-center space-x-1">
               <template v-if="row.isFolder">
                 <input
                   v-if="row === toRename"
@@ -333,7 +333,7 @@
                 <template v-else>
                   <a :href="'#' + row.id" class="link" @click.prevent="emit('update:folder-id', row.id)">{{ row.name }}</a>
                   <button
-                    class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
+                    class="icon-link opacity-0 transition-opacity group-hover:opacity-100"
                     @click="toRename = row"
                   >
                     <pencil-square-icon class="size-5" />
@@ -353,7 +353,7 @@
                 <template v-else>
                   <span class="overflow-hidden text-ellipsis">{{ row.name }}</span>
                   <button
-                    class="opacity-0 transition-opacity group-hover:opacity-100 icon-link"
+                    class="icon-link opacity-0 transition-opacity group-hover:opacity-100"
                     @click="toRename = row"
                   >
                     <pencil-square-icon class="size-5" />
@@ -371,7 +371,12 @@
 
           <template #type="{ row }">
             <img v-if="row.image" :src="row.src" alt="" class="thumb">
-            <span v-else>{{ row.type }}</span>
+
+            <div v-else-if="row.type === 'image/svg+xml'" class="flex size-12 flex-col items-center justify-between thumb p-0.5">
+              <img :src="row.url" alt="">
+              <span class="text-xs">svg</span>
+            </div>
+            <div v-else>{{ row.type }}</div>
           </template>
 
           <template v-for="(_, name) in $slots" #[name]="slotData">
@@ -386,7 +391,7 @@
     <vx-vue-transition name="fade">
       <div
         v-if="formShown"
-        class="fixed right-0 bottom-0 left-0 top-24 z-10 bg-white/75 backdrop-blur-xs"
+        class="fixed top-24 right-0 bottom-0 left-0 z-10 bg-white/75 backdrop-blur-xs"
         @click.stop="formShown = null"
       />
     </vx-vue-transition>
@@ -395,7 +400,7 @@
       <folder-edit-form
         v-if="formShown === 'editFolder'"
         :id="pickedId"
-        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
+        class="shadow-gray fixed top-24 right-0 bottom-0 z-50 w-sidebar bg-white shadow-lg"
         @cancel="formShown = null"
         @response-received="emit('response-received', $event)"
         @fetch-error="emit('fetch-error', $event)"
@@ -406,7 +411,7 @@
       <file-edit-form
         v-if="formShown === 'editFile'"
         :id="pickedId"
-        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
+        class="shadow-gray fixed top-24 right-0 bottom-0 z-50 w-sidebar bg-white shadow-lg"
         @cancel="formShown = null"
         @response-received="emit('response-received', $event)"
         @fetch-error="emit('fetch-error', $event)"
@@ -417,7 +422,7 @@
       <folder-tree
         v-if="formShown === 'folderTree'"
         ref="folderTree"
-        class="fixed right-0 bottom-0 top-24 z-50 bg-white shadow-lg shadow-gray w-sidebar"
+        class="shadow-gray fixed top-24 right-0 bottom-0 z-50 w-sidebar bg-white shadow-lg"
         @fetch-error="emit('fetch-error', $event)"
       />
     </transition>
