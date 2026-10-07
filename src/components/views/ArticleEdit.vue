@@ -31,7 +31,7 @@
   const getLinkedFiles = async () => {
     if (props.id) {
       try {
-        const response = await fetchJson(vxFetch('article/' + props.id + '/linked-files').json())|| []
+        const response = await fetchJson(vxFetch('article/' + props.id + '/linked-files'))|| []
         tabsItems.value.items[1].badge = response.length || 0
       } catch (error) {
         emit('fetch-error', error)
