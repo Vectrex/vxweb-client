@@ -76,8 +76,7 @@
   onMounted(async () => {
     if(props.id) {
       try {
-        const response = await fetchJson(vxFetch('revision/' + props.id)) || {}
-        if (response.success) handleResponse(response)
+        handleResponse(await fetchJson(vxFetch('page/' + props.id)) || {})
       } catch (error) {
         emit('fetch-error', error)
       }
@@ -89,7 +88,7 @@
   <teleport defer to="#tools">
     <headline><span>Seite {{ id ? 'bearbeiten' : 'anlegen' }}</span></headline>
   </teleport>
-  <div class="flex justify-start pb-4 space-x-4 w-full">
+  <div class="flex w-full justify-start space-x-4 pb-4">
     <page-form
       :id="id"
       :init-data="form"
@@ -97,10 +96,10 @@
       @response-received="handleFormResponse"
       @fetch-error="emit('fetch-error', $event)"
     />
-    <div class="overflow-hidden w-1/3 shrink-0 h-[calc(100vh-var(--header-height)-1.5rem)]">
+    <div class="h-[calc(100vh-var(--header-height)-1.5rem)] w-1/3 shrink-0 overflow-hidden">
       <revision-table
         :revisions="revisions"
-        class="overflow-y-auto w-full h-full"
+        class="h-full w-full overflow-y-auto"
         @activate-revision="activateRevision"
         @delete-revision="deleteRevision"
         @load-revision="loadRevision"

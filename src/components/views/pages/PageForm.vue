@@ -44,7 +44,7 @@
       <input
         id="alias-input"
         :value="form.alias"
-        class="w-full form-input"
+        class="form-input w-full"
         :disabled="id"
         maxlength="64"
         @input="form.alias = $event.target.value.toUpperCase()"
@@ -61,7 +61,7 @@
         :id="field.model"
         v-model="form[field.model]"
         :type="field.type"
-        class="w-full form-input"
+        class="form-input w-full"
         v-bind="field.attrs"
       >
       <textarea
@@ -71,12 +71,12 @@
         class="w-full form-textarea"
       />
     </div>
-    <div v-for="block in form.blocks" :key="block.id" class="flex flex-wrap items-center">
-      <label :for="'markup-' + block.id" :class="['required', { 'text-error': errors.markup }]">Inhalt <em>{{ block.id }}</em></label>
+    <div v-for="block in form.blocks" :key="block.id" class="flex flex-wrap items-center space-y-2 bg-slate-600 p-2">
+      <label :for="'markup-' + block.id" :class="['px-1 text-xl required text-white', { 'text-error': errors.markup }]">Inhalt <strong>{{ block.id }}</strong></label>
       <tiptap
         :id="'markup-' + block.id"
         v-model="block.markup"
-        class="w-full"
+        class="w-full rounded bg-white"
         @open-file-manager="emit('open-file-manager')"
       />
     </div>

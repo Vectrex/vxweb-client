@@ -100,8 +100,8 @@
 
 <template>
   <div>
-    <div class="flex justify-start items-center p-1 rounded-t bg-slate-200">
-      <div class="flex px-1 space-x-1 border-r border-slate-500">
+    <div class="flex items-center justify-start rounded-t bg-slate-200 p-1">
+      <div class="flex space-x-1 border-r border-slate-500 px-1">
         <button :class="buttonClass()" @click="editor.commands.undo()">
           <arrow-uturn-left-icon class="size-5" />
         </button>
@@ -109,7 +109,7 @@
           <arrow-uturn-right-icon class="size-5" />
         </button>
       </div>
-      <div class="flex px-1 space-x-1 border-r border-slate-500">
+      <div class="flex space-x-1 border-r border-slate-500 px-1">
         <button :class="buttonClass('bold')" @click="toggleStyle('bold')">
           <strong class="block h-5">Ab</strong>
         </button>
@@ -141,7 +141,7 @@
           </option>
         </select>
       </div>
-      <div class="flex px-1 space-x-1 border-r border-slate-500">
+      <div class="flex space-x-1 border-r border-slate-500 px-1">
         <button :class="buttonClass('link')" @click="pickLink">
           <link-icon class="size-5" />
         </button>
@@ -149,14 +149,14 @@
           <photo-icon class="size-5" />
         </button>
       </div>
-      <div class="flex px-1 space-x-1">
+      <div class="flex space-x-1 px-1">
         <button :class="['icon-link', showSrc ? 'bg-slate-400' : '']" @click="showSrc = !showSrc">
           <code-bracket-square-icon class="size-5" />
         </button>
       </div>
     </div>
-    <editor-content :editor="editor" class="w-full max-w-none prose" />
-    <textarea v-if="showSrc" class="my-2 w-full text-sm min-h-32 form-textarea" :value="model" @blur="model = $event.target.value" />
+    <editor-content :editor="editor" class="prose w-full max-w-none px-2" />
+    <textarea v-if="showSrc" class="my-2 min-h-32 w-full form-textarea text-sm" :value="model" @blur="model = $event.target.value" />
 
     <modal :show="showModal" container-class="w-full lg:w-3/4 max-h-[90vh]">
       <template #title>
@@ -165,10 +165,10 @@
         </form-title>
       </template>
       <template #default>
-        <div class="py-4 space-y-4">
-          <div v-if="!onlyImages" class="flex items-center px-4 space-x-2">
+        <div class="space-y-4 py-4">
+          <div v-if="!onlyImages" class="flex items-center space-x-2 px-4">
             <div class="relative grow">
-              <input id="link-input" v-model.trim="linkData.href" class="w-full form-input peer" placeholder=" ">
+              <input id="link-input" v-model.trim="linkData.href" class="peer form-input w-full" placeholder=" ">
               <label for="link-input" class="floating-label">Vollständige Zieladresse (https://...)</label>
             </div>
             <button class="icon-link" @click="linkData.href = ''">
