@@ -106,7 +106,10 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from) => {
-    if (!to.meta.noAuth && !useAuthStore().credentials.bearerToken) {
+    if (to.name === 'login' && useAuthStore().credentials?.bearerToken) {
+        return { name: 'articles' }
+    }
+    if (!to.meta.noAuth && !useAuthStore().credentials?.bearerToken) {
         return { name: 'login' };
     }
     document.title = (import.meta.env.VITE_SITE_LABEL || 'vxWeb Admin') + (to.meta.label ? ' - ' + to.meta.label : '');

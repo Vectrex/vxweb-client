@@ -18,10 +18,19 @@
       }
     }
   }
-  const handleFetchError = response => {
+  const handleFetchError = async response => {
     if (response.status === 401) {
       notify({ message: 'Authentifizierung fehlgeschlagen. Erneute Anmeldung erforderlich.' })
+      authStore.credentials.bearerToken = null
       router.replace({ name: 'login' })
+    }
+    else if (response.status === 403) {
+      notify({ message: 'Keine Berechtigung. Eine erneute Anmeldung ist erforderlich.' })
+      authStore.credentials.bearerToken = null
+      router.replace({ name: 'login' })
+    }
+    else if (response.status === 500) {
+      notify({ message: `Kommunikation mit dem Server fehlgeschlagen (${response.status}: ${response.statusText}. Versuche es später noch einmal.` })
     }
     else {
       notify({ message: `${response.status}: ${response.statusText}.`})
